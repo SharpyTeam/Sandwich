@@ -12,5 +12,4 @@ v8_use_snapshot = false
 v8_enable_gdbjit = false
 v8_enable_handle_zapping = false
 symbol_level = 0
-use_custom_libcxx = false
 is_clang = false
