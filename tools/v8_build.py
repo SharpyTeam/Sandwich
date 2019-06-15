@@ -28,8 +28,13 @@ def clean_tmp():
 
 
 def main():
+    build_config = 'release'
+    if len(sys.argv) > 1 and sys.argv[1] == 'debug':
+        build_config = 'debug'
+
     clean_tmp()
-    os.makedirs('tmp')
+    if not os.path.exists('tmp'):
+        os.makedirs('tmp')
 
     print('Downloading depot_tools...')
     filename, _ = urllib.request.urlretrieve('https://storage.googleapis.com/chrome-infra/depot_tools.zip',
@@ -69,7 +74,8 @@ def main():
 
     run_command(['python', 'tools/dev/v8gen.py', 'x64.release.sample'], env, v8_path)
     os.unlink(os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'args.gn'))
-    os.rename('tmp/v8_config.gn', os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'args.gn'))
+    shutil.copyfile('v8_config_' + build_config + '.gn',
+                    os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'args.gn'))
     run_command(['gn', 'gen', 'out.gn/x64.release.sample'], env, v8_path)
     run_command(['ninja', '-C', 'out.gn/x64.release.sample', 'v8_monolith'], env, v8_path)
     lib_extension = '.lib' if sys.platform.startswith('win32') else '.a'
@@ -77,10 +83,12 @@ def main():
     if not os.path.exists('../lib'):
         os.makedirs('../lib')
 
-    os.rename(os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith' + lib_extension),
-              '../lib/v8_monolith' + lib_extension)
-
-    clean_tmp()
+    shutil.copyfile(
+        os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith_' + build_config + lib_extension),
+        '../lib/v8_monolith' + lib_extension)
+    if os.path.exists(os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith.pdb')):
+        shutil.copyfile(os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith.pdb'),
+                        '../lib/v8_monolith_' + build_config + '.pdb')
 
 
 if __name__ == '__main__':
