@@ -11,5 +11,5 @@ v8_enable_disassembler = false
 v8_use_snapshot = false
 v8_enable_gdbjit = false
 v8_enable_handle_zapping = false
-symbol_level = 3
+symbol_level = 2
 is_clang = false
