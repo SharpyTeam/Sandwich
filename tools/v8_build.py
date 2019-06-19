@@ -84,8 +84,8 @@ def main():
         os.makedirs('../lib')
 
     shutil.copyfile(
-        os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith_' + build_config + lib_extension),
-        '../lib/v8_monolith' + lib_extension)
+        os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith' + lib_extension),
+        '../lib/v8_monolith_' + build_config + lib_extension)
     if os.path.exists(os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith.pdb')):
         shutil.copyfile(os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'obj', 'v8_monolith.pdb'),
                         '../lib/v8_monolith_' + build_config + '.pdb')
