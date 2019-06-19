@@ -411,7 +411,7 @@ macro(ucm_add_files_impl result trim files)
         get_filename_component(FILEPATH ${cur_file} PATH)
         ucm_trim_front_words("${FILEPATH}" FILEPATH "${trim}")
         # replacing forward slashes with back slashes so filters can be generated (back slash used in parsing...)
-        STRING(REPLACE "/" "\\" FILTERS "${FILEPATH}")
+        STRING(REPLACE "." "\\" FILTERS "${FILEPATH}")
         SOURCE_GROUP("${FILTERS}" FILES ${cur_file})
     endforeach()
 endmacro()
@@ -440,13 +440,13 @@ macro(ucm_add_dir_impl result rec trim dirs_in additional_ext)
     set(dirs "${dirs_in}")
 
     # handle the "" and "." cases
-    if("${dirs}" STREQUAL "" OR "${dirs}" STREQUAL ".")
-        set(dirs "./")
+    if("${dirs}" STREQUAL "" OR "${dirs}" STREQUAL "../../cmake")
+        set(dirs "../../cmake")
     endif()
 
     foreach(cur_dir ${dirs})
         # to circumvent some linux/cmake/path issues - barely made it work...
-        if(cur_dir STREQUAL "./")
+        if(cur_dir STREQUAL "../../cmake")
             set(cur_dir "")
         else()
             set(cur_dir "${cur_dir}/")
@@ -471,7 +471,7 @@ macro(ucm_add_dir_impl result rec trim dirs_in additional_ext)
         endforeach()
 
         # find all sources and set them as result
-        FILE(GLOB found_sources RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+        FILE(GLOB found_sources RELATIVE "../../cmake"
                 # https://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Overall-Options.html#index-file-name-suffix-71
                 # sources
                 "${cur_dir}*.cpp"
@@ -502,7 +502,7 @@ macro(ucm_add_dir_impl result rec trim dirs_in additional_ext)
         # set the proper filters
         ucm_trim_front_words("${cur_dir}" cur_dir "${trim}")
         # replacing forward slashes with back slashes so filters can be generated (back slash used in parsing...)
-        STRING(REPLACE "/" "\\" FILTERS "${cur_dir}")
+        STRING(REPLACE "." "\\" FILTERS "${cur_dir}")
         SOURCE_GROUP("${FILTERS}" FILES ${found_sources})
     endforeach()
 
