@@ -8,6 +8,8 @@ include(deps/ucm/ucm.cmake)
 
 ucm_set_runtime(STATIC)
 
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/usr")
+
 add_executable(Sandwich src/main.cpp)
 
 if (Debug STREQUAL ${CMAKE_BUILD_TYPE})
@@ -35,4 +37,4 @@ endif ()
 
 target_include_directories(Sandwich PUBLIC deps/v8/include)
 target_link_directories(Sandwich PUBLIC lib)
-target_link_libraries(Sandwich "v8_monolith_${V8_BUILD_TYPE}" DbgHelp Winmm)
+target_link_libraries(Sandwich "v8_monolith_${V8_BUILD_TYPE}" DbgHelp Winmm js_bundle)
