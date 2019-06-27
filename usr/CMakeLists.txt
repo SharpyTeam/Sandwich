@@ -14,6 +14,7 @@ add_custom_command(
         -D "INPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/dist/bundle.js"
         -D "OUTPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/dist/js_bundle.c"
         -D "VARIABLE_NAME=js_bundle_contents"
+        -D "PACKER_FILE=${CMAKE_CURRENT_SOURCE_DIR}/../tools/pack_file.js"
         -P "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/pack_as_char_array.cmake")
 
 add_library(js_bundle STATIC "${CMAKE_CURRENT_SOURCE_DIR}/dist/js_bundle.c")
