@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <string>
 #include <iostream>
 #include <map>
@@ -5,6 +7,7 @@
 #include <filesystem>
 #include <libplatform/libplatform.h>
 #include <v8.h>
+#include <functional>
 
 extern "C" const char js_bundle_contents[];
 
@@ -12,52 +15,57 @@ using namespace v8;
 
 #define v8_str(s) v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), s).ToLocalChecked()
 
-/*template<class F>
-void SetWeak(const v8::Local<v8::Object> &o, F function) {
+void SetWeak(const v8::Local<v8::Object> &o, std::function<void(Local<Object>)> f) {
     struct SetWeakCallbackData {
-        SetWeakCallbackData(const v8::Local<v8::Object> &o, F function) : function(function) {
-            this->global.Reset(Isolate::GetCurrent(), o);
+        SetWeakCallbackData(const v8::Local<v8::Object> &o, std::function<void(Local<Object>)> f) : function(std::move(f)) {
+            this->persistent.Reset(Isolate::GetCurrent(), o);
         }
-        F function;
-        v8::Global<v8::Object> global;
+        std::function<void(Local<Object>)> function;
+        Persistent<Object> persistent;
     };
 
-    auto callback_data = new SetWeakCallbackData(o, function);
+    auto callback_data = new SetWeakCallbackData(o, std::move(f));
 
-    callback_data->global.SetWeak(
+    callback_data->persistent.SetWeak(
             callback_data,
-            [](const v8::WeakCallbackInfo<SetWeakCallbackData> &data) {
+            [](const WeakCallbackInfo<SetWeakCallbackData> &data) {
                 SetWeakCallbackData *callback_data = data.GetParameter();
-                callback_data->function(callback_data->global.Get(Isolate::GetCurrent()));
-                callback_data->global.Reset();
+                callback_data->function(callback_data->persistent.Get(Isolate::GetCurrent()));
+                callback_data->persistent.Reset();
                 delete callback_data;
-            }, v8::WeakCallbackType::kParameter
+            }, WeakCallbackType::kFinalizer
     );
-}*/
+}
 
-class Vector2 {
+template<int L>
+class Vector;
+
+template<>
+class Vector<2> {
 public:
     double x;
     double y;
 
-    Vector2() : x(0.0), y(0.0) {}
-    Vector2(double scalar) : x(scalar), y(scalar) {}
-    Vector2(double x, double y) : x(x), y(y) {}
-    Vector2(const Vector2 &other) : x(other.x), y(other.y) {}
+    Vector<2>() : x(0.0), y(0.0) {}
+    Vector<2>(double scalar) : x(scalar), y(scalar) {}
+    Vector<2>(double x, double y) : x(x), y(y) {}
+    Vector<2>(const Vector<2> &other) : x(other.x), y(other.y) {}
 
-    Vector2 &Set(double scalar) {
+    Vector<2> &Set(double scalar) {
         x = scalar;
         y = scalar;
         return *this;
     }
 };
 
+typedef Vector<2> Vector2;
+
 template<class T>
 Local<FunctionTemplate> &GetObjectConstructorTemplate();
 
 
 template<>
-Local<FunctionTemplate> &GetObjectConstructorTemplate<Vector2>() {
+Local<FunctionTemplate> &GetObjectConstructorTemplate<Vector<2>>() {
     static Local<FunctionTemplate> function_template;
     if (!function_template.IsEmpty()) return function_template;
 
@@ -65,35 +73,33 @@ Local<FunctionTemplate> &GetObjectConstructorTemplate<Vector2>() {
     function_template = FunctionTemplate::New(
             Isolate::GetCurrent(),
             [](const FunctionCallbackInfo<Value> &info) {
-                Vector2 *v = nullptr;
+                Vector<2> *v = nullptr;
                 if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector2(
-                            *(Vector2 *)info[0].As<Object>()->GetInternalField(
-                                    0).As<External>()->Value());
+                    v = new Vector<2>(*(Vector<2> *)info[0].As<Object>()->GetInternalField(0).As<External>()->Value());
                 } else {
                     switch (info.Length()) {
                         case 0:
-                            v = new Vector2();
+                            v = new Vector<2>();
                             break;
                         case 1:
-                            v = new Vector2(info[0].As<Number>()->Value());
+                            v = new Vector<2>(info[0].As<Number>()->Value());
                             break;
                         case 2:
-                            v = new Vector2(info[0].As<Number>()->Value(),
+                            v = new Vector<2>(info[0].As<Number>()->Value(),
                                             info[1].As<Number>()->Value());
                             break;
                     }
                 }
 
-                Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(sizeof(Vector2));
+                Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(sizeof(Vector<2>));
 
                 info.This()->SetInternalField(0, External::New(info.GetIsolate(), v));
 
-                /*SetWeak(info.This(), [](Local<Object> o) {
+                SetWeak(info.This(), [](Local<Object> o) {
                     std::cout << o->GetInternalField(0).As<External>()->Value() << std::endl;
-                    delete (Vector2 *)o->GetInternalField(0).As<External>()->Value();
-                    Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(-sizeof(Vector2));
-                });*/
+                    delete (Vector<2> *)o->GetInternalField(0).As<External>()->Value();
+                    Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(-(int64_t)sizeof(Vector<2>));
+                });
             }
     );
 
@@ -106,23 +112,31 @@ Local<FunctionTemplate> &GetObjectConstructorTemplate<Vector2>() {
     o_template->SetAccessor(
             v8_str("x"),
             [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
-                auto *v = (Vector2 *)info.Holder()->GetInternalField(0).As<External>()->Value();
+                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
                 info.GetReturnValue().Set(v->x);
+            },
+            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
+                v->x = value.As<Number>()->Value();
             }
     );
 
     o_template->SetAccessor(
             v8_str("y"),
             [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
-                auto *v = (Vector2 *)info.Holder()->GetInternalField(0).As<External>()->Value();
+                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
                 info.GetReturnValue().Set(v->y);
+            },
+            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
+                v->y = value.As<Number>()->Value();
             }
     );
 
     o_template->Set(
             v8_str("set"),
             FunctionTemplate::New(Isolate::GetCurrent(), [](const FunctionCallbackInfo<Value> &info) {
-                auto *v = (Vector2 *)info.Holder()->GetInternalField(0).As<External>()->Value();
+                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
                 v->Set(info[0].As<Number>()->Value());
                 info.GetReturnValue().Set(info.Holder());
             })
@@ -132,8 +146,9 @@ Local<FunctionTemplate> &GetObjectConstructorTemplate<Vector2>() {
 }
 
 /*template<class T>
-Persistent<Object> Wrap(void *ptr) {
-    Local<Object> o = GetObjectTemplate<T>()->NewInstance(Isolate::GetCurrent()->GetCurrentContext()).ToLocalChecked();
+Persistent<Object> Wrap(T *ptr) {
+    Local<Object> o = GetObjectConstructorTemplate<T>()->InstanceTemplate()->NewInstance(
+            Isolate::GetCurrent()->GetCurrentContext());
     o->SetInternalField(0, External::New(Isolate::GetCurrent(), ptr));
     return Persistent<Object>(Isolate::GetCurrent(), o);
 }*/
@@ -162,7 +177,7 @@ int main(int argc, char *argv[]) {
         context->Global()->Set(String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
 
         sw_object->Set(String::NewFromUtf8(isolate, "Vector2").ToLocalChecked(),
-                       GetObjectConstructorTemplate<Vector2>()->GetFunction(context).ToLocalChecked());
+                       GetObjectConstructorTemplate<Vector<2>>()->GetFunction(context).ToLocalChecked());
 
 
         context->Global()->Get(String::NewFromUtf8(isolate, "console").ToLocalChecked())->ToObject(
