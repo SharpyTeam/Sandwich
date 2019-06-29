@@ -1,5 +1,9 @@
-import {p} from './module';
-import _ from 'lodash';
+import sw from './sandwich';
 
-p(12);
-console.log(_.defaults({ 'a': 1 }, { 'a': 3, 'b': 2 }));
+console.log(sw.Vector2);
+
+for (let i = 0; i < 100000000000; ++i) {
+    new sw.Vector2();
+}
+
+while (true) {}
