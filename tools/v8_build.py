@@ -74,7 +74,7 @@ def main():
 
     run_command(['python', 'tools/dev/v8gen.py', 'x64.release.sample'], env, v8_path)
     os.unlink(os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'args.gn'))
-    shutil.copyfile('v8_config_' + build_config + '.gn',
+    shutil.copyfile('v8_build_config/x64_' + build_config + '.gn',
                     os.path.join(v8_path, 'out.gn', 'x64.release.sample', 'args.gn'))
     run_command(['gn', 'gen', 'out.gn/x64.release.sample'], env, v8_path)
     run_command(['ninja', '-C', 'out.gn/x64.release.sample', 'v8_monolith'], env, v8_path)
