@@ -1,0 +1,10 @@
+//
+// Created by selya on 30.06.2019.
+//
+
+#ifndef SANDWICH_PLATFORM_COMMON_GL_HPP
+#define SANDWICH_PLATFORM_COMMON_GL_HPP
+
+
+
+#endif //SANDWICH_PLATFORM_COMMON_GL_HPP

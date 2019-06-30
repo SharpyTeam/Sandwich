@@ -8,15 +8,15 @@
 #include <libplatform/libplatform.h>
 #include <v8.h>
 #include <functional>
-#include "object_wrap.hpp"
-#include "math/vector.hpp"
-#include "sw_macros.hpp"
+#include <object_wrap.hpp>
+#include <math/vector.hpp>
+#include <sw_macros.hpp>
 
 extern "C" const char js_bundle_contents[];
 
 using namespace v8;
 
-int main(int argc, char *argv[]) {
+void Start() {
     // Initialize V8.
     //V8::InitializeICUDefaultLocation(argv[0]);
     //V8::InitializeExternalStartupData(argv[0]);
@@ -83,5 +83,4 @@ int main(int argc, char *argv[]) {
     V8::Dispose();
     V8::ShutdownPlatform();
     delete create_params.array_buffer_allocator;
-    return 0;
 }

@@ -3,7 +3,7 @@ project(Usr)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_custom_target(webpack_js
+add_custom_target(sandwich_build_js
         COMMAND npx webpack
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -16,5 +16,5 @@ add_custom_command(
         COMMAND node "${CMAKE_CURRENT_SOURCE_DIR}/../tools/pack_file.js"
         ${INPUT_FILE} ${OUTPUT_FILE} "js_bundle_contents")
 
-add_library(js_bundle STATIC "${CMAKE_CURRENT_SOURCE_DIR}/dist/js_bundle.c")
-add_dependencies(js_bundle webpack_js)
+add_library(sandwich_usr_bundle STATIC "${CMAKE_CURRENT_SOURCE_DIR}/dist/js_bundle.c")
+add_dependencies(sandwich_usr_bundle sandwich_build_js)
