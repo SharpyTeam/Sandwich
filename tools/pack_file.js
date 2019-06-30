@@ -33,7 +33,7 @@ for (let bytesWritten = 0; bytesWritten < fileLength; ++bytesWritten) {
 }
 process.stdout.write("\rProcessed " + fileLength + " / " + fileLength + " bytes");
 
-fs.writeSync(outputFile, '};\n');
+fs.writeSync(outputFile, "'\\0'};\n");
 
 console.log();
 console.log("Done!");

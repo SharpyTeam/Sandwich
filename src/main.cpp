@@ -8,6 +8,7 @@
 #include <libplatform/libplatform.h>
 #include <v8.h>
 #include <functional>
+#include "object_wrap.hpp"
 
 extern "C" const char js_bundle_contents[];
 
@@ -41,7 +42,7 @@ template<int L>
 class Vector;
 
 template<>
-class Vector<2> {
+class Vector<2> : public sw::ObjectWrap {
 public:
     double x;
     double y;
@@ -56,94 +57,82 @@ public:
         y = scalar;
         return *this;
     }
+
+    Local<FunctionTemplate> GetObjectConstructorTemplate() override {
+        static Local<FunctionTemplate> function_template;
+        if (!function_template.IsEmpty()) return function_template;
+
+        // Constructor
+        function_template = FunctionTemplate::New(
+                Isolate::GetCurrent(),
+                [](const FunctionCallbackInfo<Value> &info) {
+                    Vector<2> *v = nullptr;
+                    if (info.Length() == 1 && info[0]->IsObject()) {
+                        v = new Vector<2>(*ObjectWrap::Unwrap<Vector<2>>(info[0].As<Object>()));
+                    } else {
+                        switch (info.Length()) {
+                            case 0:
+                                v = new Vector<2>();
+                                break;
+                            case 1:
+                                v = new Vector<2>(info[0].As<Number>()->Value());
+                                break;
+                            case 2:
+                                v = new Vector<2>(info[0].As<Number>()->Value(),
+                                                  info[1].As<Number>()->Value());
+                                break;
+                        }
+                    }
+
+                    info.This()->SetAlignedPointerInInternalField(0, v);
+                }
+        );
+
+        function_template->SetClassName(v8_str("Vector2"));
+
+        function_template->InstanceTemplate()->SetInternalFieldCount(1);
+
+        auto o_template = function_template->InstanceTemplate();
+
+        o_template->SetAccessor(
+                v8_str("x"),
+                [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+                    auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                    info.GetReturnValue().Set(v->x);
+                },
+                [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+                    auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                    v->x = value.As<Number>()->Value();
+                }
+        );
+
+        o_template->SetAccessor(
+                v8_str("y"),
+                [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+                    auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                    info.GetReturnValue().Set(v->y);
+                },
+                [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+                    auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                    v->y = value.As<Number>()->Value();
+                }
+        );
+
+        o_template->Set(
+                v8_str("set"),
+                FunctionTemplate::New(Isolate::GetCurrent(), [](const FunctionCallbackInfo<Value> &info) {
+                    auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                    v->Set(info[0].As<Number>()->Value());
+                    info.GetReturnValue().Set(info.Holder());
+                })
+        );
+
+        return function_template;
+    }
 };
 
 typedef Vector<2> Vector2;
 
-template<class T>
-Local<FunctionTemplate> &GetObjectConstructorTemplate();
-
-
-template<>
-Local<FunctionTemplate> &GetObjectConstructorTemplate<Vector<2>>() {
-    static Local<FunctionTemplate> function_template;
-    if (!function_template.IsEmpty()) return function_template;
-
-    // Constructor
-    function_template = FunctionTemplate::New(
-            Isolate::GetCurrent(),
-            [](const FunctionCallbackInfo<Value> &info) {
-                Vector<2> *v = nullptr;
-                if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector<2>(*(Vector<2> *)info[0].As<Object>()->GetInternalField(0).As<External>()->Value());
-                } else {
-                    switch (info.Length()) {
-                        case 0:
-                            v = new Vector<2>();
-                            break;
-                        case 1:
-                            v = new Vector<2>(info[0].As<Number>()->Value());
-                            break;
-                        case 2:
-                            v = new Vector<2>(info[0].As<Number>()->Value(),
-                                            info[1].As<Number>()->Value());
-                            break;
-                    }
-                }
-
-                Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(sizeof(Vector<2>));
-
-                info.This()->SetInternalField(0, External::New(info.GetIsolate(), v));
-
-                SetWeak(info.This(), [](Local<Object> o) {
-                    std::cout << o->GetInternalField(0).As<External>()->Value() << std::endl;
-                    delete (Vector<2> *)o->GetInternalField(0).As<External>()->Value();
-                    Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(-(int64_t)sizeof(Vector<2>));
-                });
-            }
-    );
-
-    function_template->SetClassName(v8_str("Vector2"));
-
-    function_template->InstanceTemplate()->SetInternalFieldCount(1);
-
-    auto o_template = function_template->InstanceTemplate();
-
-    o_template->SetAccessor(
-            v8_str("x"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
-                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
-                info.GetReturnValue().Set(v->x);
-            },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
-                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
-                v->x = value.As<Number>()->Value();
-            }
-    );
-
-    o_template->SetAccessor(
-            v8_str("y"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
-                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
-                info.GetReturnValue().Set(v->y);
-            },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
-                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
-                v->y = value.As<Number>()->Value();
-            }
-    );
-
-    o_template->Set(
-            v8_str("set"),
-            FunctionTemplate::New(Isolate::GetCurrent(), [](const FunctionCallbackInfo<Value> &info) {
-                auto *v = (Vector<2> *)info.Holder()->GetInternalField(0).As<External>()->Value();
-                v->Set(info[0].As<Number>()->Value());
-                info.GetReturnValue().Set(info.Holder());
-            })
-    );
-
-    return function_template;
-}
 
 /*template<class T>
 Persistent<Object> Wrap(T *ptr) {
@@ -176,8 +165,14 @@ int main(int argc, char *argv[]) {
         Local<Object> sw_object(Object::New(Isolate::GetCurrent()));
         context->Global()->Set(String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
 
+        auto v = new Vector2;
+        v->x = 131;
+        v->Wrap();
+
         sw_object->Set(String::NewFromUtf8(isolate, "Vector2").ToLocalChecked(),
-                       GetObjectConstructorTemplate<Vector<2>>()->GetFunction(context).ToLocalChecked());
+                       v->GetObjectConstructorTemplate()->GetFunction(context).ToLocalChecked());
+
+        sw_object->Set(v8_str("vvv"), v->GetHandle());
 
 
         context->Global()->Get(String::NewFromUtf8(isolate, "console").ToLocalChecked())->ToObject(
@@ -195,6 +190,8 @@ int main(int argc, char *argv[]) {
         TryCatch t(Isolate::GetCurrent());
 
         script->Run(Isolate::GetCurrent()->GetCurrentContext());
+
+        std::cout << v->x << std::endl;
 
         if (t.HasCaught()) {
             std::cerr << *String::Utf8Value(Isolate::GetCurrent(), t.Exception()) << std::endl;

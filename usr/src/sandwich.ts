@@ -36,6 +36,8 @@ declare namespace sw {
         lerp(to: Vector2, t: number): Vector2;
         lerp(tox: number, toy: number, t: number): Vector2;
     }
+
+    var vvv: Vector2;
 }
 
 export default sw;

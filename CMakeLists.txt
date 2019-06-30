@@ -10,7 +10,9 @@ ucm_set_runtime(STATIC)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/usr")
 
-add_executable(Sandwich src/main.cpp)
+add_executable(Sandwich
+        src/object_wrap.hpp
+        src/main.cpp)
 
 if (Debug STREQUAL ${CMAKE_BUILD_TYPE})
     set(V8_BUILD_TYPE debug)
