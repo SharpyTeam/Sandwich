@@ -5,8 +5,8 @@
 #ifndef SANDWICH_VECTOR_HPP
 #define SANDWICH_VECTOR_HPP
 
-#include "../object_wrap.hpp"
-#include "../sw_macros.hpp"
+#include "sw/object_wrap.hpp"
+#include "sw/sw_macros.hpp"
 
 using namespace v8;
 

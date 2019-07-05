@@ -8,9 +8,9 @@
 #include <libplatform/libplatform.h>
 #include <v8.h>
 #include <functional>
-#include <object_wrap.hpp>
-#include <math/vector.hpp>
-#include <sw_macros.hpp>
+#include <sw/object_wrap.hpp>
+#include <sw/math/vector.hpp>
+#include <sw/sw_macros.hpp>
 
 extern "C" const char js_bundle_contents[];
 

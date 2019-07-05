@@ -1,4 +1,4 @@
-#include <sw/core/core.hpp>
+#include <sw/core.hpp>
 
 int main() {
     Start();

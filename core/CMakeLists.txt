@@ -5,20 +5,18 @@ set(CMAKE_CXX_STANDARD 17)
 
 # TODO Maybe allow relocating usr project?
 add_subdirectory(../usr SandwichUsr)
-add_subdirectory(../platform/common SandwichCommon)
 
 set(SANDWICH_CORE_HEADERS
-        src/object_wrap.hpp
-        include/sw/core/core.hpp
-        src/sw_macros.hpp
-        src/math/vector.hpp)
+        src/sw/object_wrap.hpp
+        src/sw/sw_macros.hpp
+        src/sw/core.hpp
+        src/sw/math/vector.hpp)
 
 set(SANDWICH_CORE_SOURCES
-        src/core.cpp
-        src/math/vector.cpp)
+        src/sw/core.cpp
+        src/sw/math/vector.cpp)
 
 add_library(sandwich_core STATIC ${SANDWICH_CORE_HEADERS} ${SANDWICH_CORE_SOURCES})
-target_include_directories(sandwich_core PUBLIC src)
 
 if (Debug STREQUAL ${CMAKE_BUILD_TYPE})
     set(V8_BUILD_TYPE debug)
@@ -35,7 +33,6 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib/v8_monolith_${V8_BUILD_TYPE}.lib
     add_dependencies(Sandwich V8Build)
 endif ()]]
 
-target_include_directories(sandwich_core PRIVATE include/sw/core src deps/v8/include ../platform/common/include)
-target_include_directories(sandwich_core PUBLIC include)
+target_include_directories(sandwich_core PUBLIC src deps/v8/include)
 target_link_directories(sandwich_core PUBLIC lib)
-target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" DbgHelp Winmm sandwich_usr_bundle sandwich_common)
+target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" DbgHelp Winmm sandwich_usr_bundle)
