@@ -35,4 +35,9 @@ endif ()]]
 
 target_include_directories(sandwich_core PUBLIC src deps/v8/include)
 target_link_directories(sandwich_core PUBLIC lib)
-target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" DbgHelp Winmm sandwich_usr_bundle)
+target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle)
+if (WIN32)
+    target_link_libraries(sandwich_core DbgHelp Winmm)
+elseif (UNIX)
+    target_link_libraries(sandwich_core pthread)
+endif ()

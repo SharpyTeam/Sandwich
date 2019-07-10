@@ -37,7 +37,8 @@ void Start() {
         Context::Scope context_scope(context);
 
         Local<Object> sw_object(Object::New(Isolate::GetCurrent()));
-        context->Global()->Set(String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
+        context->Global()->Set(Isolate::GetCurrent()->GetCurrentContext(),
+                String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
 
         auto v = new sw::Vector3;
         v->x = 131;
@@ -45,15 +46,18 @@ void Start() {
         v->z = 133;
         v->Wrap();
 
-        sw_object->Set(String::NewFromUtf8(isolate, "Vector3").ToLocalChecked(),
+        sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
+                String::NewFromUtf8(isolate, "Vector3").ToLocalChecked(),
                        v->GetObjectConstructorTemplate()->GetFunction(context).ToLocalChecked());
 
-        sw_object->Set(v8_str("vvv"), v->GetHandle());
+        sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
+                v8_str("vvv"), v->GetHandle());
 
 
-        context->Global()->Get(String::NewFromUtf8(isolate, "console").ToLocalChecked())->ToObject(
-                context).ToLocalChecked()->
-                Set(String::NewFromUtf8(isolate, "log").ToLocalChecked(),
+        context->Global()->Get(Isolate::GetCurrent()->GetCurrentContext(), v8_str("console")).ToLocalChecked()->
+        ToObject(context).ToLocalChecked()->
+                Set(Isolate::GetCurrent()->GetCurrentContext(),
+                        String::NewFromUtf8(isolate, "log").ToLocalChecked(),
                     FunctionTemplate::New(isolate, [](auto info) {
                         String::Utf8Value utf8(info.GetIsolate(), info[0]);
                         std::cout << *utf8 << std::endl;
