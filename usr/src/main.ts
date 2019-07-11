@@ -8,3 +8,7 @@ sw.vvv.x = 11;
 sw.vvv.y = 22;
 sw.vvv.z = 33;
 console.log("JS: Vector was changed.");
+
+sw.update = function (delta: number) {
+    console.log("FPS: " + 1 / delta);
+}

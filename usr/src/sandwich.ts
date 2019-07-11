@@ -117,6 +117,7 @@ declare namespace sw {
     }
 
     var vvv: Vector3;
+    var update: (delta: number) => void;
 }
 
 export default sw;

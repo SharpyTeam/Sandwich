@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <ctime>
 #include <filesystem>
 #include <libplatform/libplatform.h>
 #include <v8.h>
@@ -78,6 +79,23 @@ void Start() {
         if (t.HasCaught()) {
             std::cerr << *String::Utf8Value(Isolate::GetCurrent(), t.Exception()) << std::endl;
         }
+
+        double delta = 0.0;
+        clock_t current = std::clock();
+        while (true) {
+            delta = double(clock() - current) / CLOCKS_PER_SEC;
+            current = clock();
+            auto f = sw_object->Get(context, v8_str("update")).ToLocalChecked();
+            if (f.IsEmpty() || !f->IsFunction()) break;
+            auto d =v8_num(delta).As<Value>();
+            f.As<Function>()->Call(context, sw_object, 1, &d);
+            if (t.HasCaught()) {
+                std::cerr << *String::Utf8Value(Isolate::GetCurrent(), t.Exception()) << std::endl;
+                break;
+            }
+        }
+
+
     }
 
 
