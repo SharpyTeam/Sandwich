@@ -5,10 +5,8 @@
 #ifndef SANDWICH_VECTOR_HPP
 #define SANDWICH_VECTOR_HPP
 
-#include "sw/object_wrap.hpp"
-#include "sw/sw_macros.hpp"
-
-using namespace v8;
+#include <sw/object_wrap.hpp>
+#include <sw/sw_macros.hpp>
 
 namespace sw {
 template<int L>
@@ -74,7 +72,7 @@ public:
     Vector<2> &operator*=(double scalar);
     Vector<2> &operator/=(double scalar);
 
-    Local<FunctionTemplate> GetObjectConstructorTemplate() override;
+    DECLARE_WRAP
 };
 
 template<>
@@ -140,7 +138,7 @@ public:
     Vector<3> &operator*=(double scalar);
     Vector<3> &operator/=(double scalar);
 
-    Local<FunctionTemplate> GetObjectConstructorTemplate() override;
+    DECLARE_WRAP
 };
 
 template<>
@@ -206,7 +204,7 @@ public:
     Vector<4> &operator*=(double scalar);
     Vector<4> &operator/=(double scalar);
 
-    Local<FunctionTemplate> GetObjectConstructorTemplate() override;
+    DECLARE_WRAP
 };
 
 typedef Vector<2> Vector2;

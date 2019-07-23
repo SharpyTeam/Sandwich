@@ -4,7 +4,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
-#include <ctime>
+#include <chrono>
 #include <filesystem>
 #include <libplatform/libplatform.h>
 #include <v8.h>
@@ -12,6 +12,7 @@
 #include <sw/object_wrap.hpp>
 #include <sw/math/vector.hpp>
 #include <sw/sw_macros.hpp>
+#include <sw/sprite.hpp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -41,18 +42,17 @@ void Start() {
         context->Global()->Set(Isolate::GetCurrent()->GetCurrentContext(),
                 String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
 
-        auto v = new sw::Vector3;
-        v->x = 131;
-        v->y = 132;
-        v->z = 133;
-        v->Wrap();
+        sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
+                       String::NewFromUtf8(isolate, "Vector2").ToLocalChecked(),
+                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Vector<2>>()->GetFunction(context).ToLocalChecked());
 
         sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
                 String::NewFromUtf8(isolate, "Vector3").ToLocalChecked(),
-                       v->GetObjectConstructorTemplate()->GetFunction(context).ToLocalChecked());
+                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Vector<3>>()->GetFunction(context).ToLocalChecked());
 
         sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
-                v8_str("vvv"), v->GetHandle());
+                       String::NewFromUtf8(isolate, "Sprite").ToLocalChecked(),
+                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Sprite>()->GetFunction(context).ToLocalChecked());
 
 
         context->Global()->Get(Isolate::GetCurrent()->GetCurrentContext(), v8_str("console")).ToLocalChecked()->
@@ -72,22 +72,19 @@ void Start() {
 
         script->Run(Isolate::GetCurrent()->GetCurrentContext());
 
-        std::cout << "C++: " << v->x << std::endl;
-        std::cout << "C++: " << v->y << std::endl;
-        std::cout << "C++: " << v->z << std::endl;
-
         if (t.HasCaught()) {
             std::cerr << *String::Utf8Value(Isolate::GetCurrent(), t.Exception()) << std::endl;
         }
 
-        double delta = 0.0;
-        clock_t current = std::clock();
+        double delta;
+        auto current = std::chrono::high_resolution_clock::now();
         while (true) {
-            delta = double(clock() - current) / CLOCKS_PER_SEC;
-            current = clock();
+            delta = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    std::chrono::high_resolution_clock::now() - current).count() / 1000000000.0;
+            current = std::chrono::high_resolution_clock::now();
             auto f = sw_object->Get(context, v8_str("update")).ToLocalChecked();
             if (f.IsEmpty() || !f->IsFunction()) break;
-            auto d =v8_num(delta).As<Value>();
+            auto d = v8_num(delta).As<Value>();
             f.As<Function>()->Call(context, sw_object, 1, &d);
             if (t.HasCaught()) {
                 std::cerr << *String::Utf8Value(Isolate::GetCurrent(), t.Exception()) << std::endl;

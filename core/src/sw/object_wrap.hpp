@@ -10,10 +10,19 @@
 
 namespace sw {
 
-// Class from nodejs project
+#define DECLARE_WRAP void Wrap() override;
+#define DEFINE_WRAP(T) \
+void T::Wrap() { \
+    ObjectWrap::Wrap(GetObjectConstructorTemplate<T>()->InstanceTemplate()->NewInstance( \
+        v8::Isolate::GetCurrent()->GetCurrentContext()).ToLocalChecked()); \
+}
 
+// Class from nodejs project
 class ObjectWrap {
 public:
+    template<class T>
+    static v8::Local<v8::FunctionTemplate> GetObjectConstructorTemplate();
+
     ObjectWrap() : refs_(0) {}
 
     virtual ~ObjectWrap() {
@@ -22,25 +31,15 @@ public:
         GetPersistent().Reset();
     }
 
-    virtual v8::Local<v8::FunctionTemplate> GetObjectConstructorTemplate() {
-        return v8::Local<v8::FunctionTemplate>();
-    }
-
-    virtual v8::Local<v8::ObjectTemplate> GetObjectTemplate() {
-        auto ft = GetObjectConstructorTemplate();
-        assert(!ft.IsEmpty());
-        return ft->InstanceTemplate();
-    }
-
-    inline v8::Local<v8::Object> GetHandle() {
+    virtual v8::Local<v8::Object> GetHandle() {
         return v8::Local<v8::Object>::New(v8::Isolate::GetCurrent(), GetPersistent());
     }
 
-    inline v8::Persistent<v8::Object> &GetPersistent() {
+    virtual v8::Persistent<v8::Object> &GetPersistent() {
         return persistent_;
     }
 
-    inline void Wrap(v8::Local<v8::Object> handle) {
+    virtual void Wrap(v8::Local<v8::Object> handle) {
         assert(persistent_().IsEmpty());
         assert(handle->InternalFieldCount() > 0);
         handle->SetAlignedPointerInInternalField(0, this);
@@ -48,9 +47,7 @@ public:
         MakeWeak();
     }
 
-    inline void Wrap() {
-        Wrap(GetObjectTemplate()->NewInstance(v8::Isolate::GetCurrent()->GetCurrentContext()).ToLocalChecked());
-    }
+    virtual void Wrap() = 0;
 
     /* Ref() marks the object as being attached to an event loop.
      * Refed objects will not be garbage collected, even if
@@ -79,7 +76,7 @@ public:
     }
 
     template<class T>
-    static inline T *Unwrap(v8::Local<v8::Object> handle) {
+    static T *Unwrap(v8::Local<v8::Object> handle) {
         assert(!handle.IsEmpty());
         assert(handle->InternalFieldCount() > 0);
         // Cast to ObjectWrap before casting to T. A direct cast from void
@@ -93,7 +90,7 @@ private:
     int refs_;
     v8::Persistent<v8::Object> persistent_;
 
-    inline void MakeWeak() {
+    virtual void MakeWeak() {
         GetPersistent().SetWeak(this, WeakCallback, v8::WeakCallbackType::kParameter);
     }
 

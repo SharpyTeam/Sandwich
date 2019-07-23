@@ -298,28 +298,29 @@ Vector<2> &Vector<2>::operator/=(double scalar) {
     return *this;
 }
 
-Local<FunctionTemplate> Vector<2>::GetObjectConstructorTemplate() {
-    static Local<FunctionTemplate> function_template;
+template<>
+v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<2>>() {
+    static v8::Local<v8::FunctionTemplate> function_template;
     if (!function_template.IsEmpty()) return function_template;
 
     // Constructor
-    function_template = FunctionTemplate::New(
-            Isolate::GetCurrent(),
-            [](const FunctionCallbackInfo<Value> &info) {
+    function_template = v8::FunctionTemplate::New(
+            v8::Isolate::GetCurrent(),
+            [](const v8::FunctionCallbackInfo<v8::Value> &info) {
                 Vector<2> *v = nullptr;
                 if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector<2>(*ObjectWrap::Unwrap<Vector<2>>(info[0].As<Object>()));
+                    v = new Vector<2>(*ObjectWrap::Unwrap<Vector<2>>(info[0].As<v8::Object>()));
                 } else {
                     switch (info.Length()) {
                         case 0:
                             v = new Vector<2>();
                             break;
                         case 1:
-                            v = new Vector<2>(info[0].As<Number>()->Value());
+                            v = new Vector<2>(info[0].As<v8::Number>()->Value());
                             break;
                         case 2:
-                            v = new Vector<2>(info[0].As<Number>()->Value(),
-                                              info[1].As<Number>()->Value());
+                            v = new Vector<2>(info[0].As<v8::Number>()->Value(),
+                                              info[1].As<v8::Number>()->Value());
                             break;
                     }
                 }
@@ -336,33 +337,33 @@ Local<FunctionTemplate> Vector<2>::GetObjectConstructorTemplate() {
 
     o_template->SetAccessor(
             v8_str("x"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
                 info.GetReturnValue().Set(v->x);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
-                v->x = value.As<Number>()->Value();
+                v->x = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->SetAccessor(
             v8_str("y"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
                 info.GetReturnValue().Set(v->y);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
-                v->y = value.As<Number>()->Value();
+                v->y = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->Set(
             v8_str("set"),
-            FunctionTemplate::New(Isolate::GetCurrent(), [](const FunctionCallbackInfo<Value> &info) {
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
-                v->Set(info[0].As<Number>()->Value());
+                v->Set(info[0].As<v8::Number>()->Value());
                 info.GetReturnValue().Set(info.Holder());
             })
     );
@@ -370,6 +371,7 @@ Local<FunctionTemplate> Vector<2>::GetObjectConstructorTemplate() {
     return function_template;
 }
 
+DEFINE_WRAP(Vector<2>)
 
 
 
@@ -687,29 +689,30 @@ Vector<3> &Vector<3>::operator/=(double scalar) {
 }
 
 
-Local<FunctionTemplate> Vector<3>::GetObjectConstructorTemplate() {
-    static Local<FunctionTemplate> function_template;
+template<>
+v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<3>>() {
+    static v8::Local<v8::FunctionTemplate> function_template;
     if (!function_template.IsEmpty()) return function_template;
 
     // Constructor
-    function_template = FunctionTemplate::New(
-            Isolate::GetCurrent(),
-            [](const FunctionCallbackInfo<Value> &info) {
+    function_template = v8::FunctionTemplate::New(
+            v8::Isolate::GetCurrent(),
+            [](const v8::FunctionCallbackInfo<v8::Value> &info) {
                 Vector<3> *v = nullptr;
                 if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector<3>(*ObjectWrap::Unwrap<Vector<3>>(info[0].As<Object>()));
+                    v = new Vector<3>(*ObjectWrap::Unwrap<Vector<3>>(info[0].As<v8::Object>()));
                 } else {
                     switch (info.Length()) {
                         case 0:
                             v = new Vector<3>();
                             break;
                         case 1:
-                            v = new Vector<3>(info[0].As<Number>()->Value());
+                            v = new Vector<3>(info[0].As<v8::Number>()->Value());
                             break;
                         case 2:
-                            v = new Vector<3>(info[0].As<Number>()->Value(),
-                                              info[1].As<Number>()->Value(),
-                                              info[2].As<Number>()->Value());
+                            v = new Vector<3>(info[0].As<v8::Number>()->Value(),
+                                              info[1].As<v8::Number>()->Value(),
+                                              info[2].As<v8::Number>()->Value());
                             break;
                     }
                 }
@@ -726,45 +729,45 @@ Local<FunctionTemplate> Vector<3>::GetObjectConstructorTemplate() {
 
     o_template->SetAccessor(
             v8_str("x"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
                 info.GetReturnValue().Set(v->x);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
-                v->x = value.As<Number>()->Value();
+                v->x = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->SetAccessor(
             v8_str("y"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
                 info.GetReturnValue().Set(v->y);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
-                v->y = value.As<Number>()->Value();
+                v->y = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->SetAccessor(
             v8_str("z"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
                 info.GetReturnValue().Set(v->z);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
-                v->z = value.As<Number>()->Value();
+                v->z = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->Set(
             v8_str("set"),
-            FunctionTemplate::New(Isolate::GetCurrent(), [](const FunctionCallbackInfo<Value> &info) {
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
-                v->Set(info[0].As<Number>()->Value());
+                v->Set(info[0].As<v8::Number>()->Value());
                 info.GetReturnValue().Set(info.Holder());
             })
     );
@@ -772,7 +775,7 @@ Local<FunctionTemplate> Vector<3>::GetObjectConstructorTemplate() {
     return function_template;
 }
 
-
+DEFINE_WRAP(Vector<3>)
 
 
 // ----------------------------------------------- Vector<4> ------------------------------------------------
@@ -1115,31 +1118,31 @@ Vector<4> &Vector<4>::operator/=(double scalar) {
     return *this;
 }
 
-
-Local<FunctionTemplate> Vector<4>::GetObjectConstructorTemplate() {
-    static Local<FunctionTemplate> function_template;
+template<>
+v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<4>>() {
+    static v8::Local<v8::FunctionTemplate> function_template;
     if (!function_template.IsEmpty()) return function_template;
 
     // Constructor
-    function_template = FunctionTemplate::New(
-            Isolate::GetCurrent(),
-            [](const FunctionCallbackInfo<Value> &info) {
+    function_template = v8::FunctionTemplate::New(
+            v8::Isolate::GetCurrent(),
+            [](const v8::FunctionCallbackInfo<v8::Value> &info) {
                 Vector<4> *v = nullptr;
                 if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector<4>(*ObjectWrap::Unwrap<Vector<4>>(info[0].As<Object>()));
+                    v = new Vector<4>(*ObjectWrap::Unwrap<Vector<4>>(info[0].As<v8::Object>()));
                 } else {
                     switch (info.Length()) {
                         case 0:
                             v = new Vector<4>();
                             break;
                         case 1:
-                            v = new Vector<4>(info[0].As<Number>()->Value());
+                            v = new Vector<4>(info[0].As<v8::Number>()->Value());
                             break;
                         case 2:
-                            v = new Vector<4>(info[0].As<Number>()->Value(),
-                                              info[1].As<Number>()->Value(),
-                                              info[2].As<Number>()->Value(),
-                                              info[3].As<Number>()->Value());
+                            v = new Vector<4>(info[0].As<v8::Number>()->Value(),
+                                              info[1].As<v8::Number>()->Value(),
+                                              info[2].As<v8::Number>()->Value(),
+                                              info[3].As<v8::Number>()->Value());
                             break;
                     }
                 }
@@ -1156,62 +1159,65 @@ Local<FunctionTemplate> Vector<4>::GetObjectConstructorTemplate() {
 
     o_template->SetAccessor(
             v8_str("x"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
                 info.GetReturnValue().Set(v->x);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
-                v->x = value.As<Number>()->Value();
+                v->x = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->SetAccessor(
             v8_str("y"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
                 info.GetReturnValue().Set(v->y);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
-                v->y = value.As<Number>()->Value();
+                v->y = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->SetAccessor(
             v8_str("z"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
                 info.GetReturnValue().Set(v->z);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
-                v->z = value.As<Number>()->Value();
+                v->z = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->SetAccessor(
             v8_str("w"),
-            [](Local<String> property, const PropertyCallbackInfo<Value> &info) {
+            [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
                 info.GetReturnValue().Set(v->w);
             },
-            [](Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> &info) {
+            [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
-                v->w = value.As<Number>()->Value();
+                v->w = value.As<v8::Number>()->Value();
             }
     );
 
     o_template->Set(
             v8_str("set"),
-            FunctionTemplate::New(Isolate::GetCurrent(), [](const FunctionCallbackInfo<Value> &info) {
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
                 auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
-                v->Set(info[0].As<Number>()->Value());
+                v->Set(info[0].As<v8::Number>()->Value());
                 info.GetReturnValue().Set(info.Holder());
             })
     );
 
     return function_template;
 }
+
+DEFINE_WRAP(Vector<4>)
+
 
 }

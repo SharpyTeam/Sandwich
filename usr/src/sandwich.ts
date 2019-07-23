@@ -116,7 +116,12 @@ declare namespace sw {
         lerp(tox: number, toy: number, toz: number, tow: number, t: number): Vector4;
     }
 
-    var vvv: Vector3;
+    class Sprite {
+        position: Vector2;
+        scale: Vector2;
+        rotation: number;
+    }
+
     var update: (delta: number) => void;
 }
 
