@@ -39,7 +39,7 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Sprite>
             nullptr,
             v8::Local<v8::Value>(),
             v8::AccessControl::DEFAULT,
-            (v8::PropertyAttribute)(v8::PropertyAttribute::DontDelete | v8::PropertyAttribute::ReadOnly)t
+            (v8::PropertyAttribute)(v8::PropertyAttribute::DontDelete | v8::PropertyAttribute::ReadOnly)
     );
 
     o_template->SetAccessor(

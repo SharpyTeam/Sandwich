@@ -11,6 +11,7 @@
 #include <functional>
 #include <sw/object_wrap.hpp>
 #include <sw/math/vector.hpp>
+#include <sw/math/matrix.hpp>
 #include <sw/sw_macros.hpp>
 #include <sw/sprite.hpp>
 
@@ -18,7 +19,27 @@ extern "C" const char js_bundle_contents[];
 
 using namespace v8;
 
+double r() {
+    return (double)rand() / RAND_MAX * 1000;
+}
+
 void Start() {
+    const double d1[] = { r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r() };
+    const double d2[] = { r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r() };
+    const double d3[] = { r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r() };
+    sw::Matrix4 m1(d1);
+    sw::Matrix4 m2(d2);
+    sw::Matrix4 m3(d3);
+    sw::Vector4 v(r(), r(), r(), r());
+
+    auto result1 = m1 * m2 * m3 * v;
+    auto result2 = m1 * (m2 * (m3 * v));
+
+    std::cout << std::setprecision(100);
+    std::cout << result1.x << " " << result1.y << " " << result1.z << " " << result1.w << std::endl;
+    std::cout << result2.x << " " << result2.y << " " << result2.z << " " << result2.w << std::endl;
+
+
     // Initialize V8.
     //V8::InitializeICUDefaultLocation(argv[0]);
     //V8::InitializeExternalStartupData(argv[0]);

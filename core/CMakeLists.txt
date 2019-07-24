@@ -11,12 +11,12 @@ set(SANDWICH_CORE_HEADERS
         src/sw/sw_macros.hpp
         src/sw/core.hpp
         src/sw/math/vector.hpp
-        src/sw/sprite.hpp )
+        src/sw/sprite.hpp src/sw/math/matrix.hpp)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
         src/sw/sprite.cpp
-        src/sw/math/vector.cpp)
+        src/sw/math/vector.cpp src/sw/math/matrix.cpp)
 
 add_library(sandwich_core STATIC ${SANDWICH_CORE_HEADERS} ${SANDWICH_CORE_SOURCES})
 

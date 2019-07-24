@@ -122,6 +122,7 @@ declare namespace sw {
         rotation: number;
     }
 
+
     var update: (delta: number) => void;
 }
 
