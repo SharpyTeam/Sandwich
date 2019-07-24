@@ -7,10 +7,15 @@
 
 #include <v8.h>
 #include <cassert>
+#include <iostream>
 
 namespace sw {
 
-#define DECLARE_WRAP void Wrap() override;
+#define DECLARE_WRAP \
+void Wrap() override; \
+using ObjectWrap::Wrap; \
+template<class T> \
+friend v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate();
 #define DEFINE_WRAP(T) \
 void T::Wrap() { \
     ObjectWrap::Wrap(GetObjectConstructorTemplate<T>()->InstanceTemplate()->NewInstance( \
@@ -32,6 +37,11 @@ public:
     }
 
     virtual v8::Local<v8::Object> GetHandle() {
+        // This check is for stack-allocated objects
+        if (GetPersistent().IsEmpty()) {
+            Wrap();
+            Ref();
+        }
         return v8::Local<v8::Object>::New(v8::Isolate::GetCurrent(), GetPersistent());
     }
 

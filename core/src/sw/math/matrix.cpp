@@ -8,14 +8,14 @@
 
 namespace sw {
 
-Matrix<4, 4>::Matrix() : data{
+Matrix4::Matrix4() : data{
         1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 1, 0,
         0, 0, 0, 1
 } {}
 
-Matrix<4, 4>::Matrix(const Matrix<4, 4> &other) {
+Matrix4::Matrix4(const Matrix4 &other) {
     data[0] = other.data[0];
     data[1] = other.data[1];
     data[2] = other.data[2];
@@ -37,7 +37,7 @@ Matrix<4, 4>::Matrix(const Matrix<4, 4> &other) {
     data[15] = other.data[15];
 }
 
-Matrix<4, 4>::Matrix(const double *data) {
+Matrix4::Matrix4(const double *data) {
     this->data[0] = data[0];
     this->data[1] = data[1];
     this->data[2] = data[2];
@@ -59,7 +59,7 @@ Matrix<4, 4>::Matrix(const double *data) {
     this->data[15] = data[15];
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Identity() {
+Matrix4 &Matrix4::Identity() {
     data[0] = 1;
     data[1] = 0;
     data[2] = 0;
@@ -83,7 +83,7 @@ Matrix<4, 4> &Matrix<4, 4>::Identity() {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Inverse() {
+Matrix4 &Matrix4::Inverse() {
     double a = data[0] * data[5] - data[1] * data[4];
     double b = data[0] * data[6] - data[2] * data[4];
     double c = data[0] * data[7] - data[3] * data[4];
@@ -141,7 +141,7 @@ Matrix<4, 4> &Matrix<4, 4>::Inverse() {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Transpose() {
+Matrix4 &Matrix4::Transpose() {
     double nm00 = data[0];
     double nm10 = data[1];
     double nm20 = data[2];
@@ -185,7 +185,7 @@ Matrix<4, 4> &Matrix<4, 4>::Transpose() {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Set(const Matrix<4, 4> &other) {
+Matrix4 &Matrix4::Set(const Matrix4 &other) {
     data[0] = other.data[0];
     data[1] = other.data[1];
     data[2] = other.data[2];
@@ -209,7 +209,7 @@ Matrix<4, 4> &Matrix<4, 4>::Set(const Matrix<4, 4> &other) {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Set(const double *data) {
+Matrix4 &Matrix4::Set(const double *data) {
     this->data[0] = data[0];
     this->data[1] = data[1];
     this->data[2] = data[2];
@@ -233,7 +233,7 @@ Matrix<4, 4> &Matrix<4, 4>::Set(const double *data) {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Scale(double x, double y, double z) {
+Matrix4 &Matrix4::Scale(double x, double y, double z) {
     this->data[0] *= x;
     this->data[1] *= x;
     this->data[2] *= x;
@@ -252,11 +252,11 @@ Matrix<4, 4> &Matrix<4, 4>::Scale(double x, double y, double z) {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Scale(const Vector<3> &scale) {
-    return Matrix<4, 4>::Scale(scale.x, scale.y, scale.z);
+Matrix4 &Matrix4::Scale(const Vector3 &scale) {
+    return Matrix4::Scale(scale.x, scale.y, scale.z);
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Rotate(double ang, double x, double y, double z) {
+Matrix4 &Matrix4::Rotate(double ang, double x, double y, double z) {
     double sin = std::sin(ang);
     double cos;
 
@@ -316,11 +316,11 @@ Matrix<4, 4> &Matrix<4, 4>::Rotate(double ang, double x, double y, double z) {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Rotate(double ang, const Vector<3> &axis) {
-    return Matrix<4, 4>::Rotate(ang, axis.x, axis.y, axis.z);
+Matrix4 &Matrix4::Rotate(double ang, const Vector3 &axis) {
+    return Matrix4::Rotate(ang, axis.x, axis.y, axis.z);
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Translate(double x, double y, double z) {
+Matrix4 &Matrix4::Translate(double x, double y, double z) {
     this->data[12] = data[0] * x + data[4] * y + data[8] * z + data[12];
     this->data[13] = data[1] * x + data[5] * y + data[9] * z + data[13];
     this->data[14] = data[2] * x + data[6] * y + data[10] * z + data[14];
@@ -329,11 +329,11 @@ Matrix<4, 4> &Matrix<4, 4>::Translate(double x, double y, double z) {
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::Translate(const Vector<3> &translate) {
-    return Matrix<4, 4>::Translate(translate.x, translate.y, translate.z);
+Matrix4 &Matrix4::Translate(const Vector3 &translate) {
+    return Matrix4::Translate(translate.x, translate.y, translate.z);
 }
 
-Matrix<4, 4> &Matrix<4, 4>::SetOrtho2D(double left, double right, double bottom, double top) {
+Matrix4 &Matrix4::SetOrtho2D(double left, double right, double bottom, double top) {
     data[0] = 2.0f / (right - left);
     data[1] = 0;
     data[2] = 0;
@@ -357,17 +357,17 @@ Matrix<4, 4> &Matrix<4, 4>::SetOrtho2D(double left, double right, double bottom,
     return *this;
 }
 
-Matrix<4, 4> &Matrix<4, 4>::operator=(const Matrix<4, 4> &other) {
+Matrix4 &Matrix4::operator=(const Matrix4 &other) {
     Set(other);
     return *this;
 }
 
-double *Matrix<4, 4>::operator[](int index) {
+double *Matrix4::operator[](int index) {
     return &data[index * 4];
 }
 
-Matrix<4, 4> Matrix<4, 4>::operator*(const Matrix<4, 4> &other) const {
-    Matrix<4, 4> nm;
+Matrix4 Matrix4::operator*(const Matrix4 &other) const {
+    Matrix4 nm;
     nm.data[0] = data[0] * other.data[0] +
                  data[4] * other.data[1] +
                  data[8] * other.data[2] +
@@ -451,8 +451,8 @@ Matrix<4, 4> Matrix<4, 4>::operator*(const Matrix<4, 4> &other) const {
     return nm;
 }
 
-Vector<4> Matrix<4, 4>::operator*(const Vector<4> &v) const {
-    return Vector<4>(
+Vector4 Matrix4::operator*(const Vector4 &v) const {
+    return Vector4(
         data[0] * v.x + data[4] * v.y + data[8] * v.z + data[12] * v.w,
         data[1] * v.x + data[5] * v.y + data[9] * v.z + data[13] * v.w,
         data[2] * v.x + data[6] * v.y + data[10] * v.z + data[14] * v.w,
@@ -460,7 +460,7 @@ Vector<4> Matrix<4, 4>::operator*(const Vector<4> &v) const {
     );
 }
 
-const double *Matrix<4, 4>::operator[](int index) const {
+const double *Matrix4::operator[](int index) const {
     return &data[index * 4];
 }
 
@@ -521,12 +521,12 @@ Vector<4, double> Matrix<4, 4, double>::Unproject(const Vector<3, double> &v) co
     return Unproject(v.x, v.y, v.z);
 }*/
 
-Vector<3> Matrix<4, 4>::GetTranslation() const {
-    return Vector<3>(data[12], data[13], data[14]);
+Vector3 Matrix4::GetTranslation() const {
+    return Vector3(data[12], data[13], data[14]);
 }
 
-float Matrix<4, 4>::GetRotationZ() const {
-    Vector<4> rot = *this * Vector<4>(1, 0, 0, 0);
+float Matrix4::GetRotationZ() const {
+    Vector4 rot = *this * Vector4(1, 0, 0, 0);
     return std::atan2(rot.y, rot.x);
 }
 

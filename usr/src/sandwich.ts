@@ -30,8 +30,7 @@ declare namespace sw {
         dot(to: Vector2): number;
         dot(tox: number, toy: number): number;
 
-        perpendicular(to: Vector2): Vector2;
-        perpendicular(tox: number, toy: number): Vector2;
+        perpendicular(): Vector2;
 
         lerp(to: Vector2, t: number): Vector2;
         lerp(tox: number, toy: number, t: number): Vector2;
@@ -69,8 +68,7 @@ declare namespace sw {
         dot(to: Vector2): number;
         dot(tox: number, toy: number, toz: number): number;
 
-        perpendicular(to: Vector2): Vector2;
-        perpendicular(tox: number, toy: number, toz: number): Vector2;
+        perpendicular(): Vector2;
 
         lerp(to: Vector2, t: number): Vector2;
         lerp(tox: number, toy: number, toz: number, t: number): Vector2;

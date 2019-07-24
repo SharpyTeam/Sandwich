@@ -20,13 +20,13 @@ extern "C" const char js_bundle_contents[];
 using namespace v8;
 
 double r() {
-    return (double)rand() / RAND_MAX * 1000;
+    return (double) rand() / RAND_MAX * 1000;
 }
 
 void Start() {
-    const double d1[] = { r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r() };
-    const double d2[] = { r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r() };
-    const double d3[] = { r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r() };
+    const double d1[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
+    const double d2[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
+    const double d3[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
     sw::Matrix4 m1(d1);
     sw::Matrix4 m2(d2);
     sw::Matrix4 m3(d3);
@@ -61,28 +61,36 @@ void Start() {
 
         Local<Object> sw_object(Object::New(Isolate::GetCurrent()));
         context->Global()->Set(Isolate::GetCurrent()->GetCurrentContext(),
-                String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
+                               String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
 
         sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
                        String::NewFromUtf8(isolate, "Vector2").ToLocalChecked(),
-                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Vector<2>>()->GetFunction(context).ToLocalChecked());
+                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Vector2>()->GetFunction(
+                               context).ToLocalChecked());
 
         sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
-                String::NewFromUtf8(isolate, "Vector3").ToLocalChecked(),
-                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Vector<3>>()->GetFunction(context).ToLocalChecked());
+                       String::NewFromUtf8(isolate, "Vector3").ToLocalChecked(),
+                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Vector3>()->GetFunction(
+                               context).ToLocalChecked());
 
         sw_object->Set(Isolate::GetCurrent()->GetCurrentContext(),
                        String::NewFromUtf8(isolate, "Sprite").ToLocalChecked(),
-                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Sprite>()->GetFunction(context).ToLocalChecked());
+                       sw::ObjectWrap::GetObjectConstructorTemplate<sw::Sprite>()->GetFunction(
+                               context).ToLocalChecked());
 
 
         context->Global()->Get(Isolate::GetCurrent()->GetCurrentContext(), v8_str("console")).ToLocalChecked()->
-        ToObject(context).ToLocalChecked()->
+                ToObject(context).ToLocalChecked()->
                 Set(Isolate::GetCurrent()->GetCurrentContext(),
-                        String::NewFromUtf8(isolate, "log").ToLocalChecked(),
+                    String::NewFromUtf8(isolate, "log").ToLocalChecked(),
                     FunctionTemplate::New(isolate, [](auto info) {
-                        String::Utf8Value utf8(info.GetIsolate(), info[0]);
-                        std::cout << *utf8 << std::endl;
+                        std::string s;
+                        for (int i = 0; i < info.Length(); ++i) {
+                            s += *v8::String::Utf8Value(Isolate::GetCurrent(),
+                                    info[i]->ToString(Isolate::GetCurrent()->GetCurrentContext()).ToLocalChecked());
+                            s += " ";
+                        }
+                        std::cout << s << std::endl;
                     })->GetFunction(context).ToLocalChecked()
         );
 

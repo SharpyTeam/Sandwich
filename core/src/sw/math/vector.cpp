@@ -3,184 +3,185 @@
 //
 
 #include <cmath>
+#include <string>
 #include "vector.hpp"
 
 namespace sw {
-// ----------------------------------------------- Vector<2> ------------------------------------------------
+// ----------------------------------------------- Vector2 ------------------------------------------------
 
-Vector<2>::Vector() : x(0.0), y(0.0) {}
+Vector2::Vector2() : x(0.0), y(0.0) {}
 
-Vector<2>::Vector(double x, double y) : x(x), y(y) {}
+Vector2::Vector2(double x, double y) : x(x), y(y) {}
 
-Vector<2>::Vector(double scalar) : x(scalar), y(scalar) {}
+Vector2::Vector2(double scalar) : x(scalar), y(scalar) {}
 
-Vector<2>::Vector(const Vector<2> &other) : x(other.x), y(other.y) {}
+Vector2::Vector2(const Vector2 &other) : x(other.x), y(other.y) {}
 
 
-double Vector<2>::Length() const {
+double Vector2::Length() const {
     return std::sqrt(x * x + y * y);
 }
 
 
-double Vector<2>::LengthSquared() const {
+double Vector2::LengthSquared() const {
     return x * x + y * y;
 }
 
 
-double Vector<2>::Distance(double x, double y) const {
+double Vector2::Distance(double x, double y) const {
     double x_diff = this->x - x;
     double y_diff = this->y - y;
     return std::sqrt(x_diff * x_diff + y_diff * y_diff);
 }
 
 
-double Vector<2>::Distance(const Vector<2> &other) const {
+double Vector2::Distance(const Vector2 &other) const {
     double x_diff = x - other.x;
     double y_diff = y - other.y;
     return std::sqrt(x_diff * x_diff + y_diff * y_diff);
 }
 
 
-double Vector<2>::DistanceSquared(double x, double y) const {
+double Vector2::DistanceSquared(double x, double y) const {
     double x_diff = this->x - x;
     double y_diff = this->y - y;
     return x_diff * x_diff + y_diff * y_diff;
 }
 
 
-double Vector<2>::DistanceSquared(const Vector<2> &other) const {
+double Vector2::DistanceSquared(const Vector2 &other) const {
     double x_diff = x - other.x;
     double y_diff = y - other.y;
     return x_diff * x_diff + y_diff * y_diff;
 }
 
 
-double Vector<2>::Dot(double x, double y) const {
+double Vector2::Dot(double x, double y) const {
     return this->x * x + this->y * y;
 }
 
 
-double Vector<2>::Dot(const Vector<2> &other) const {
+double Vector2::Dot(const Vector2 &other) const {
     return x * other.x + y * other.y;
 }
 
 
-double Vector<2>::Determinant(double x, double y) const {
+double Vector2::Determinant(double x, double y) const {
     return this->x * y - this->y * x;
 }
 
 
-double Vector<2>::Determinant(const Vector<2> &other) const {
+double Vector2::Determinant(const Vector2 &other) const {
     return x * other.y - y * other.x;
 }
 
 
-double Vector<2>::Angle(double x, double y) const {
+double Vector2::Angle(double x, double y) const {
     double dot = this->x * x + this->y * y;
     double det = this->x * y - this->y * x;
     return std::atan2(det, dot);
 }
 
 
-double Vector<2>::Angle(const Vector<2> &other) const {
+double Vector2::Angle(const Vector2 &other) const {
     double dot = x * other.x + y * other.y;
     double det = x * other.y - y * other.x;
     return std::atan2(det, dot);
 }
 
 
-Vector<2> Vector<2>::Normalized() const {
+Vector2 Vector2::Normalized() const {
     double length = std::sqrt(x * x + y * y);
-    return Vector<2>(x / length, y / length);
+    return Vector2(x / length, y / length);
 }
 
 
-Vector<2> Vector<2>::Perpendicular() const {
-    return Vector<2>(y, -x);
+Vector2 Vector2::Perpendicular() const {
+    return Vector2(y, -x);
 }
 
 
-Vector<2> Vector<2>::Min(double x, double y) const {
-    return Vector<2>(this->x > x ? x : this->x, this->y > y ? y : this->y);
+Vector2 Vector2::Min(double x, double y) const {
+    return Vector2(this->x > x ? x : this->x, this->y > y ? y : this->y);
 }
 
 
-Vector<2> Vector<2>::Min(const Vector<2> &other) const {
-    return Vector<2>(x > other.x ? other.x : x, y > other.y ? other.y : y);
+Vector2 Vector2::Min(const Vector2 &other) const {
+    return Vector2(x > other.x ? other.x : x, y > other.y ? other.y : y);
 }
 
 
-Vector<2> Vector<2>::Max(double x, double y) const {
-    return Vector<2>(this->x > x ? this->x : x, this->y > y ? this->y : y);
+Vector2 Vector2::Max(double x, double y) const {
+    return Vector2(this->x > x ? this->x : x, this->y > y ? this->y : y);
 }
 
 
-Vector<2> Vector<2>::Max(const Vector<2> &other) const {
-    return Vector<2>(x > other.x ? x : other.x, y > other.y ? y : other.y);
+Vector2 Vector2::Max(const Vector2 &other) const {
+    return Vector2(x > other.x ? x : other.x, y > other.y ? y : other.y);
 }
 
 
-Vector<2> Vector<2>::Lerp(double x, double y, double t) const {
-    return Vector<2>((double) (this->x + (x - this->x) * t), (double) (this->y + (y - this->y) * t));
+Vector2 Vector2::Lerp(double x, double y, double t) const {
+    return Vector2((double) (this->x + (x - this->x) * t), (double) (this->y + (y - this->y) * t));
 }
 
 
-Vector<2> Vector<2>::Lerp(const Vector<2> &other, double t) const {
-    return Vector<2>((double) (x + (other.x - x) * t), (double) (y + (other.y - y) * t));
+Vector2 Vector2::Lerp(const Vector2 &other, double t) const {
+    return Vector2((double) (x + (other.x - x) * t), (double) (y + (other.y - y) * t));
 }
 
 
-Vector<2> Vector<2>::operator+(const Vector<2> &other) const {
-    return Vector<2>(x + other.x, y + other.y);
+Vector2 Vector2::operator+(const Vector2 &other) const {
+    return Vector2(x + other.x, y + other.y);
 }
 
 
-Vector<2> Vector<2>::operator-(const Vector<2> &other) const {
-    return Vector<2>(x - other.x, y - other.y);
+Vector2 Vector2::operator-(const Vector2 &other) const {
+    return Vector2(x - other.x, y - other.y);
 }
 
 
-Vector<2> Vector<2>::operator*(const Vector<2> &other) const {
-    return Vector<2>(x * other.x, y * other.y);
+Vector2 Vector2::operator*(const Vector2 &other) const {
+    return Vector2(x * other.x, y * other.y);
 }
 
 
-Vector<2> Vector<2>::operator/(const Vector<2> &other) const {
-    return Vector<2>(x / other.x, y / other.y);
+Vector2 Vector2::operator/(const Vector2 &other) const {
+    return Vector2(x / other.x, y / other.y);
 }
 
 
-Vector<2> Vector<2>::operator+(double scalar) const {
-    return Vector<2>(x + scalar, y + scalar);
+Vector2 Vector2::operator+(double scalar) const {
+    return Vector2(x + scalar, y + scalar);
 }
 
 
-Vector<2> Vector<2>::operator-(double scalar) const {
-    return Vector<2>(x - scalar, y - scalar);
+Vector2 Vector2::operator-(double scalar) const {
+    return Vector2(x - scalar, y - scalar);
 }
 
 
-Vector<2> Vector<2>::operator*(double scalar) const {
-    return Vector<2>(x * scalar, y * scalar);
+Vector2 Vector2::operator*(double scalar) const {
+    return Vector2(x * scalar, y * scalar);
 }
 
 
-Vector<2> Vector<2>::operator/(double scalar) const {
-    return Vector<2>(x / scalar, y / scalar);
+Vector2 Vector2::operator/(double scalar) const {
+    return Vector2(x / scalar, y / scalar);
 }
 
 
-bool Vector<2>::operator==(const Vector<2> &other) const {
+bool Vector2::operator==(const Vector2 &other) const {
     return (x == other.x && y == other.y);
 }
 
 
-bool Vector<2>::operator==(double scalar) const {
+bool Vector2::operator==(double scalar) const {
     return (x == scalar && y == scalar);
 }
 
 
-Vector<2> &Vector<2>::Normalize() {
+Vector2 &Vector2::Normalize() {
     double length = std::sqrt(x * x + y * y);
     x /= length;
     y /= length;
@@ -188,118 +189,118 @@ Vector<2> &Vector<2>::Normalize() {
 }
 
 
-Vector<2> &Vector<2>::Zero() {
+Vector2 &Vector2::Zero() {
     x = 0;
     y = 0;
     return *this;
 }
 
 
-Vector<2> &Vector<2>::Floor() {
+Vector2 &Vector2::Floor() {
     x = std::floor(x);
     y = std::floor(y);
     return *this;
 }
 
 
-Vector<2> &Vector<2>::Ceil() {
+Vector2 &Vector2::Ceil() {
     x = std::ceil(x);
     y = std::ceil(y);
     return *this;
 }
 
-Vector<2> &Vector<2>::Round() {
+Vector2 &Vector2::Round() {
     x = std::round(x);
     y = std::round(y);
     return *this;
 }
 
-Vector<2> &Vector<2>::Set(double x, double y) {
+Vector2 &Vector2::Set(double x, double y) {
     this->x = x;
     this->y = y;
     return *this;
 }
 
-Vector<2> &Vector<2>::Set(const Vector<2> &other) {
+Vector2 &Vector2::Set(const Vector2 &other) {
     x = (double) other.x;
     y = (double) other.y;
     return *this;
 }
 
-Vector<2> &Vector<2>::Set(double scalar) {
+Vector2 &Vector2::Set(double scalar) {
     x = scalar;
     y = scalar;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator-() {
+Vector2 &Vector2::operator-() {
     x = -x;
     y = -y;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator=(const Vector<2> &other) {
+Vector2 &Vector2::operator=(const Vector2 &other) {
     x = other.x;
     y = other.y;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator+=(const Vector<2> &other) {
+Vector2 &Vector2::operator+=(const Vector2 &other) {
     x += other.x;
     y += other.y;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator-=(const Vector<2> &other) {
+Vector2 &Vector2::operator-=(const Vector2 &other) {
     x -= other.x;
     y -= other.y;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator*=(const Vector<2> &other) {
+Vector2 &Vector2::operator*=(const Vector2 &other) {
     x *= other.x;
     y *= other.y;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator/=(const Vector<2> &other) {
+Vector2 &Vector2::operator/=(const Vector2 &other) {
     x /= other.x;
     y /= other.y;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator=(double scalar) {
+Vector2 &Vector2::operator=(double scalar) {
     x = scalar;
     y = scalar;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator+=(double scalar) {
+Vector2 &Vector2::operator+=(double scalar) {
     x += scalar;
     y += scalar;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator-=(double scalar) {
+Vector2 &Vector2::operator-=(double scalar) {
     x -= scalar;
     y -= scalar;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator*=(double scalar) {
+Vector2 &Vector2::operator*=(double scalar) {
     x *= scalar;
     y *= scalar;
     return *this;
 }
 
-Vector<2> &Vector<2>::operator/=(double scalar) {
+Vector2 &Vector2::operator/=(double scalar) {
     x /= scalar;
     y /= scalar;
     return *this;
 }
 
 template<>
-v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<2>>() {
+v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector2>() {
     static v8::Local<v8::FunctionTemplate> function_template;
     if (!function_template.IsEmpty()) return function_template;
 
@@ -307,42 +308,54 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     function_template = v8::FunctionTemplate::New(
             v8::Isolate::GetCurrent(),
             [](const v8::FunctionCallbackInfo<v8::Value> &info) {
-                Vector<2> *v = nullptr;
-                if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector<2>(*ObjectWrap::Unwrap<Vector<2>>(info[0].As<v8::Object>()));
-                } else {
-                    switch (info.Length()) {
-                        case 0:
-                            v = new Vector<2>();
-                            break;
-                        case 1:
-                            v = new Vector<2>(info[0].As<v8::Number>()->Value());
-                            break;
-                        case 2:
-                            v = new Vector<2>(info[0].As<v8::Number>()->Value(),
+                Vector2 *v = nullptr;
+                switch (info.Length()) {
+                    case 0:
+                        v = new Vector2();
+                        break;
+                    case 1: {
+                        if (info[0]->IsNumber())
+                            v = new Vector2(info[0].As<v8::Number>()->Value());
+                        else if (function_template->HasInstance(info[0]))
+                            v = new Vector2(*ObjectWrap::Unwrap<Vector2>(info[0].As<v8::Object>()));
+                        else
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    }
+                    default: {
+                        if (info.Length() > 2) {
+                            // TODO throw warning
+                        }
+                        if (info[0]->IsNumber() && info[1]->IsNumber()) {
+                            v = new Vector2(info[0].As<v8::Number>()->Value(),
                                               info[1].As<v8::Number>()->Value());
-                            break;
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
                     }
                 }
-
-                info.This()->SetAlignedPointerInInternalField(0, v);
+                if (v) {
+                    v->Wrap(info.This());
+                }
             }
     );
 
     function_template->SetClassName(v8_str("Vector2"));
-
     function_template->InstanceTemplate()->SetInternalFieldCount(1);
-
     auto o_template = function_template->InstanceTemplate();
+    auto o_prot_template = function_template->PrototypeTemplate();
 
     o_template->SetAccessor(
             v8_str("x"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
                 info.GetReturnValue().Set(v->x);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
                 v->x = value.As<v8::Number>()->Value();
             }
     );
@@ -350,63 +363,349 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("y"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
                 info.GetReturnValue().Set(v->y);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
                 v->y = value.As<v8::Number>()->Value();
             }
     );
 
-    o_template->Set(
+
+    auto function_property_attributes = (v8::PropertyAttribute) (
+            v8::PropertyAttribute::DontDelete |
+            v8::PropertyAttribute::ReadOnly |
+            v8::PropertyAttribute::DontEnum
+    );
+
+    o_prot_template->Set(
             v8_str("set"),
             v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<2>>(info.Holder());
-                v->Set(info[0].As<v8::Number>()->Value());
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                switch (info.Length()) {
+                    case 0:
+                        v8::Isolate::GetCurrent()->ThrowException(
+                                v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    case 1: {
+                        if (info[0]->IsNumber())
+                            v->Set(info[0].As<v8::Number>()->Value());
+                        else if (function_template->HasInstance(info[0]))
+                            v->Set(*ObjectWrap::Unwrap<Vector2>(info[0].As<v8::Object>()));
+                        else
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    }
+                    default: {
+                        if (info[0]->IsNumber() && info[1]->IsNumber()) {
+                            v->Set(info[0].As<v8::Number>()->Value(),
+                                   info[1].As<v8::Number>()->Value());
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                }
                 info.GetReturnValue().Set(info.Holder());
-            })
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("length"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                info.GetReturnValue().Set(v->Length());
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("lengthSquared"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                info.GetReturnValue().Set(v->LengthSquared());
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("normalized"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                auto n = new Vector2(v->Normalized());
+                n->Wrap();
+                info.GetReturnValue().Set(n->GetHandle());
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("normalize"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                v->Normalize();
+                info.GetReturnValue().Set(info.Holder());
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("distance"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                switch (info.Length()) {
+                    case 0:
+                        v8::Isolate::GetCurrent()->ThrowException(
+                                v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    case 1: {
+                        if (function_template->HasInstance(info[0]))
+                            info.GetReturnValue().Set(
+                                    v->Distance(*ObjectWrap::Unwrap<Vector2>(info[0].As<v8::Object>())));
+                        else
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    }
+                    default: {
+                        if (info[0]->IsNumber() && info[1]->IsNumber()) {
+                            info.GetReturnValue().Set(v->Distance(
+                                    info[0].As<v8::Number>()->Value(),
+                                    info[1].As<v8::Number>()->Value()
+                            ));
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                }
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("distanceSquared"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                switch (info.Length()) {
+                    case 0:
+                        v8::Isolate::GetCurrent()->ThrowException(
+                                v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    case 1: {
+                        if (function_template->HasInstance(info[0]))
+                            info.GetReturnValue().Set(
+                                    v->DistanceSquared(*ObjectWrap::Unwrap<Vector2>(info[0].As<v8::Object>())));
+                        else
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    }
+                    default: {
+                        if (info[0]->IsNumber() && info[1]->IsNumber()) {
+                            info.GetReturnValue().Set(v->DistanceSquared(
+                                    info[0].As<v8::Number>()->Value(),
+                                    info[1].As<v8::Number>()->Value()
+                            ));
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                }
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("angle"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                switch (info.Length()) {
+                    case 0:
+                        v8::Isolate::GetCurrent()->ThrowException(
+                                v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    case 1: {
+                        if (function_template->HasInstance(info[0]))
+                            info.GetReturnValue().Set(
+                                    v->Angle(*ObjectWrap::Unwrap<Vector2>(info[0].As<v8::Object>())));
+                        else
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    }
+                    default: {
+                        if (info[0]->IsNumber() && info[1]->IsNumber()) {
+                            info.GetReturnValue().Set(v->Angle(
+                                    info[0].As<v8::Number>()->Value(),
+                                    info[1].As<v8::Number>()->Value()
+                            ));
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                }
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("dot"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                switch (info.Length()) {
+                    case 0:
+                        v8::Isolate::GetCurrent()->ThrowException(
+                                v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    case 1: {
+                        if (function_template->HasInstance(info[0]))
+                            info.GetReturnValue().Set(
+                                    v->Dot(*ObjectWrap::Unwrap<Vector2>(info[0].As<v8::Object>())));
+                        else
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    }
+                    default: {
+                        if (info[0]->IsNumber() && info[1]->IsNumber()) {
+                            info.GetReturnValue().Set(v->Dot(
+                                    info[0].As<v8::Number>()->Value(),
+                                    info[1].As<v8::Number>()->Value()
+                            ));
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                }
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("perpendicular"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                switch (info.Length()) {
+                    case 0:
+                        v8::Isolate::GetCurrent()->ThrowException(
+                                v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    default: {
+                        if (function_template->HasInstance(info[0])) {
+                            auto p = new Vector2(v->Perpendicular());
+                            p->Wrap();
+                            info.GetReturnValue().Set(p->GetHandle());
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                }
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("lerp"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                switch (info.Length()) {
+                    case 0:
+                        v8::Isolate::GetCurrent()->ThrowException(
+                                v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        break;
+                    case 2: {
+                        if (function_template->HasInstance(info[0]) && info[1]->IsNumber()) {
+                            auto p = new Vector2(v->Lerp(*ObjectWrap::Unwrap<Vector2>(info[0].As<v8::Object>()),
+                                    info[1].As<v8::Number>()->Value()));
+                            p->Wrap();
+                            info.GetReturnValue().Set(p->GetHandle());
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                    default: {
+                        if (info[0]->IsNumber() && info[1]->IsNumber() && info[2]->IsNumber()) {
+                            auto p = new Vector2(v->Lerp(info[0].As<v8::Number>()->Value(),
+                                                           info[1].As<v8::Number>()->Value(),
+                                                           info[2].As<v8::Number>()->Value()));
+                            p->Wrap();
+                            info.GetReturnValue().Set(p->GetHandle());
+                        } else {
+                            v8::Isolate::GetCurrent()->ThrowException(
+                                    v8::Exception::TypeError(v8_str("Arguments mismatch")));
+                        }
+                        break;
+                    }
+                }
+            }),
+            function_property_attributes
+    );
+
+    o_prot_template->Set(
+            v8_str("toString"),
+            v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
+                auto v = ObjectWrap::Unwrap<Vector2>(info.Holder());
+                auto s = "Vector2(" + std::to_string(v->x) + ", " + std::to_string(v->y) + ")";
+                info.GetReturnValue().Set(v8_str(s.c_str()));
+            }),
+            function_property_attributes
     );
 
     return function_template;
 }
 
-DEFINE_WRAP(Vector<2>)
+DEFINE_WRAP(Vector2)
 
 
 
-// ----------------------------------------------- Vector<3> ------------------------------------------------
+// ----------------------------------------------- Vector3 ------------------------------------------------
 
 
 
 
 
-Vector<3>::Vector() : x(0), y(0), z(0) {}
+Vector3::Vector3() : x(0), y(0), z(0) {}
 
 
-Vector<3>::Vector(double scalar) : x(scalar), y(scalar), z(scalar) {}
+Vector3::Vector3(double scalar) : x(scalar), y(scalar), z(scalar) {}
 
 
-Vector<3>::Vector(double x, double y, double z) : x(x), y(y), z(z) {}
+Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 
 
-Vector<3>::Vector(const Vector<3> &other) : x((double) other.x), y((double) other.y), z((double) other.z) {}
+Vector3::Vector3(const Vector3 &other) : x((double) other.x), y((double) other.y), z((double) other.z) {}
 
 
-Vector<3>::Vector(const Vector<2> &v2, double z) : x((double) v2.x), y((double) v2.y), z(z) {}
+Vector3::Vector3(const Vector2 &v2, double z) : x((double) v2.x), y((double) v2.y), z(z) {}
 
 
-double Vector<3>::Length() const {
+double Vector3::Length() const {
     return std::sqrt(x * x + y * y + z * z);
 }
 
 
-double Vector<3>::LengthSquared() const {
+double Vector3::LengthSquared() const {
     return x * x + y * y + z * z;
 }
 
 
-double Vector<3>::Distance(const Vector<3> &other) const {
+double Vector3::Distance(const Vector3 &other) const {
     double x_diff = x - other.x;
     double y_diff = y - other.y;
     double z_diff = z - other.z;
@@ -414,7 +713,7 @@ double Vector<3>::Distance(const Vector<3> &other) const {
 }
 
 
-double Vector<3>::Distance(double x, double y, double z) const {
+double Vector3::Distance(double x, double y, double z) const {
     double x_diff = this->x - x;
     double y_diff = this->y - y;
     double z_diff = this->z - z;
@@ -422,7 +721,7 @@ double Vector<3>::Distance(double x, double y, double z) const {
 }
 
 
-double Vector<3>::DistanceSquared(const Vector<3> &other) const {
+double Vector3::DistanceSquared(const Vector3 &other) const {
     double x_diff = x - other.x;
     double y_diff = y - other.y;
     double z_diff = z - other.z;
@@ -430,18 +729,18 @@ double Vector<3>::DistanceSquared(const Vector<3> &other) const {
 }
 
 
-double Vector<3>::Dot(const Vector<3> &other) const {
+double Vector3::Dot(const Vector3 &other) const {
     return x * other.x + y * other.y + z * other.z;
 }
 
 
-double Vector<3>::AngleCos(const Vector<3> &other) const {
+double Vector3::AngleCos(const Vector3 &other) const {
     return (double) ((x * other.x + y * other.y + z * other.z) /
                      std::sqrt((x * x + y * y + z * z) * (other.x * other.x + other.y * other.y + other.z * other.z)));
 }
 
 
-double Vector<3>::Angle(const Vector<3> &other) const {
+double Vector3::Angle(const Vector3 &other) const {
     double cos = (x * other.x + y * other.y + z * other.z) /
                  std::sqrt((x * x + y * y + z * z) * (other.x * other.x + other.y * other.y + other.z * other.z));
     // doublehis is because sometimes cos goes above 1 or below -1 because of lost precision
@@ -451,84 +750,84 @@ double Vector<3>::Angle(const Vector<3> &other) const {
 }
 
 
-Vector<3> Vector<3>::Normalized() const {
+Vector3 Vector3::Normalized() const {
     double length = std::sqrt(x * x + y * y + z * z);
-    return Vector<3>(x / length, y / length, z / length);
+    return Vector3(x / length, y / length, z / length);
 }
 
 
-Vector<3> Vector<3>::Cross(const Vector<3> &other) const {
-    return Vector<3>(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+Vector3 Vector3::Cross(const Vector3 &other) const {
+    return Vector3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
 }
 
 
-Vector<3> Vector<3>::Min(const Vector<3> &other) const {
-    return Vector<3>(x > other.x ? other.x : x, y > other.y ? other.y : y, z > other.z ? other.z : z);
+Vector3 Vector3::Min(const Vector3 &other) const {
+    return Vector3(x > other.x ? other.x : x, y > other.y ? other.y : y, z > other.z ? other.z : z);
 }
 
 
-Vector<3> Vector<3>::Max(const Vector<3> &other) const {
-    return Vector<3>(x > other.x ? x : other.x, y > other.y ? y : other.y, z > other.z ? z : other.z);
+Vector3 Vector3::Max(const Vector3 &other) const {
+    return Vector3(x > other.x ? x : other.x, y > other.y ? y : other.y, z > other.z ? z : other.z);
 }
 
 
-Vector<3> Vector<3>::Lerp(const Vector<3> &other, double t) const {
-    return Vector<3>((double) (x + (other.x - x) * t), (double) (y + (other.y - y) * t),
+Vector3 Vector3::Lerp(const Vector3 &other, double t) const {
+    return Vector3((double) (x + (other.x - x) * t), (double) (y + (other.y - y) * t),
                      (double) (z + (other.z - z) * t));
 }
 
 
-Vector<3> Vector<3>::operator+(const Vector<3> &other) const {
-    return Vector<3>(x + other.x, y + other.y, z + other.z);
+Vector3 Vector3::operator+(const Vector3 &other) const {
+    return Vector3(x + other.x, y + other.y, z + other.z);
 }
 
 
-Vector<3> Vector<3>::operator-(const Vector<3> &other) const {
-    return Vector<3>(x - other.x, y - other.y, z - other.z);
+Vector3 Vector3::operator-(const Vector3 &other) const {
+    return Vector3(x - other.x, y - other.y, z - other.z);
 }
 
 
-Vector<3> Vector<3>::operator*(const Vector<3> &other) const {
-    return Vector<3>(x * other.x, y * other.y, z * other.z);
+Vector3 Vector3::operator*(const Vector3 &other) const {
+    return Vector3(x * other.x, y * other.y, z * other.z);
 }
 
 
-Vector<3> Vector<3>::operator/(const Vector<3> &other) const {
-    return Vector<3>(x / other.x, y / other.y, z / other.z);
+Vector3 Vector3::operator/(const Vector3 &other) const {
+    return Vector3(x / other.x, y / other.y, z / other.z);
 }
 
 
-Vector<3> Vector<3>::operator+(double scalar) const {
-    return Vector<3>(x + scalar, y + scalar, z + scalar);
+Vector3 Vector3::operator+(double scalar) const {
+    return Vector3(x + scalar, y + scalar, z + scalar);
 }
 
 
-Vector<3> Vector<3>::operator-(double scalar) const {
-    return Vector<3>(x - scalar, y - scalar, z - scalar);
+Vector3 Vector3::operator-(double scalar) const {
+    return Vector3(x - scalar, y - scalar, z - scalar);
 }
 
 
-Vector<3> Vector<3>::operator*(double scalar) const {
-    return Vector<3>(x * scalar, y * scalar, z * scalar);
+Vector3 Vector3::operator*(double scalar) const {
+    return Vector3(x * scalar, y * scalar, z * scalar);
 }
 
 
-Vector<3> Vector<3>::operator/(double scalar) const {
-    return Vector<3>(x / scalar, y / scalar, z / scalar);
+Vector3 Vector3::operator/(double scalar) const {
+    return Vector3(x / scalar, y / scalar, z / scalar);
 }
 
 
-bool Vector<3>::operator==(const Vector<3> &other) const {
+bool Vector3::operator==(const Vector3 &other) const {
     return (x == other.x && y == other.y && z == other.z);
 }
 
 
-bool Vector<3>::operator==(double scalar) const {
+bool Vector3::operator==(double scalar) const {
     return (x == scalar && y == scalar && z == scalar);
 }
 
 
-Vector<3> &Vector<3>::Normalize() {
+Vector3 &Vector3::Normalize() {
     double length = std::sqrt(x * x + y * y + z * z);
     x /= length;
     y /= length;
@@ -537,7 +836,7 @@ Vector<3> &Vector<3>::Normalize() {
 }
 
 
-Vector<3> &Vector<3>::Zero() {
+Vector3 &Vector3::Zero() {
     x = 0;
     y = 0;
     z = 0;
@@ -545,7 +844,7 @@ Vector<3> &Vector<3>::Zero() {
 }
 
 
-Vector<3> &Vector<3>::Floor() {
+Vector3 &Vector3::Floor() {
     x = std::floor(x);
     y = std::floor(y);
     z = std::floor(z);
@@ -553,7 +852,7 @@ Vector<3> &Vector<3>::Floor() {
 }
 
 
-Vector<3> &Vector<3>::Ceil() {
+Vector3 &Vector3::Ceil() {
     x = std::ceil(x);
     y = std::ceil(y);
     z = std::ceil(z);
@@ -561,7 +860,7 @@ Vector<3> &Vector<3>::Ceil() {
 }
 
 
-Vector<3> &Vector<3>::Round() {
+Vector3 &Vector3::Round() {
     x = std::round(x);
     y = std::round(y);
     z = std::round(z);
@@ -569,7 +868,7 @@ Vector<3> &Vector<3>::Round() {
 }
 
 
-Vector<3> &Vector<3>::Set(double x, double y, double z) {
+Vector3 &Vector3::Set(double x, double y, double z) {
     this->x = x;
     this->y = y;
     this->z = z;
@@ -577,7 +876,7 @@ Vector<3> &Vector<3>::Set(double x, double y, double z) {
 }
 
 
-Vector<3> &Vector<3>::Set(const Vector<3> &other) {
+Vector3 &Vector3::Set(const Vector3 &other) {
     this->x = other.x;
     this->y = other.y;
     this->z = other.z;
@@ -585,7 +884,7 @@ Vector<3> &Vector<3>::Set(const Vector<3> &other) {
 }
 
 
-Vector<3> &Vector<3>::Set(const Vector<2> &other, double z) {
+Vector3 &Vector3::Set(const Vector2 &other, double z) {
     this->x = other.x;
     this->y = other.y;
     this->z = z;
@@ -593,7 +892,7 @@ Vector<3> &Vector<3>::Set(const Vector<2> &other, double z) {
 }
 
 
-Vector<3> &Vector<3>::Set(double scalar) {
+Vector3 &Vector3::Set(double scalar) {
     x = scalar;
     y = scalar;
     z = scalar;
@@ -601,7 +900,7 @@ Vector<3> &Vector<3>::Set(double scalar) {
 }
 
 
-Vector<3> &Vector<3>::operator-() {
+Vector3 &Vector3::operator-() {
     x = -x;
     y = -y;
     z = -z;
@@ -609,7 +908,7 @@ Vector<3> &Vector<3>::operator-() {
 }
 
 
-Vector<3> &Vector<3>::operator=(const Vector<3> &other) {
+Vector3 &Vector3::operator=(const Vector3 &other) {
     x = other.x;
     y = other.y;
     z = other.z;
@@ -617,7 +916,7 @@ Vector<3> &Vector<3>::operator=(const Vector<3> &other) {
 }
 
 
-Vector<3> &Vector<3>::operator+=(const Vector<3> &other) {
+Vector3 &Vector3::operator+=(const Vector3 &other) {
     x += other.x;
     y += other.y;
     z += other.z;
@@ -625,7 +924,7 @@ Vector<3> &Vector<3>::operator+=(const Vector<3> &other) {
 }
 
 
-Vector<3> &Vector<3>::operator-=(const Vector<3> &other) {
+Vector3 &Vector3::operator-=(const Vector3 &other) {
     x -= other.x;
     y -= other.y;
     z -= other.z;
@@ -633,7 +932,7 @@ Vector<3> &Vector<3>::operator-=(const Vector<3> &other) {
 }
 
 
-Vector<3> &Vector<3>::operator*=(const Vector<3> &other) {
+Vector3 &Vector3::operator*=(const Vector3 &other) {
     x *= other.x;
     y *= other.y;
     z *= other.z;
@@ -641,7 +940,7 @@ Vector<3> &Vector<3>::operator*=(const Vector<3> &other) {
 }
 
 
-Vector<3> &Vector<3>::operator/=(const Vector<3> &other) {
+Vector3 &Vector3::operator/=(const Vector3 &other) {
     x /= other.x;
     y /= other.y;
     z /= other.z;
@@ -649,7 +948,7 @@ Vector<3> &Vector<3>::operator/=(const Vector<3> &other) {
 }
 
 
-Vector<3> &Vector<3>::operator=(double scalar) {
+Vector3 &Vector3::operator=(double scalar) {
     x = scalar;
     y = scalar;
     z = scalar;
@@ -657,7 +956,7 @@ Vector<3> &Vector<3>::operator=(double scalar) {
 }
 
 
-Vector<3> &Vector<3>::operator+=(double scalar) {
+Vector3 &Vector3::operator+=(double scalar) {
     x += scalar;
     y += scalar;
     z += scalar;
@@ -665,7 +964,7 @@ Vector<3> &Vector<3>::operator+=(double scalar) {
 }
 
 
-Vector<3> &Vector<3>::operator-=(double scalar) {
+Vector3 &Vector3::operator-=(double scalar) {
     x -= scalar;
     y -= scalar;
     z -= scalar;
@@ -673,7 +972,7 @@ Vector<3> &Vector<3>::operator-=(double scalar) {
 }
 
 
-Vector<3> &Vector<3>::operator*=(double scalar) {
+Vector3 &Vector3::operator*=(double scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
@@ -681,7 +980,7 @@ Vector<3> &Vector<3>::operator*=(double scalar) {
 }
 
 
-Vector<3> &Vector<3>::operator/=(double scalar) {
+Vector3 &Vector3::operator/=(double scalar) {
     x /= scalar;
     y /= scalar;
     z /= scalar;
@@ -690,7 +989,7 @@ Vector<3> &Vector<3>::operator/=(double scalar) {
 
 
 template<>
-v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<3>>() {
+v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector3>() {
     static v8::Local<v8::FunctionTemplate> function_template;
     if (!function_template.IsEmpty()) return function_template;
 
@@ -698,19 +997,19 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     function_template = v8::FunctionTemplate::New(
             v8::Isolate::GetCurrent(),
             [](const v8::FunctionCallbackInfo<v8::Value> &info) {
-                Vector<3> *v = nullptr;
+                Vector3 *v = nullptr;
                 if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector<3>(*ObjectWrap::Unwrap<Vector<3>>(info[0].As<v8::Object>()));
+                    v = new Vector3(*ObjectWrap::Unwrap<Vector3>(info[0].As<v8::Object>()));
                 } else {
                     switch (info.Length()) {
                         case 0:
-                            v = new Vector<3>();
+                            v = new Vector3();
                             break;
                         case 1:
-                            v = new Vector<3>(info[0].As<v8::Number>()->Value());
+                            v = new Vector3(info[0].As<v8::Number>()->Value());
                             break;
                         case 2:
-                            v = new Vector<3>(info[0].As<v8::Number>()->Value(),
+                            v = new Vector3(info[0].As<v8::Number>()->Value(),
                                               info[1].As<v8::Number>()->Value(),
                                               info[2].As<v8::Number>()->Value());
                             break;
@@ -730,11 +1029,11 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("x"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector3>(info.Holder());
                 info.GetReturnValue().Set(v->x);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector3>(info.Holder());
                 v->x = value.As<v8::Number>()->Value();
             }
     );
@@ -742,11 +1041,11 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("y"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector3>(info.Holder());
                 info.GetReturnValue().Set(v->y);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector3>(info.Holder());
                 v->y = value.As<v8::Number>()->Value();
             }
     );
@@ -754,11 +1053,11 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("z"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector3>(info.Holder());
                 info.GetReturnValue().Set(v->z);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector3>(info.Holder());
                 v->z = value.As<v8::Number>()->Value();
             }
     );
@@ -766,7 +1065,7 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->Set(
             v8_str("set"),
             v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<3>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector3>(info.Holder());
                 v->Set(info[0].As<v8::Number>()->Value());
                 info.GetReturnValue().Set(info.Holder());
             })
@@ -775,45 +1074,45 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     return function_template;
 }
 
-DEFINE_WRAP(Vector<3>)
+DEFINE_WRAP(Vector3)
 
 
-// ----------------------------------------------- Vector<4> ------------------------------------------------
+// ----------------------------------------------- Vector4 ------------------------------------------------
 
 
 
 
 
-Vector<4>::Vector() : x(0.0), y(0.0), z(0.0), w(0.0) {}
+Vector4::Vector4() : x(0.0), y(0.0), z(0.0), w(0.0) {}
 
 
-Vector<4>::Vector(double scalar) : x(scalar), y(scalar), z(scalar), w(scalar) {}
+Vector4::Vector4(double scalar) : x(scalar), y(scalar), z(scalar), w(scalar) {}
 
 
-Vector<4>::Vector(double x, double y, double z, double w) : x(x), y(y), z(z), w(w) {}
+Vector4::Vector4(double x, double y, double z, double w) : x(x), y(y), z(z), w(w) {}
 
 
-Vector<4>::Vector(const Vector<4> &other) : x((double) other.x), y((double) other.y), z((double) other.z),
+Vector4::Vector4(const Vector4 &other) : x((double) other.x), y((double) other.y), z((double) other.z),
                                             w((double) other.w) {}
 
 
-Vector<4>::Vector(const Vector<3> &v3, double w) : x((double) v3.x), y((double) v3.y), z((double) v3.z), w(w) {}
+Vector4::Vector4(const Vector3 &v3, double w) : x((double) v3.x), y((double) v3.y), z((double) v3.z), w(w) {}
 
 
-Vector<4>::Vector(const Vector<2> &v2, double z, double w) : x((double) v2.x), y((double) v2.y), z(z), w(w) {}
+Vector4::Vector4(const Vector2 &v2, double z, double w) : x((double) v2.x), y((double) v2.y), z(z), w(w) {}
 
 
-double Vector<4>::Length() const {
+double Vector4::Length() const {
     return std::sqrt(x * x + y * y + z * z + w * w);
 }
 
 
-double Vector<4>::LengthSquared() const {
+double Vector4::LengthSquared() const {
     return x * x + y * y + z * z + w * w;
 }
 
 
-double Vector<4>::Distance(const Vector<4> &other) const {
+double Vector4::Distance(const Vector4 &other) const {
     double x_diff = x - other.x;
     double y_diff = y - other.y;
     double z_diff = z - other.z;
@@ -822,7 +1121,7 @@ double Vector<4>::Distance(const Vector<4> &other) const {
 }
 
 
-double Vector<4>::DistanceSquared(const Vector<4> &other) const {
+double Vector4::DistanceSquared(const Vector4 &other) const {
     double x_diff = x - other.x;
     double y_diff = y - other.y;
     double z_diff = z - other.z;
@@ -831,19 +1130,19 @@ double Vector<4>::DistanceSquared(const Vector<4> &other) const {
 }
 
 
-double Vector<4>::Dot(const Vector<4> &other) const {
+double Vector4::Dot(const Vector4 &other) const {
     return x * other.x + y * other.y + z * other.z + w * other.w;
 }
 
 
-double Vector<4>::AngleCos(const Vector<4> &other) const {
+double Vector4::AngleCos(const Vector4 &other) const {
     return (double) ((x * other.x + y * other.y + z * other.z + w * other.w) /
                      std::sqrt((x * x + y * y + z * z + w * w) *
                                (other.x * other.x + other.y * other.y + other.z * other.z + other.w * other.w)));
 }
 
 
-double Vector<4>::Angle(const Vector<4> &other) const {
+double Vector4::Angle(const Vector4 &other) const {
     double cos = (x * other.x + y * other.y + z * other.z + w * other.w) /
                  std::sqrt((x * x + y * y + z * z + w * w) *
                            (other.x * other.x + other.y * other.y + other.z * other.z + other.w * other.w));
@@ -854,82 +1153,82 @@ double Vector<4>::Angle(const Vector<4> &other) const {
 }
 
 
-Vector<4> Vector<4>::Normalized() const {
+Vector4 Vector4::Normalized() const {
     double length = std::sqrt(x * x + y * y + z * z + w * w);
-    return Vector<4>(x / length, y / length, z / length, w / length);
+    return Vector4(x / length, y / length, z / length, w / length);
 }
 
 
-Vector<4> Vector<4>::Min(const Vector<4> &other) const {
-    return Vector<4>(x > other.x ? other.x : x, y > other.y ? other.y : y, z > other.z ? other.z : z,
+Vector4 Vector4::Min(const Vector4 &other) const {
+    return Vector4(x > other.x ? other.x : x, y > other.y ? other.y : y, z > other.z ? other.z : z,
                      w > other.w ? other.w : w);
 }
 
 
-Vector<4> Vector<4>::Max(const Vector<4> &other) const {
-    return Vector<4>(x > other.x ? x : other.x, y > other.y ? y : other.y, z > other.z ? z : other.z,
+Vector4 Vector4::Max(const Vector4 &other) const {
+    return Vector4(x > other.x ? x : other.x, y > other.y ? y : other.y, z > other.z ? z : other.z,
                      w > other.w ? w : other.w);
 }
 
 
-Vector<4> Vector<4>::Lerp(const Vector<4> &other, double t) const {
-    return Vector<4>((double) (x + (other.x - x) * t), (double) (y + (other.y - y) * t),
+Vector4 Vector4::Lerp(const Vector4 &other, double t) const {
+    return Vector4((double) (x + (other.x - x) * t), (double) (y + (other.y - y) * t),
                      (double) (z + (other.z - z) * t),
                      (double) (w + (other.w - w) * t));
 }
 
 
-Vector<4> Vector<4>::operator+(const Vector<4> &other) const {
-    return Vector<4>(x + other.x, y + other.y, z + other.z, w + other.w);
+Vector4 Vector4::operator+(const Vector4 &other) const {
+    return Vector4(x + other.x, y + other.y, z + other.z, w + other.w);
 }
 
 
-Vector<4> Vector<4>::operator-(const Vector<4> &other) const {
-    return Vector<4>(x - other.x, y - other.y, z - other.z, w - other.w);
+Vector4 Vector4::operator-(const Vector4 &other) const {
+    return Vector4(x - other.x, y - other.y, z - other.z, w - other.w);
 }
 
 
-Vector<4> Vector<4>::operator*(const Vector<4> &other) const {
-    return Vector<4>(x * other.x, y * other.y, z * other.z, w * other.w);
+Vector4 Vector4::operator*(const Vector4 &other) const {
+    return Vector4(x * other.x, y * other.y, z * other.z, w * other.w);
 }
 
 
-Vector<4> Vector<4>::operator/(const Vector<4> &other) const {
-    return Vector<4>(x / other.x, y / other.y, z / other.z, w / other.w);
+Vector4 Vector4::operator/(const Vector4 &other) const {
+    return Vector4(x / other.x, y / other.y, z / other.z, w / other.w);
 }
 
 
-Vector<4> Vector<4>::operator+(double scalar) const {
-    return Vector<4>(x + scalar, y + scalar, z + scalar, w + scalar);
+Vector4 Vector4::operator+(double scalar) const {
+    return Vector4(x + scalar, y + scalar, z + scalar, w + scalar);
 }
 
 
-Vector<4> Vector<4>::operator-(double scalar) const {
-    return Vector<4>(x - scalar, y - scalar, z - scalar, w - scalar);
+Vector4 Vector4::operator-(double scalar) const {
+    return Vector4(x - scalar, y - scalar, z - scalar, w - scalar);
 }
 
 
-Vector<4> Vector<4>::operator*(double scalar) const {
-    return Vector<4>(x * scalar, y * scalar, z * scalar, w * scalar);
+Vector4 Vector4::operator*(double scalar) const {
+    return Vector4(x * scalar, y * scalar, z * scalar, w * scalar);
 }
 
 
-Vector<4> Vector<4>::operator/(double scalar) const {
-    return Vector<4>(x / scalar, y / scalar, z / scalar, w / scalar);
+Vector4 Vector4::operator/(double scalar) const {
+    return Vector4(x / scalar, y / scalar, z / scalar, w / scalar);
 }
 
 
-bool Vector<4>::operator==(const Vector<4> &other) const {
+bool Vector4::operator==(const Vector4 &other) const {
     return (x == other.x && y == other.y && z == other.z && w == other.w);
 }
 
 
-bool Vector<4>::operator==(double scalar) const {
+bool Vector4::operator==(double scalar) const {
     return (x == scalar && y == scalar && z == scalar && w == scalar);
 }
 
 
-Vector<4> &Vector<4>::Normalize() {
+Vector4 &Vector4::Normalize() {
     double length = std::sqrt(x * x + y * y + z * z + w * w);
     x /= length;
     y /= length;
@@ -939,7 +1238,7 @@ Vector<4> &Vector<4>::Normalize() {
 }
 
 
-Vector<4> &Vector<4>::Zero() {
+Vector4 &Vector4::Zero() {
     x = 0;
     y = 0;
     z = 0;
@@ -948,7 +1247,7 @@ Vector<4> &Vector<4>::Zero() {
 }
 
 
-Vector<4> &Vector<4>::Floor() {
+Vector4 &Vector4::Floor() {
     x = std::floor(x);
     y = std::floor(y);
     z = std::floor(z);
@@ -957,7 +1256,7 @@ Vector<4> &Vector<4>::Floor() {
 }
 
 
-Vector<4> &Vector<4>::Ceil() {
+Vector4 &Vector4::Ceil() {
     x = std::ceil(x);
     y = std::ceil(y);
     z = std::ceil(z);
@@ -966,7 +1265,7 @@ Vector<4> &Vector<4>::Ceil() {
 }
 
 
-Vector<4> &Vector<4>::Round() {
+Vector4 &Vector4::Round() {
     x = std::round(x);
     y = std::round(y);
     z = std::round(z);
@@ -975,7 +1274,7 @@ Vector<4> &Vector<4>::Round() {
 }
 
 
-Vector<4> &Vector<4>::Set(double x, double y, double z, double w) {
+Vector4 &Vector4::Set(double x, double y, double z, double w) {
     this->x = x;
     this->y = y;
     this->z = z;
@@ -984,7 +1283,7 @@ Vector<4> &Vector<4>::Set(double x, double y, double z, double w) {
 }
 
 
-Vector<4> &Vector<4>::Set(const Vector<4> &other) {
+Vector4 &Vector4::Set(const Vector4 &other) {
     this->x = other.x;
     this->y = other.y;
     this->z = other.z;
@@ -993,7 +1292,7 @@ Vector<4> &Vector<4>::Set(const Vector<4> &other) {
 }
 
 
-Vector<4> &Vector<4>::Set(const Vector<3> &other, double w) {
+Vector4 &Vector4::Set(const Vector3 &other, double w) {
     this->x = other.x;
     this->y = other.y;
     this->z = other.z;
@@ -1002,7 +1301,7 @@ Vector<4> &Vector<4>::Set(const Vector<3> &other, double w) {
 }
 
 
-Vector<4> &Vector<4>::Set(const Vector<2> &other, double z, double w) {
+Vector4 &Vector4::Set(const Vector2 &other, double z, double w) {
     this->x = other.x;
     this->y = other.y;
     this->z = z;
@@ -1011,7 +1310,7 @@ Vector<4> &Vector<4>::Set(const Vector<2> &other, double z, double w) {
 }
 
 
-Vector<4> &Vector<4>::Set(double scalar) {
+Vector4 &Vector4::Set(double scalar) {
     x = scalar;
     y = scalar;
     z = scalar;
@@ -1020,7 +1319,7 @@ Vector<4> &Vector<4>::Set(double scalar) {
 }
 
 
-Vector<4> &Vector<4>::operator-() {
+Vector4 &Vector4::operator-() {
     x = -x;
     y = -y;
     z = -z;
@@ -1029,7 +1328,7 @@ Vector<4> &Vector<4>::operator-() {
 }
 
 
-Vector<4> &Vector<4>::operator=(const Vector<4> &other) {
+Vector4 &Vector4::operator=(const Vector4 &other) {
     x = other.x;
     y = other.y;
     z = other.z;
@@ -1038,7 +1337,7 @@ Vector<4> &Vector<4>::operator=(const Vector<4> &other) {
 }
 
 
-Vector<4> &Vector<4>::operator+=(const Vector<4> &other) {
+Vector4 &Vector4::operator+=(const Vector4 &other) {
     x += other.x;
     y += other.y;
     z += other.z;
@@ -1047,7 +1346,7 @@ Vector<4> &Vector<4>::operator+=(const Vector<4> &other) {
 }
 
 
-Vector<4> &Vector<4>::operator-=(const Vector<4> &other) {
+Vector4 &Vector4::operator-=(const Vector4 &other) {
     x -= other.x;
     y -= other.y;
     z -= other.z;
@@ -1056,7 +1355,7 @@ Vector<4> &Vector<4>::operator-=(const Vector<4> &other) {
 }
 
 
-Vector<4> &Vector<4>::operator*=(const Vector<4> &other) {
+Vector4 &Vector4::operator*=(const Vector4 &other) {
     x *= other.x;
     y *= other.y;
     z *= other.z;
@@ -1065,7 +1364,7 @@ Vector<4> &Vector<4>::operator*=(const Vector<4> &other) {
 }
 
 
-Vector<4> &Vector<4>::operator/=(const Vector<4> &other) {
+Vector4 &Vector4::operator/=(const Vector4 &other) {
     x /= other.x;
     y /= other.y;
     z /= other.z;
@@ -1074,7 +1373,7 @@ Vector<4> &Vector<4>::operator/=(const Vector<4> &other) {
 }
 
 
-Vector<4> &Vector<4>::operator=(double scalar) {
+Vector4 &Vector4::operator=(double scalar) {
     x = scalar;
     y = scalar;
     z = scalar;
@@ -1083,7 +1382,7 @@ Vector<4> &Vector<4>::operator=(double scalar) {
 }
 
 
-Vector<4> &Vector<4>::operator+=(double scalar) {
+Vector4 &Vector4::operator+=(double scalar) {
     x += scalar;
     y += scalar;
     z += scalar;
@@ -1092,7 +1391,7 @@ Vector<4> &Vector<4>::operator+=(double scalar) {
 }
 
 
-Vector<4> &Vector<4>::operator-=(double scalar) {
+Vector4 &Vector4::operator-=(double scalar) {
     x -= scalar;
     y -= scalar;
     z -= scalar;
@@ -1101,7 +1400,7 @@ Vector<4> &Vector<4>::operator-=(double scalar) {
 }
 
 
-Vector<4> &Vector<4>::operator*=(double scalar) {
+Vector4 &Vector4::operator*=(double scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
@@ -1110,7 +1409,7 @@ Vector<4> &Vector<4>::operator*=(double scalar) {
 }
 
 
-Vector<4> &Vector<4>::operator/=(double scalar) {
+Vector4 &Vector4::operator/=(double scalar) {
     x /= scalar;
     y /= scalar;
     z /= scalar;
@@ -1119,7 +1418,7 @@ Vector<4> &Vector<4>::operator/=(double scalar) {
 }
 
 template<>
-v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<4>>() {
+v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector4>() {
     static v8::Local<v8::FunctionTemplate> function_template;
     if (!function_template.IsEmpty()) return function_template;
 
@@ -1127,19 +1426,19 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     function_template = v8::FunctionTemplate::New(
             v8::Isolate::GetCurrent(),
             [](const v8::FunctionCallbackInfo<v8::Value> &info) {
-                Vector<4> *v = nullptr;
+                Vector4 *v = nullptr;
                 if (info.Length() == 1 && info[0]->IsObject()) {
-                    v = new Vector<4>(*ObjectWrap::Unwrap<Vector<4>>(info[0].As<v8::Object>()));
+                    v = new Vector4(*ObjectWrap::Unwrap<Vector4>(info[0].As<v8::Object>()));
                 } else {
                     switch (info.Length()) {
                         case 0:
-                            v = new Vector<4>();
+                            v = new Vector4();
                             break;
                         case 1:
-                            v = new Vector<4>(info[0].As<v8::Number>()->Value());
+                            v = new Vector4(info[0].As<v8::Number>()->Value());
                             break;
                         case 2:
-                            v = new Vector<4>(info[0].As<v8::Number>()->Value(),
+                            v = new Vector4(info[0].As<v8::Number>()->Value(),
                                               info[1].As<v8::Number>()->Value(),
                                               info[2].As<v8::Number>()->Value(),
                                               info[3].As<v8::Number>()->Value());
@@ -1160,11 +1459,11 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("x"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 info.GetReturnValue().Set(v->x);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 v->x = value.As<v8::Number>()->Value();
             }
     );
@@ -1172,11 +1471,11 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("y"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 info.GetReturnValue().Set(v->y);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 v->y = value.As<v8::Number>()->Value();
             }
     );
@@ -1184,11 +1483,11 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("z"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 info.GetReturnValue().Set(v->z);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 v->z = value.As<v8::Number>()->Value();
             }
     );
@@ -1196,11 +1495,11 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->SetAccessor(
             v8_str("w"),
             [](v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 info.GetReturnValue().Set(v->w);
             },
             [](v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 v->w = value.As<v8::Number>()->Value();
             }
     );
@@ -1208,7 +1507,7 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     o_template->Set(
             v8_str("set"),
             v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), [](const v8::FunctionCallbackInfo<v8::Value> &info) {
-                auto v = ObjectWrap::Unwrap<Vector<4>>(info.Holder());
+                auto v = ObjectWrap::Unwrap<Vector4>(info.Holder());
                 v->Set(info[0].As<v8::Number>()->Value());
                 info.GetReturnValue().Set(info.Holder());
             })
@@ -1217,7 +1516,7 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Vector<
     return function_template;
 }
 
-DEFINE_WRAP(Vector<4>)
+DEFINE_WRAP(Vector4)
 
 
 }

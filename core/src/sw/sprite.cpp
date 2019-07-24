@@ -18,9 +18,7 @@ v8::Local<v8::FunctionTemplate> ObjectWrap::GetObjectConstructorTemplate<Sprite>
             v8::Isolate::GetCurrent(),
             [](const v8::FunctionCallbackInfo<v8::Value> &info) {
                 auto sprite = new Sprite;
-                sprite->position.Wrap();
-                sprite->scale.Wrap();
-                info.This()->SetAlignedPointerInInternalField(0, sprite);
+                sprite->Wrap(info.This());
             }
     );
 

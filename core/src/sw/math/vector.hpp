@@ -9,207 +9,201 @@
 #include <sw/sw_macros.hpp>
 
 namespace sw {
-template<int L>
-class Vector;
 
-template<>
-class Vector<2> : public sw::ObjectWrap {
+class Vector2 : public sw::ObjectWrap {
 public:
     double x;
     double y;
 
-    Vector<2>();
-    explicit Vector<2>(double scalar);
-    Vector<2>(double x, double y);
-    Vector<2>(const Vector<2> &other);
+    Vector2();
+    explicit Vector2(double scalar);
+    Vector2(double x, double y);
+    Vector2(const Vector2 &other);
+    
     double Length() const;
     double Dot(double x, double y) const;
-    double Dot(const Vector<2> &other) const;
+    double Dot(const Vector2 &other) const;
     double Distance(double x, double y) const;
-    double Distance(const Vector<2> &other) const;
+    double Distance(const Vector2 &other) const;
     double Determinant(double x, double y) const;
-    double Determinant(const Vector<2> &other) const;
+    double Determinant(const Vector2 &other) const;
     double Angle(double x, double y) const;
-    double Angle(const Vector<2> &other) const;
-    Vector<2> Normalized() const;
+    double Angle(const Vector2 &other) const;
+    Vector2 Normalized() const;
     double LengthSquared() const;
     double DistanceSquared(double x, double y) const;
-    double DistanceSquared(const Vector<2> &other) const;
-    Vector<2> Perpendicular() const;
-    Vector<2> Min(double x, double y) const;
-    Vector<2> Min(const Vector<2> &other) const;
-    Vector<2> Max(double x, double y) const;
-    Vector<2> Max(const Vector<2> &other) const;
-    Vector<2> Lerp(double x, double y, double t) const;
-    Vector<2> Lerp(const Vector<2> &other, double t) const;
-    Vector<2> operator+(const Vector<2> &other) const;
-    Vector<2> operator-(const Vector<2> &other) const;
-    Vector<2> operator*(const Vector<2> &other) const;
-    Vector<2> operator/(const Vector<2> &other) const;
-    Vector<2> operator+(double scalar) const;
-    Vector<2> operator-(double scalar) const;
-    Vector<2> operator*(double scalar) const;
-    Vector<2> operator/(double scalar) const;
-    bool operator==(const Vector<2> &other) const;
+    double DistanceSquared(const Vector2 &other) const;
+    Vector2 Perpendicular() const;
+    Vector2 Min(double x, double y) const;
+    Vector2 Min(const Vector2 &other) const;
+    Vector2 Max(double x, double y) const;
+    Vector2 Max(const Vector2 &other) const;
+    Vector2 Lerp(double x, double y, double t) const;
+    Vector2 Lerp(const Vector2 &other, double t) const;
+    Vector2 operator+(const Vector2 &other) const;
+    Vector2 operator-(const Vector2 &other) const;
+    Vector2 operator*(const Vector2 &other) const;
+    Vector2 operator/(const Vector2 &other) const;
+    Vector2 operator+(double scalar) const;
+    Vector2 operator-(double scalar) const;
+    Vector2 operator*(double scalar) const;
+    Vector2 operator/(double scalar) const;
+    bool operator==(const Vector2 &other) const;
     bool operator==(double scalar) const;
-    Vector<2> &Normalize();
-    Vector<2> &Floor();
-    Vector<2> &Ceil();
-    Vector<2> &Round();
-    Vector<2> &Zero();
-    Vector<2> &Set(double x, double y);
-    Vector<2> &Set(const Vector<2> &other);
-    Vector<2> &Set(double scalar);
-    Vector<2> &operator-();
-    Vector<2> &operator=(const Vector<2> &other);
-    Vector<2> &operator+=(const Vector<2> &other);
-    Vector<2> &operator-=(const Vector<2> &other);
-    Vector<2> &operator*=(const Vector<2> &other);
-    Vector<2> &operator/=(const Vector<2> &other);
-    Vector<2> &operator=(double scalar);
-    Vector<2> &operator+=(double scalar);
-    Vector<2> &operator-=(double scalar);
-    Vector<2> &operator*=(double scalar);
-    Vector<2> &operator/=(double scalar);
+    Vector2 &Normalize();
+    Vector2 &Floor();
+    Vector2 &Ceil();
+    Vector2 &Round();
+    Vector2 &Zero();
+    Vector2 &Set(double x, double y);
+    Vector2 &Set(const Vector2 &other);
+    Vector2 &Set(double scalar);
+    Vector2 &operator-();
+    Vector2 &operator=(const Vector2 &other);
+    Vector2 &operator+=(const Vector2 &other);
+    Vector2 &operator-=(const Vector2 &other);
+    Vector2 &operator*=(const Vector2 &other);
+    Vector2 &operator/=(const Vector2 &other);
+    Vector2 &operator=(double scalar);
+    Vector2 &operator+=(double scalar);
+    Vector2 &operator-=(double scalar);
+    Vector2 &operator*=(double scalar);
+    Vector2 &operator/=(double scalar);
 
     DECLARE_WRAP
 };
 
-template<>
-class Vector<3> : public sw::ObjectWrap {
+class Vector3 : public sw::ObjectWrap {
 public:
     double x, y, z;
 
-    Vector();
-    explicit Vector(double scalar);
-    Vector(double x, double y, double z);
-    Vector(const Vector<3> &other);
-    Vector(const Vector<2> &v2, double z);
+    Vector3();
+    explicit Vector3(double scalar);
+    Vector3(double x, double y, double z);
+    Vector3(const Vector3 &other);
+    Vector3(const Vector2 &v2, double z);
     //
     // Const member functions
     //
     // Unsafe for integer vectors
     double Length() const;
-    double Distance(const Vector<3> &other) const;
+    double Distance(const Vector3 &other) const;
     double Distance(double x, double y, double z) const;
-    double Dot(const Vector<3> &other) const;
-    double AngleCos(const Vector<3> &other) const;
-    double Angle(const Vector<3> &other) const;
-    Vector<3> Normalized() const;
+    double Dot(const Vector3 &other) const;
+    double AngleCos(const Vector3 &other) const;
+    double Angle(const Vector3 &other) const;
+    Vector3 Normalized() const;
     double LengthSquared() const;
-    double DistanceSquared(const Vector<3> &other) const;
-    Vector<3> Cross(const Vector<3> &other) const;
-    Vector<3> Min(const Vector<3> &other) const;
-    Vector<3> Max(const Vector<3> &other) const;
-    Vector<3> Lerp(const Vector<3> &other, double t) const;
-    Vector<3> operator+(const Vector<3> &other) const;
-    Vector<3> operator-(const Vector<3> &other) const;
-    Vector<3> operator*(const Vector<3> &other) const;
-    Vector<3> operator/(const Vector<3> &other) const;
-    Vector<3> operator+(double scalar) const;
-    Vector<3> operator-(double scalar) const;
-    Vector<3> operator*(double scalar) const;
-    Vector<3> operator/(double scalar) const;
-    bool operator==(const Vector<3> &other) const;
+    double DistanceSquared(const Vector3 &other) const;
+    Vector3 Cross(const Vector3 &other) const;
+    Vector3 Min(const Vector3 &other) const;
+    Vector3 Max(const Vector3 &other) const;
+    Vector3 Lerp(const Vector3 &other, double t) const;
+    Vector3 operator+(const Vector3 &other) const;
+    Vector3 operator-(const Vector3 &other) const;
+    Vector3 operator*(const Vector3 &other) const;
+    Vector3 operator/(const Vector3 &other) const;
+    Vector3 operator+(double scalar) const;
+    Vector3 operator-(double scalar) const;
+    Vector3 operator*(double scalar) const;
+    Vector3 operator/(double scalar) const;
+    bool operator==(const Vector3 &other) const;
     bool operator==(double scalar) const;
 //
 // Non-const member functions
 //
 
     // Unsafe for integer vectors
-    Vector<3> &Normalize();
-    Vector<3> &Floor();
-    Vector<3> &Ceil();
-    Vector<3> &Round();
-    Vector<3> &Zero();
-    Vector<3> &Set(double x, double y, double z);
-    Vector<3> &Set(const Vector<3> &other);
-    Vector<3> &Set(const Vector<2> &other, double z);
-    Vector<3> &Set(double scalar);
-    Vector<3> &operator-();
-    Vector<3> &operator=(const Vector<3> &other);
-    Vector<3> &operator+=(const Vector<3> &other);
-    Vector<3> &operator-=(const Vector<3> &other);
-    Vector<3> &operator*=(const Vector<3> &other);
-    Vector<3> &operator/=(const Vector<3> &other);
-    Vector<3> &operator=(double scalar);
-    Vector<3> &operator+=(double scalar);
-    Vector<3> &operator-=(double scalar);
-    Vector<3> &operator*=(double scalar);
-    Vector<3> &operator/=(double scalar);
+    Vector3 &Normalize();
+    Vector3 &Floor();
+    Vector3 &Ceil();
+    Vector3 &Round();
+    Vector3 &Zero();
+    Vector3 &Set(double x, double y, double z);
+    Vector3 &Set(const Vector3 &other);
+    Vector3 &Set(const Vector2 &other, double z);
+    Vector3 &Set(double scalar);
+    Vector3 &operator-();
+    Vector3 &operator=(const Vector3 &other);
+    Vector3 &operator+=(const Vector3 &other);
+    Vector3 &operator-=(const Vector3 &other);
+    Vector3 &operator*=(const Vector3 &other);
+    Vector3 &operator/=(const Vector3 &other);
+    Vector3 &operator=(double scalar);
+    Vector3 &operator+=(double scalar);
+    Vector3 &operator-=(double scalar);
+    Vector3 &operator*=(double scalar);
+    Vector3 &operator/=(double scalar);
 
     DECLARE_WRAP
 };
 
-template<>
-class Vector<4> : public sw::ObjectWrap {
+class Vector4 : public sw::ObjectWrap {
 public:
     double x, y, z, w;
-    Vector();
-    explicit Vector(double scalar);
-    Vector(double x, double y, double z, double w);
-    Vector(const Vector<4> &other);
-    Vector(const Vector<3> &v3, double w);
-    Vector(const Vector<2> &v2, double z, double w);
+
+    Vector4();
+    explicit Vector4(double scalar);
+    Vector4(double x, double y, double z, double w);
+    Vector4(const Vector4 &other);
+    Vector4(const Vector3 &v3, double w);
+    Vector4(const Vector2 &v2, double z, double w);
 //
 // Const member functions
 //
 
     // Unsafe for integer vectors
     double Length() const;
-    double Distance(const Vector<4> &other) const;
-    double AngleCos(const Vector<4> &other) const;
-    double Angle(const Vector<4> &other) const;
-    Vector<4> Normalized() const;
+    double Distance(const Vector4 &other) const;
+    double AngleCos(const Vector4 &other) const;
+    double Angle(const Vector4 &other) const;
+    Vector4 Normalized() const;
     double LengthSquared() const;
-    double DistanceSquared(const Vector<4> &other) const;
-    double Dot(const Vector<4> &other) const;
-    Vector<4> Min(const Vector<4> &other) const;
-    Vector<4> Max(const Vector<4> &other) const;
-    Vector<4> Lerp(const Vector<4> &other, double t) const;
-    Vector<4> operator+(const Vector<4> &other) const;
-    Vector<4> operator-(const Vector<4> &other) const;
-    Vector<4> operator*(const Vector<4> &other) const;
-    Vector<4> operator/(const Vector<4> &other) const;
-    Vector<4> operator+(double scalar) const;
-    Vector<4> operator-(double scalar) const;
-    Vector<4> operator*(double scalar) const;
-    Vector<4> operator/(double scalar) const;
-    bool operator==(const Vector<4> &other) const;
+    double DistanceSquared(const Vector4 &other) const;
+    double Dot(const Vector4 &other) const;
+    Vector4 Min(const Vector4 &other) const;
+    Vector4 Max(const Vector4 &other) const;
+    Vector4 Lerp(const Vector4 &other, double t) const;
+    Vector4 operator+(const Vector4 &other) const;
+    Vector4 operator-(const Vector4 &other) const;
+    Vector4 operator*(const Vector4 &other) const;
+    Vector4 operator/(const Vector4 &other) const;
+    Vector4 operator+(double scalar) const;
+    Vector4 operator-(double scalar) const;
+    Vector4 operator*(double scalar) const;
+    Vector4 operator/(double scalar) const;
+    bool operator==(const Vector4 &other) const;
     bool operator==(double scalar) const;
 //
 // Non-const member functions
 //
 
     // Unsafe for integer vectors
-    Vector<4> &Normalize();
-    Vector<4> &Floor();
-    Vector<4> &Ceil();
-    Vector<4> &Round();
-    Vector<4> &Zero();
-    Vector<4> &Set(double x, double y, double z, double w);
-    Vector<4> &Set(const Vector<4> &other);
-    Vector<4> &Set(const Vector<3> &other, double w);
-    Vector<4> &Set(const Vector<2> &other, double z, double w);
-    Vector<4> &Set(double scalar);
-    Vector<4> &operator-();
-    Vector<4> &operator=(const Vector<4> &other);
-    Vector<4> &operator+=(const Vector<4> &other);
-    Vector<4> &operator-=(const Vector<4> &other);
-    Vector<4> &operator*=(const Vector<4> &other);
-    Vector<4> &operator/=(const Vector<4> &other);
-    Vector<4> &operator=(double scalar);
-    Vector<4> &operator+=(double scalar);
-    Vector<4> &operator-=(double scalar);
-    Vector<4> &operator*=(double scalar);
-    Vector<4> &operator/=(double scalar);
+    Vector4 &Normalize();
+    Vector4 &Floor();
+    Vector4 &Ceil();
+    Vector4 &Round();
+    Vector4 &Zero();
+    Vector4 &Set(double x, double y, double z, double w);
+    Vector4 &Set(const Vector4 &other);
+    Vector4 &Set(const Vector3 &other, double w);
+    Vector4 &Set(const Vector2 &other, double z, double w);
+    Vector4 &Set(double scalar);
+    Vector4 &operator-();
+    Vector4 &operator=(const Vector4 &other);
+    Vector4 &operator+=(const Vector4 &other);
+    Vector4 &operator-=(const Vector4 &other);
+    Vector4 &operator*=(const Vector4 &other);
+    Vector4 &operator/=(const Vector4 &other);
+    Vector4 &operator=(double scalar);
+    Vector4 &operator+=(double scalar);
+    Vector4 &operator-=(double scalar);
+    Vector4 &operator*=(double scalar);
+    Vector4 &operator/=(double scalar);
 
     DECLARE_WRAP
 };
 
-typedef Vector<2> Vector2;
-typedef Vector<3> Vector3;
-typedef Vector<4> Vector4;
 }
 
 #endif //SANDWICH_VECTOR_HPP
