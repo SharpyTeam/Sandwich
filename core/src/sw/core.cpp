@@ -14,6 +14,7 @@
 #include <sw/math/matrix.hpp>
 #include <sw/sw_macros.hpp>
 #include <sw/sprite.hpp>
+#include <glslcross.h>
 
 extern "C" const char js_bundle_contents[];
 
@@ -24,6 +25,20 @@ double r() {
 }
 
 void Start() {
+    // Test crosscompilation
+    glslcross::ShaderProgram program;
+    program.GetShaderData(glslcross::ShaderProgram::Stage::Vertex).source =
+            "#version 450\nvoid main() { gl_Position = vec4(0); }";
+    program.GetShaderData(glslcross::ShaderProgram::Stage::Fragment).source =
+            "#version 330 core\nvoid main() { gl_FragColor = vec4(0); }";
+    if (!program.Crosscompile(110, true)) {
+        std::cout << program.GetInfoLog() << std::endl;
+    } else {
+        std::cout << program.GetShaderData(glslcross::ShaderProgram::Stage::Vertex).GetCrosscompiledSource() << std::endl;
+        std::cout << program.GetShaderData(glslcross::ShaderProgram::Stage::Fragment).GetCrosscompiledSource() << std::endl;
+    }
+
+
     const double d1[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
     const double d2[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
     const double d3[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
