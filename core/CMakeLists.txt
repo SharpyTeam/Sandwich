@@ -13,7 +13,7 @@ set(SANDWICH_CORE_HEADERS
         src/sw/sw_macros.hpp
         src/sw/core.hpp
         src/sw/math/vector.hpp
-        src/sw/sprite.hpp src/sw/math/matrix.hpp)
+        src/sw/sprite.hpp src/sw/math/matrix.hpp src/sw/shader.hpp)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp

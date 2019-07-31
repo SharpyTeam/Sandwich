@@ -12,3 +12,8 @@ target_include_directories(glslcross PUBLIC include)
 if (NOT NO_GLSLCROSS_GLSL_TO_SPIRV_COMPILER)
     target_compile_definitions(glslcross PUBLIC GLSLCROSS_GLSL_TO_SPIRV_COMPILER=1)
 endif ()
+
+# TODO add here target for shader validator
+# it could know what version of shader is it and is it compatible with current target platform
+# if anything does'not match, it should compile it to SpirV and store near
+# then this util could take all SpirV binaries and pack them in one header file for further linking
