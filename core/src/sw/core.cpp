@@ -92,7 +92,6 @@ void Start() {
         };
 
         v8pp::class_<A> a(isolate);
-        a.set()
         a.set_indexed_accessor(&A::operator[]).set("x", &A::x);
         a.auto_wrap_objects();
 
