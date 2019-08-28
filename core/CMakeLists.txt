@@ -6,19 +6,16 @@ set(CMAKE_CXX_STANDARD 17)
 # TODO Maybe allow relocating usr project?
 add_subdirectory(../usr SandwichUsr)
 #set(NO_GLSLCROSS_GLSL_TO_SPIRV_COMPILER TRUE)
-add_subdirectory(../glslcross glslcross)
+add_subdirectory(../math SandwichMath)
 
 set(SANDWICH_CORE_HEADERS
-        src/sw/object_wrap.hpp
         src/sw/sw_macros.hpp
         src/sw/core.hpp
-        src/sw/math/vector.hpp
-        src/sw/sprite.hpp src/sw/math/matrix.hpp src/sw/shader.hpp)
+        src/sw/sprite.hpp)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
-        src/sw/sprite.cpp
-        src/sw/math/vector.cpp src/sw/math/matrix.cpp)
+        src/sw/sprite.cpp)
 
 add_library(sandwich_core STATIC ${SANDWICH_CORE_HEADERS} ${SANDWICH_CORE_SOURCES})
 
@@ -39,7 +36,7 @@ endif ()]]
 
 target_include_directories(sandwich_core PUBLIC src deps/v8/include)
 target_link_directories(sandwich_core PUBLIC lib)
-target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle glslcross)
+target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle sandwich_math)
 if (WIN32)
     target_link_libraries(sandwich_core DbgHelp Winmm)
 elseif (UNIX)

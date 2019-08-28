@@ -5,12 +5,11 @@
 #ifndef SANDWICH_CORE_SPRITE_HPP
 #define SANDWICH_CORE_SPRITE_HPP
 
-#include <sw/object_wrap.hpp>
-#include <sw/math/vector.hpp>
+#include <vector.hpp>
 
 namespace sw {
 
-class Sprite : public ObjectWrap {
+class Sprite {
 public:
     Vector2 position;
     Vector2 scale;
@@ -20,7 +19,6 @@ public:
 
     }
 
-    DECLARE_WRAP
 };
 
 }

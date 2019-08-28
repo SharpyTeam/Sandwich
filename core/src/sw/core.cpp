@@ -9,12 +9,9 @@
 #include <libplatform/libplatform.h>
 #include <v8.h>
 #include <functional>
-#include <sw/object_wrap.hpp>
-#include <sw/math/vector.hpp>
-#include <sw/math/matrix.hpp>
-#include <sw/sw_macros.hpp>
-#include <sw/sprite.hpp>
-#include <glslcross.h>
+#include <vector.hpp>
+#include <matrix.hpp>
+#include "sw_macros.hpp"
 
 extern "C" const char js_bundle_contents[];
 
@@ -25,19 +22,6 @@ double r() {
 }
 
 void Start() {
-    // Test crosscompilation
-    glslcross::ShaderProgram program;
-    program.GetShaderData(glslcross::ShaderProgram::Stage::Vertex).source =
-            "#version 450\nvoid main() { gl_Position = vec4(0); }";
-    program.GetShaderData(glslcross::ShaderProgram::Stage::Fragment).source =
-            "#version 330 core\nvoid main() { gl_FragColor = vec4(0); }";
-    if (!program.Crosscompile(110, true)) {
-        std::cout << program.GetInfoLog() << std::endl;
-    } else {
-        std::cout << program.GetShaderData(glslcross::ShaderProgram::Stage::Vertex).GetCrosscompiledSource() << std::endl;
-        std::cout << program.GetShaderData(glslcross::ShaderProgram::Stage::Fragment).GetCrosscompiledSource() << std::endl;
-    }
-
 
     const double d1[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
     const double d2[] = {r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r(), r()};
@@ -63,7 +47,10 @@ void Start() {
     V8::Initialize();
 
     // Create a new Isolate and make it the current one.
+#if 0
+
     Isolate::CreateParams create_params;
+
     create_params.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
     Isolate *isolate = Isolate::New(create_params);
 
@@ -73,7 +60,6 @@ void Start() {
 
         Local<Context> context = Context::New(isolate);
         Context::Scope context_scope(context);
-
         Local<Object> sw_object(Object::New(Isolate::GetCurrent()));
         context->Global()->Set(Isolate::GetCurrent()->GetCurrentContext(),
                                String::NewFromUtf8(isolate, "sw").ToLocalChecked(), sw_object);
@@ -126,10 +112,10 @@ void Start() {
             delta = std::chrono::duration_cast<std::chrono::nanoseconds>(
                     std::chrono::high_resolution_clock::now() - current).count() / 1000000000.0;
             current = std::chrono::high_resolution_clock::now();
-            auto f = sw_object->Get(context, v8_str("update")).ToLocalChecked();
-            if (f.IsEmpty() || !f->IsFunction()) break;
+//            auto f = sw_object->Get(context, v8_str("update")).ToLocalChecked();
+//            if (f.IsEmpty() || !f->IsFunction()) break;
             auto d = v8_num(delta).As<Value>();
-            f.As<Function>()->Call(context, sw_object, 1, &d);
+//            f.As<Function>()->Call(context, sw_object, 1, &d);
             if (t.HasCaught()) {
                 std::cerr << *String::Utf8Value(Isolate::GetCurrent(), t.Exception()) << std::endl;
                 break;
@@ -139,6 +125,7 @@ void Start() {
 
     }
 
+#endif
 
 
     // Dispose the isolate and tear down V8.
@@ -146,4 +133,5 @@ void Start() {
     V8::Dispose();
     V8::ShutdownPlatform();
     delete create_params.array_buffer_allocator;
+
 }
