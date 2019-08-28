@@ -1,0 +1,3 @@
+[submodule "core/deps/v8pp"]
+	path = core/deps/v8pp
+	url = https://github.com/ayles/v8pp.git

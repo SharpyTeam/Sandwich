@@ -525,7 +525,7 @@ Vector3 Matrix4::GetTranslation() const {
     return Vector3(data[12], data[13], data[14]);
 }
 
-float Matrix4::GetRotationZ() const {
+double Matrix4::GetRotationZ() const {
     Vector4 rot = *this * Vector4(1, 0, 0, 0);
     return std::atan2(rot.y, rot.x);
 }

@@ -55,7 +55,7 @@ public:
     /*Vector4 Unproject(double x, double y, double z) const;
     Vector4 Unproject(const Vector3 &v) const;*/
     Vector3 GetTranslation() const;
-    float GetRotationZ() const;
+    double GetRotationZ() const;
 };
 
 } //namespace a2d
