@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(../usr SandwichUsr)
 #set(NO_GLSLCROSS_GLSL_TO_SPIRV_COMPILER TRUE)
 add_subdirectory(../math SandwichMath)
+add_subdirectory(../renderer SandwichRenderer)
 add_subdirectory(deps/v8pp)
 target_include_directories(v8pp PUBLIC deps/v8/include)
 
@@ -36,7 +37,7 @@ endif ()]]
 
 target_include_directories(sandwich_core PUBLIC src deps/v8/include)
 target_link_directories(sandwich_core PUBLIC lib)
-target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle sandwich_math v8pp)
+target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle sandwich_math sandwich_renderer v8pp)
 if (WIN32)
     target_link_libraries(sandwich_core DbgHelp Winmm)
 elseif (UNIX)

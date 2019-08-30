@@ -1,3 +1,8 @@
+[submodule "renderer/deps/glfw"]
+	path = renderer/deps/glfw
+	url = https://github.com/glfw/glfw
+	branch = 3.3-stable
 [submodule "core/deps/v8pp"]
 	path = core/deps/v8pp
-	url = https://github.com/ayles/v8pp.git
+	url = https://github.com/ayles/v8pp
+	branch = c++17
