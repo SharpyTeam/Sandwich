@@ -14,5 +14,7 @@ sw.update = function (delta: number) {
     console.log(sw.a[0].x);
     // @ts-ignore
     console.log(sw.a[1].x);
+    // @ts-ignore
+    console.log(sw.a);
     sw.update = null;
 }

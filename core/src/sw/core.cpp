@@ -39,7 +39,7 @@ Local<Object> GetConsole() {
 
     v8pp::module console_def(Isolate::GetCurrent());
 
-    console_def.set("log", [](const FunctionCallbackInfo<Value> &info) {
+    console_def.function("log", [](const FunctionCallbackInfo<Value> &info) {
         std::string s;
         for (int i = 0; i < info.Length(); ++i) {
             s += *v8::String::Utf8Value(Isolate::GetCurrent(),
@@ -83,23 +83,40 @@ void Start() {
 
         struct A {
             std::vector<A *> children;
-            A *&operator[](int index) {
-                return children[index];
+
+            A &Get(uint32_t index) {
+                std::cerr << index << std::endl;
+                return *children[index];
             }
+
+            void Set(uint32_t index, A &a) {
+                std::cerr << index << " " << &a << std::endl;
+                children[index] = &a;
+            }
+
             double x;
 
             A(double x) : x(x) {}
+
+            std::string ToString() {
+                std::string s;
+                s += std::to_string(x) + " (";
+                for (auto c : children) {
+                    s += c->ToString();
+                }
+                s += ")";
+                return s;
+            }
         };
 
         v8pp::class_<A> a(isolate);
-        a.set_indexed_accessor(&A::operator[]).set("x", &A::x);
-        a.auto_wrap_objects();
+        a.auto_wrap_objects().indexer(&A::Get, &A::Set).var("x", &A::x).function("toString", &A::ToString);
 
-        A aa(12);
-        aa.children.push_back(new A(1));
-        aa.children.push_back(new A(32));
+        A *aa = new A(12);
+        aa->children.push_back(new A(1));
+        aa->children.push_back(new A(32));
 
-        GetSwObject()->Set(context, v8_str("a"), v8pp::to_v8(isolate, aa));
+        GetSwObject()->Set(context, v8_str("a"), v8pp::to_v8(isolate, *aa));
 
         // Compile script
         Local<Script> script = Script::Compile(Isolate::GetCurrent()->GetCurrentContext(),
