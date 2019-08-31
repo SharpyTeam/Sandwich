@@ -9,8 +9,8 @@
 #include <libplatform/libplatform.h>
 #include <v8.h>
 #include <functional>
-#include <sw/vector.hpp>
-#include <sw/matrix.hpp>
+#include <sw/math/vector.hpp>
+#include <sw/math/matrix.hpp>
 #include <v8pp/module.hpp>
 #include <v8pp/class.hpp>
 #include <sw/sw_macros.hpp>
@@ -82,12 +82,12 @@ void Start() {
         context->Global()->Set(context, v8_str("console"), GetConsole());
         context->Global()->Set(context, v8_str("sw"), GetSwObject());
 
-        sw::MathModule math_module();
+        //sw::MathModule math_module();
 
-        const sw::JSModule js_modules[] = {math_module};
+        //const sw::JSModule js_modules[] = {math_module};
 
-        for (const sw::JSModule &js_module : js_modules)
-            js_module.Init(isolate);
+        //for (const sw::JSModule &js_module : js_modules)
+            //js_module.Init(isolate);
 
         struct A {
             std::vector<A *> children;

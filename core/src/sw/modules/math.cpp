@@ -3,10 +3,10 @@
 //
 
 #include <v8pp/class.hpp>
-#include <sw/vector.hpp>
-#include <sw/matrix.hpp>
+#include <sw/math/vector.hpp>
+#include <sw/math/matrix.hpp>
 #include <iostream>
-#include "math.hpp"
+#include <sw/modules/math.hpp>
 
 namespace sw {
 
@@ -20,8 +20,8 @@ void MathModule::Init(v8::Isolate *isolate) {
 
 
     vector2
-            .set("Length", &Vector2::Length)
-            .set("Dot", [isolate](v8::FunctionCallbackInfo<v8::Value> const &args) {
+            .function("Length", &Vector2::Length)
+            .function("Dot", [isolate](v8::FunctionCallbackInfo<v8::Value> const &args) {
                 auto *self = v8pp::class_<Vector2>::unwrap_object(args.GetIsolate(), args.This());
                 switch (args.Length()) {
                     case 1: {
@@ -47,24 +47,24 @@ void MathModule::Init(v8::Isolate *isolate) {
                     }
                 }
             })
-//            .set("Distance", &Vector2::Distance)
-//            .set("Determinant", &Vector2::Determinant)
-//            .set("Angle", &Vector2::Angle)
-            .set("Normalized", &Vector2::Normalized)
-            .set("Normalize", &Vector2::Normalize)
-            .set("LengthSquared", &Vector2::LengthSquared)
-//            .set("DistanceSquared", &Vector2::LengthSquared)
-            .set("Perpendicular", &Vector2::Perpendicular)
-            .set("Floor", &Vector2::Floor)
-            .set("Ceil", &Vector2::Ceil)
-            .set("Zero", &Vector2::Zero);
-//            .set("Min", &Vector2::Min)
-//            .set("Max", &Vector2::Max)
-//            .set("Lerp", &Vector2::Lerp)
-//            .set("Add", &Vector2::operator+)
-//            .set("Subtract", &Vector2::operator-)
-//            .set("Dot", &Vector2::operator*)
-//            .set("Add", &Vector2::operator+);
+//            .function("Distance", &Vector2::Distance)
+//            .function("Determinant", &Vector2::Determinant)
+//            .function("Angle", &Vector2::Angle)
+            .function("Normalized", &Vector2::Normalized)
+            .function("Normalize", &Vector2::Normalize)
+            .function("LengthSquared", &Vector2::LengthSquared)
+//            .function("DistanceSquared", &Vector2::LengthSquared)
+            .function("Perpendicular", &Vector2::Perpendicular)
+            .function("Floor", &Vector2::Floor)
+            .function("Ceil", &Vector2::Ceil)
+            .function("Zero", &Vector2::Zero);
+//            .function("Min", &Vector2::Min)
+//            .function("Max", &Vector2::Max)
+//            .function("Lerp", &Vector2::Lerp)
+//            .function("Add", &Vector2::operator+)
+//            .function("Subtract", &Vector2::operator-)
+//            .function("Dot", &Vector2::operator*)
+//            .function("Add", &Vector2::operator+);
 
 
     vector2.auto_wrap_objects();
