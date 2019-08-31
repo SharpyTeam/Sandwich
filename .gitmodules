@@ -5,7 +5,7 @@
 [submodule "core/deps/v8pp"]
 	path = core/deps/v8pp
 	url = https://github.com/ayles/v8pp
-	branch = c++17
+	branch = sw
 [submodule "renderer/deps/glslcross"]
 	path = renderer/deps/glslcross
 	url = https://github.com/SharpyTeam/glslcross

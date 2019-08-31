@@ -20,7 +20,7 @@ namespace sw {
 
 class Shader final {
 public:
-    typedef glslcross::ShaderProgram::Stage Stage;
+    using Stage = glslcross::ShaderProgram::Stage;
 
     enum ValueType {
         FLOAT = 1,
