@@ -4,12 +4,12 @@ project(SandwichMath)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SANDWICH_MATH_HEADERS
-        src/matrix.hpp
-        src/vector.hpp)
+        src/sw/matrix.hpp
+        src/sw/vector.hpp)
 
 set(SANDWICH_MATH_SOURCES
-        src/matrix.cpp
-        src/vector.cpp)
+        src/sw/matrix.cpp
+        src/sw/vector.cpp)
 
 add_library(sandwich_math STATIC ${SANDWICH_MATH_HEADERS} ${SANDWICH_MATH_SOURCES})
 target_include_directories(sandwich_math PUBLIC src)

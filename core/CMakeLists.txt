@@ -13,10 +13,13 @@ target_include_directories(v8pp PUBLIC deps/v8/include)
 
 set(SANDWICH_CORE_HEADERS
         src/sw/sw_macros.hpp
-        src/sw/core.hpp)
+        src/sw/core.hpp
+        src/sw/js_module.hpp
+        src/sw/modules/math.hpp)
 
 set(SANDWICH_CORE_SOURCES
-        src/sw/core.cpp)
+        src/sw/core.cpp
+        src/sw/modules/math.cpp)
 
 add_library(sandwich_core STATIC ${SANDWICH_CORE_HEADERS} ${SANDWICH_CORE_SOURCES})
 

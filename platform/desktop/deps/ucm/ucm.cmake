@@ -554,7 +554,7 @@ macro(ucm_add_target)
         message(FATAL_ERROR "Need to pass SOURCES and a list of source files to ucm_add_target()")
     endif()
 
-    # init with the global unity flag
+    # I with the global unity flag
     set(do_unity ${UCM_UNITY_BUILD})
 
     # check the UNITY argument

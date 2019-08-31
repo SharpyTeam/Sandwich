@@ -9,11 +9,12 @@
 #include <libplatform/libplatform.h>
 #include <v8.h>
 #include <functional>
-#include <vector.hpp>
-#include <matrix.hpp>
+#include <sw/vector.hpp>
+#include <sw/matrix.hpp>
 #include <v8pp/module.hpp>
 #include <v8pp/class.hpp>
 #include <sw/sw_macros.hpp>
+#include <sw/modules/math.hpp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -81,6 +82,13 @@ void Start() {
         context->Global()->Set(context, v8_str("console"), GetConsole());
         context->Global()->Set(context, v8_str("sw"), GetSwObject());
 
+        sw::MathModule math_module();
+
+        const sw::JSModule js_modules[] = {math_module};
+
+        for (const sw::JSModule &js_module : js_modules)
+            js_module.Init(isolate);
+
         struct A {
             std::vector<A *> children;
 
@@ -120,7 +128,7 @@ void Start() {
 
         // Compile script
         Local<Script> script = Script::Compile(Isolate::GetCurrent()->GetCurrentContext(),
-                v8_str(js_bundle_contents)).ToLocalChecked();
+                                               v8_str(js_bundle_contents)).ToLocalChecked();
 
         // Set try-catch and run script
         TryCatch t(Isolate::GetCurrent());

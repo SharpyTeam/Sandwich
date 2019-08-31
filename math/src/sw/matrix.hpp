@@ -5,7 +5,7 @@
 #ifndef SANDWICH_MATH_MATRIX_HPP
 #define SANDWICH_MATH_MATRIX_HPP
 
-#include <vector.hpp>
+#include <sw/vector.hpp>
 
 namespace sw {
 
@@ -58,6 +58,6 @@ public:
     double GetRotationZ() const;
 };
 
-} //namespace a2d
+} //namespace sw
 
 #endif //SANDWICH_MATH_MATRIX_HPP
