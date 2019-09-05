@@ -122,25 +122,28 @@ void Start() {
         Context::Scope context_scope(context);
 
         struct A {
-            sw::Vector2 pos;
-            sw::Vector2 *v;
+            std::shared_ptr<sw::Vector2> v1;
+            sw::Vector2 *v2;
+            sw::Vector2 v3;
 
-            A(const sw::Vector2 &pos, sw::Vector2 *v)
-            : pos(pos), v(v) {}
+            A()
+            : v1(new sw::Vector2(1)), v2(new sw::Vector2(2)), v3(3) {}
         };
 
         v8b::Class<sw::Vector2> c(isolate);
         c
-            .Constructor<std::tuple<double, double>, std::tuple<double>>()
+            .Constructor<std::tuple<double>, std::tuple<double, double>>()
             .Var("x", &sw::Vector2::x)
             .Var("y", &sw::Vector2::y)
             .AutoWrap()
+            .PointerAutoWrap()
         ;
 
         v8b::Class<A> a(isolate);
-        a.Constructor<std::tuple<const sw::Vector2 &, sw::Vector2 *>>();
-        a.Var("pos", &A::pos);
-        a.Var("v", &A::v);
+        a.Constructor<std::tuple<>>();
+        a.Var("v1", &A::v1);
+        a.Var("v2", &A::v2);
+        a.Var("v3", &A::v3);
 
         context->Global()->Set(context, v8_str("A"), a.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
         context->Global()->Set(context, v8_str("Vector2"), c.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
