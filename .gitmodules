@@ -9,3 +9,6 @@
 [submodule "renderer/deps/glslcross"]
 	path = renderer/deps/glslcross
 	url = https://github.com/SharpyTeam/glslcross
+[submodule "core/deps/v8bind"]
+	path = core/deps/v8bind
+	url = https://github.com/ayles/v8bind

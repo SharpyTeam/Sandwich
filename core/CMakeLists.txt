@@ -64,13 +64,15 @@ endif ()
 
 # core target
 add_library(sandwich_core STATIC ${SANDWICH_CORE_HEADERS} ${SANDWICH_CORE_SOURCES})
-target_include_directories(sandwich_core PUBLIC src deps/v8/include)
+target_include_directories(sandwich_core PUBLIC deps/v8/include src)
 
 # TODO Maybe allow relocating usr project?
 add_subdirectory(../usr SandwichUsr)
 #set(NO_GLSLCROSS_GLSL_TO_SPIRV_COMPILER TRUE)
 add_subdirectory(../math SandwichMath)
 add_subdirectory(../renderer SandwichRenderer)
+set(V8_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/deps/v8/include")
+add_subdirectory(deps/v8bind)
 add_subdirectory(deps/v8pp)
 target_include_directories(v8pp PUBLIC deps/v8/include)
 
@@ -84,7 +86,7 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib/v8_monolith_${V8_BUILD_TYPE}.lib
 endif ()]]
 
 target_link_directories(sandwich_core PUBLIC lib)
-target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle sandwich_math sandwich_renderer v8pp)
+target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle sandwich_math sandwich_renderer v8pp v8bind)
 if (WIN32)
     target_link_libraries(sandwich_core DbgHelp Winmm)
 elseif (UNIX)

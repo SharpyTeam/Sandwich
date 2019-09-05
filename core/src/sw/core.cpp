@@ -15,6 +15,9 @@
 #include <v8pp/class.hpp>
 #include <sw/sw_macros.hpp>
 #include <sw/modules/math.hpp>
+#include <v8bind/function.hpp>
+#include <v8bind/type_info.hpp>
+#include <v8bind/class.hpp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -55,6 +58,46 @@ Local<Object> GetConsole() {
     return console_object;
 }
 
+struct A {
+    std::vector<A *> children;
+
+    A &Get(uint32_t index) {
+        std::cerr << index << std::endl;
+        return *children[index];
+    }
+
+    void Set(uint32_t index, A &a) {
+        std::cerr << index << " " << &a << std::endl;
+        children[index] = &a;
+    }
+
+    double x;
+
+    A(double x) : x(x) {}
+
+    std::string ToString() {
+        std::string s;
+        s += std::to_string(x) + " (";
+        for (auto c : children) {
+            s += c->ToString();
+        }
+        s += ")";
+        return s;
+    }
+};
+
+void f(int a) {
+    std::cerr << "It fucking works! " << a << std::endl;
+}
+
+void f(int a, int b) {
+    std::cerr << "This shit works! " << a << " " << b << std::endl;
+}
+
+void f(std::string &&s) {
+    std::cerr << "Fucking string from v8: " << s << std::endl;
+}
+
 void Start() {
     // Initialize V8.
     //V8::InitializeICUDefaultLocation(argv[0]);
@@ -78,9 +121,34 @@ void Start() {
         Local<Context> context = Context::New(isolate);
         Context::Scope context_scope(context);
 
+        struct A {
+            sw::Vector2 pos;
+            sw::Vector2 *v;
+
+            A(const sw::Vector2 &pos, sw::Vector2 *v)
+            : pos(pos), v(v) {}
+        };
+
+        v8b::Class<sw::Vector2> c(isolate);
+        c
+            .Constructor<std::tuple<double, double>, std::tuple<double>>()
+            .Var("x", &sw::Vector2::x)
+            .Var("y", &sw::Vector2::y)
+            .AutoWrap()
+        ;
+
+        v8b::Class<A> a(isolate);
+        a.Constructor<std::tuple<const sw::Vector2 &, sw::Vector2 *>>();
+        a.Var("pos", &A::pos);
+        a.Var("v", &A::v);
+
+        context->Global()->Set(context, v8_str("A"), a.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+        context->Global()->Set(context, v8_str("Vector2"), c.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+
         // Set global properties
         context->Global()->Set(context, v8_str("console"), GetConsole());
         context->Global()->Set(context, v8_str("sw"), GetSwObject());
+        //context->Global()->Set(context, v8_str("test"), v8b::wrap_function(isolate, static_cast<void(*)(int, int)>(f), static_cast<void(*)(int)>(f), static_cast<void(*)(std::string &&)>(f))->GetFunction(context).ToLocalChecked());
 
         //sw::MathModule math_module();
 
@@ -89,42 +157,15 @@ void Start() {
         //for (const sw::JSModule &js_module : js_modules)
             //js_module.Init(isolate);
 
-        struct A {
-            std::vector<A *> children;
-
-            A &Get(uint32_t index) {
-                std::cerr << index << std::endl;
-                return *children[index];
-            }
-
-            void Set(uint32_t index, A &a) {
-                std::cerr << index << " " << &a << std::endl;
-                children[index] = &a;
-            }
-
-            double x;
-
-            A(double x) : x(x) {}
-
-            std::string ToString() {
-                std::string s;
-                s += std::to_string(x) + " (";
-                for (auto c : children) {
-                    s += c->ToString();
-                }
-                s += ")";
-                return s;
-            }
-        };
-
-        v8pp::class_<A> a(isolate);
-        a.auto_wrap_objects().indexer(&A::Get, &A::Set).var("x", &A::x).function("toString", &A::ToString);
+        /*v8pp::class_<A> a(isolate);
+        a.auto_wrap_objects().indexer(&A::Get, &A::Set).var("x", &A::x).function("toString", &A::ToString).
+        ctor<int>();
 
         A *aa = new A(12);
         aa->children.push_back(new A(1));
-        aa->children.push_back(new A(32));
+        aa->children.push_back(new A(32));*/
 
-        GetSwObject()->Set(context, v8_str("a"), v8pp::to_v8(isolate, *aa));
+        //GetSwObject()->Set(context, v8_str("a"), v8pp::to_v8(isolate, *aa));
 
         // Compile script
         Local<Script> script = Script::Compile(Isolate::GetCurrent()->GetCurrentContext(),
