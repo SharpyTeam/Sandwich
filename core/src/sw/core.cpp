@@ -5,7 +5,6 @@
 #include <map>
 #include <memory>
 #include <chrono>
-#include <filesystem>
 #include <libplatform/libplatform.h>
 #include <v8.h>
 #include <functional>
@@ -18,6 +17,7 @@
 #include <v8bind/function.hpp>
 #include <v8bind/type_info.hpp>
 #include <v8bind/class.hpp>
+#include <v8bind/class.ipp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -58,46 +58,6 @@ Local<Object> GetConsole() {
     return console_object;
 }
 
-struct A {
-    std::vector<A *> children;
-
-    A &Get(uint32_t index) {
-        std::cerr << index << std::endl;
-        return *children[index];
-    }
-
-    void Set(uint32_t index, A &a) {
-        std::cerr << index << " " << &a << std::endl;
-        children[index] = &a;
-    }
-
-    double x;
-
-    A(double x) : x(x) {}
-
-    std::string ToString() {
-        std::string s;
-        s += std::to_string(x) + " (";
-        for (auto c : children) {
-            s += c->ToString();
-        }
-        s += ")";
-        return s;
-    }
-};
-
-void f(int a) {
-    std::cerr << "It fucking works! " << a << std::endl;
-}
-
-void f(int a, int b) {
-    std::cerr << "This shit works! " << a << " " << b << std::endl;
-}
-
-void f(std::string &&s) {
-    std::cerr << "Fucking string from v8: " << s << std::endl;
-}
-
 void Start() {
     // Initialize V8.
     //V8::InitializeICUDefaultLocation(argv[0]);
@@ -121,13 +81,8 @@ void Start() {
         Local<Context> context = Context::New(isolate);
         Context::Scope context_scope(context);
 
-        struct A {
-            std::shared_ptr<sw::Vector2> v1;
-            sw::Vector2 *v2;
-            sw::Vector2 v3;
-
-            A()
-            : v1(new sw::Vector2(1)), v2(new sw::Vector2(2)), v3(3) {}
+        struct Z : public sw::Vector2 {
+            int o = 10;
         };
 
         v8b::Class<sw::Vector2> c(isolate);
@@ -139,13 +94,16 @@ void Start() {
             .PointerAutoWrap()
         ;
 
-        v8b::Class<A> a(isolate);
-        a.Constructor<std::tuple<>>();
-        a.Var("v1", &A::v1);
-        a.Var("v2", &A::v2);
-        a.Var("v3", &A::v3);
+        v8b::Class<Z> z(isolate);
+        z
+            .Constructor<std::tuple<>>()
+            .Var("o", &Z::o)
+            .AutoWrap()
+            .PointerAutoWrap()
+            .Inherit<sw::Vector2>()
+        ;
 
-        context->Global()->Set(context, v8_str("A"), a.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+        context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
         context->Global()->Set(context, v8_str("Vector2"), c.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 
         // Set global properties
@@ -198,7 +156,7 @@ void Start() {
             f.As<Function>()->Call(context, GetSwObject(), 1, &d);
         }
 
-
+        v8b::ClassManagerPool::RemoveAll(isolate);
     }
 
     // Dispose the isolate and tear down V8.

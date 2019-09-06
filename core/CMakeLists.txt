@@ -90,5 +90,5 @@ target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_
 if (WIN32)
     target_link_libraries(sandwich_core DbgHelp Winmm)
 elseif (UNIX)
-    target_link_libraries(sandwich_core pthread)
+    target_link_libraries(sandwich_core pthread dl)
 endif ()
