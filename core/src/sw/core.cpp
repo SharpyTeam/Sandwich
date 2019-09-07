@@ -87,23 +87,28 @@ void Start() {
 
         v8b::Class<sw::Vector2> c(isolate);
         c
-            .Constructor<std::tuple<double>, std::tuple<double, double>>()
+            .Constructor<std::tuple<>, std::tuple<double>, std::tuple<double, double>>()
             .Var("x", &sw::Vector2::x)
             .Var("y", &sw::Vector2::y)
+            .Function("length", &sw::Vector2::Length)
+            .Function<
+                    double (sw::Vector2::*)(double, double) const,
+                    double (sw::Vector2::*)(const sw::Vector2 &) const>
+                    ("angle", &sw::Vector2::Angle, &sw::Vector2::Angle)
             .AutoWrap()
             .PointerAutoWrap()
         ;
 
-        v8b::Class<Z> z(isolate);
+        /*v8b::Class<Z> z(isolate);
         z
             .Constructor<std::tuple<>>()
             .Var("o", &Z::o)
             .AutoWrap()
             .PointerAutoWrap()
             .Inherit<sw::Vector2>()
-        ;
+        ;*/
 
-        context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+        //context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
         context->Global()->Set(context, v8_str("Vector2"), c.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 
         // Set global properties
