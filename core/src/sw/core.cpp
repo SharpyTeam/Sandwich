@@ -83,6 +83,21 @@ void Start() {
 
         struct Z : public sw::Vector2 {
             int o = 10;
+            int Get() {
+                std::cout << "GOT" << std::endl;
+                return o;
+            }
+            void Set(int a) {
+                std::cout << "SET" << std::endl;
+                o = a;
+            }
+            double GetIndexed(int i) {
+                std::cout << "GET INDEXED " << i << std::endl;
+                return i * 15.0;
+            }
+            void SetIndexed(int i, double d) {
+                std::cout << "SET INDEXED " << i << " " << d << std::endl;
+            }
         };
 
         v8b::Class<sw::Vector2> c(isolate);
@@ -99,16 +114,18 @@ void Start() {
             .PointerAutoWrap()
         ;
 
-        /*v8b::Class<Z> z(isolate);
+        v8b::Class<Z> z(isolate);
         z
             .Constructor<std::tuple<>>()
             .Var("o", &Z::o)
+            .Property("op", &Z::Get, &Z::Set)
+            .Indexer(&Z::GetIndexed, &Z::SetIndexed)
             .AutoWrap()
             .PointerAutoWrap()
             .Inherit<sw::Vector2>()
-        ;*/
+        ;
 
-        //context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+        context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
         context->Global()->Set(context, v8_str("Vector2"), c.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 
         // Set global properties
