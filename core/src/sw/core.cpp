@@ -18,6 +18,7 @@
 #include <v8bind/type_info.hpp>
 #include <v8bind/class.hpp>
 #include <v8bind/class.ipp>
+#include "scene_node.hpp"
 
 extern "C" const char js_bundle_contents[];
 
@@ -184,6 +185,8 @@ void Start() {
             .AutoWrap()
             .PointerAutoWrap()
         ;
+
+        sw::SceneNode::Create();
 
         context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
         context->Global()->Set(context, v8_str("Vector2"), c.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());

@@ -13,7 +13,7 @@
 
 namespace sw {
 
-class SceneNode {
+class SceneNode : public ip::ref_counter {
 public:
     REMOVE_DEFAULTS(SceneNode)
 
@@ -32,6 +32,7 @@ public:
 
     static ip::intrusive_ptr<SceneNode> Create() {
         ip::intrusive_ptr<SceneNode> node = new SceneNode;
+        return node;
     }
 
     std::shared_ptr<Vector2> position;
