@@ -12,3 +12,6 @@
 [submodule "core/deps/v8bind"]
 	path = core/deps/v8bind
 	url = https://github.com/ayles/v8bind
+[submodule "core/deps/intrusive_ptr"]
+	path = core/deps/intrusive_ptr
+	url = https://github.com/GoltikRee/intrusive_ptr.git

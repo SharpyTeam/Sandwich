@@ -18,6 +18,8 @@
 #include <v8bind/type_info.hpp>
 #include <v8bind/class.hpp>
 #include <v8bind/class.ipp>
+#include <ip/intrusive_ptr.hpp>
+#include <ip/ref_counter.hpp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -71,6 +73,29 @@ void Start() {
 
     create_params.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
     Isolate *isolate = Isolate::New(create_params);
+
+    class test : public ip::ref_counter {
+        int a;
+    public:
+        test() : a(1234) {
+            std::cout << "Test created" << std::endl;
+        }
+
+        ~test() override {
+            std::cout << "Test destroyed" << std::endl;
+        }
+    };
+    auto a = new test;
+    {
+        ip::intrusive_ptr<test> intrusivePtr3(a);
+        {
+            ip::intrusive_ptr<test> intrusivePtr2(a);
+        }
+        ip::intrusive_ptr<test> intrusivePtr(a);
+        std::cout << (intrusivePtr == intrusivePtr3.get()) << std::endl;
+    }
+
+    std::cout << "Here." << std::endl;
 
     {
         // Initialize scopes

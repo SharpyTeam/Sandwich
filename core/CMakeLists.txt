@@ -7,11 +7,16 @@ set(SANDWICH_CORE_HEADERS
         src/sw/sw_macros.hpp
         src/sw/core.hpp
         src/sw/js_module.hpp
-        src/sw/modules/math.hpp)
+        src/sw/modules/math.hpp
+        src/sw/scene_node.hpp
+        src/sw/scene.hpp
+        src/sw/intrusive_pointer_manager.hpp)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
-        src/sw/modules/math.cpp)
+        src/sw/modules/math.cpp
+        src/sw/scene_node.cpp
+        src/sw/scene.cpp)
 
 
 if (Debug STREQUAL ${CMAKE_BUILD_TYPE})
@@ -73,6 +78,7 @@ add_subdirectory(../math SandwichMath)
 add_subdirectory(../renderer SandwichRenderer)
 set(V8_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/deps/v8/include")
 add_subdirectory(deps/v8bind)
+add_subdirectory(deps/intrusive_ptr)
 add_subdirectory(deps/v8pp)
 target_include_directories(v8pp PUBLIC deps/v8/include)
 
@@ -86,7 +92,14 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib/v8_monolith_${V8_BUILD_TYPE}.lib
 endif ()]]
 
 target_link_directories(sandwich_core PUBLIC lib)
-target_link_libraries(sandwich_core "v8_monolith_${V8_BUILD_TYPE}" sandwich_usr_bundle sandwich_math sandwich_renderer v8pp v8bind)
+target_link_libraries(sandwich_core
+        "v8_monolith_${V8_BUILD_TYPE}"
+        intrusive_ptr
+        sandwich_usr_bundle
+        sandwich_math
+        sandwich_renderer
+        v8pp
+        v8bind)
 if (WIN32)
     target_link_libraries(sandwich_core DbgHelp Winmm)
 elseif (UNIX)

@@ -28,9 +28,9 @@ double Vector2::LengthSquared() const {
 }
 
 
-double Vector2::Distance(double x, double y) const {
-    double x_diff = this->x - x;
-    double y_diff = this->y - y;
+double Vector2::Distance(double tox, double toy) const {
+    double x_diff = this->x - tox;
+    double y_diff = this->y - toy;
     return std::sqrt(x_diff * x_diff + y_diff * y_diff);
 }
 
@@ -42,9 +42,9 @@ double Vector2::Distance(const Vector2 &other) const {
 }
 
 
-double Vector2::DistanceSquared(double x, double y) const {
-    double x_diff = this->x - x;
-    double y_diff = this->y - y;
+double Vector2::DistanceSquared(double tox, double toy) const {
+    double x_diff = this->x - tox;
+    double y_diff = this->y - toy;
     return x_diff * x_diff + y_diff * y_diff;
 }
 
@@ -56,8 +56,8 @@ double Vector2::DistanceSquared(const Vector2 &other) const {
 }
 
 
-double Vector2::Dot(double x, double y) const {
-    return this->x * x + this->y * y;
+double Vector2::Dot(double tox, double toy) const {
+    return this->x * tox + this->y * toy;
 }
 
 
@@ -66,8 +66,8 @@ double Vector2::Dot(const Vector2 &other) const {
 }
 
 
-double Vector2::Determinant(double x, double y) const {
-    return this->x * y - this->y * x;
+double Vector2::Determinant(double ofx, double ofy) const {
+    return this->x * ofy - this->y * ofx;
 }
 
 
@@ -76,9 +76,9 @@ double Vector2::Determinant(const Vector2 &other) const {
 }
 
 
-double Vector2::Angle(double x, double y) const {
-    double dot = this->x * x + this->y * y;
-    double det = this->x * y - this->y * x;
+double Vector2::Angle(double tox, double toy) const {
+    double dot = this->x * tox + this->y * toy;
+    double det = this->x * toy - this->y * tox;
     return std::atan2(det, dot);
 }
 
@@ -101,8 +101,8 @@ Vector2 Vector2::Perpendicular() const {
 }
 
 
-Vector2 Vector2::Min(double x, double y) const {
-    return Vector2(this->x > x ? x : this->x, this->y > y ? y : this->y);
+Vector2 Vector2::Min(double ofx, double ofy) const {
+    return Vector2(this->x > ofx ? ofx : this->x, this->y > ofy ? ofy : this->y);
 }
 
 
@@ -111,8 +111,8 @@ Vector2 Vector2::Min(const Vector2 &other) const {
 }
 
 
-Vector2 Vector2::Max(double x, double y) const {
-    return Vector2(this->x > x ? this->x : x, this->y > y ? this->y : y);
+Vector2 Vector2::Max(double ofx, double ofy) const {
+    return Vector2(this->x > ofx ? this->x : ofx, this->y > ofy ? this->y : ofy);
 }
 
 
@@ -121,8 +121,8 @@ Vector2 Vector2::Max(const Vector2 &other) const {
 }
 
 
-Vector2 Vector2::Lerp(double x, double y, double t) const {
-    return Vector2((double) (this->x + (x - this->x) * t), (double) (this->y + (y - this->y) * t));
+Vector2 Vector2::Lerp(double tox, double y, double t) const {
+    return Vector2((double) (this->x + (tox - this->x) * t), (double) (this->y + (y - this->y) * t));
 }
 
 
