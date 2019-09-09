@@ -7,16 +7,18 @@ set(SANDWICH_CORE_HEADERS
         src/sw/sw_macros.hpp
         src/sw/core.hpp
         src/sw/js_module.hpp
-        src/sw/modules/math.hpp
-        src/sw/scene_node.hpp
-        src/sw/scene.hpp
-        src/sw/intrusive_pointer_manager.hpp)
+        #src/sw/modules/math.hpp
+        #src/sw/scene_node.hpp
+        #src/sw/scene.hpp
+        #src/sw/intrusive_pointer_manager.hpp
+)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
-        src/sw/modules/math.cpp
-        src/sw/scene_node.cpp
-        src/sw/scene.cpp)
+        #src/sw/modules/math.cpp
+        #src/sw/scene_node.cpp
+        #src/sw/scene.cpp
+)
 
 
 if (Debug STREQUAL ${CMAKE_BUILD_TYPE})
@@ -94,7 +96,7 @@ endif ()]]
 target_link_directories(sandwich_core PUBLIC lib)
 target_link_libraries(sandwich_core
         "v8_monolith_${V8_BUILD_TYPE}"
-        intrusive_ptr
+        #intrusive_ptr
         sandwich_usr_bundle
         sandwich_math
         sandwich_renderer

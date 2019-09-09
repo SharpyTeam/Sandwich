@@ -18,8 +18,6 @@
 #include <v8bind/type_info.hpp>
 #include <v8bind/class.hpp>
 #include <v8bind/class.ipp>
-#include <ip/intrusive_ptr.hpp>
-#include <ip/ref_counter.hpp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -68,34 +66,13 @@ void Start() {
     V8::InitializePlatform(platform.get());
     V8::Initialize();
 
+    int static_var = 12345;
+
     // Create a new Isolate and make it the current one.
     Isolate::CreateParams create_params;
 
     create_params.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
     Isolate *isolate = Isolate::New(create_params);
-
-    class test : public ip::ref_counter {
-        int a;
-    public:
-        test() : a(1234) {
-            std::cout << "Test created" << std::endl;
-        }
-
-        ~test() override {
-            std::cout << "Test destroyed" << std::endl;
-        }
-    };
-    auto a = new test;
-    {
-        ip::intrusive_ptr<test> intrusivePtr3(a);
-        {
-            ip::intrusive_ptr<test> intrusivePtr2(a);
-        }
-        ip::intrusive_ptr<test> intrusivePtr(a);
-        std::cout << (intrusivePtr == intrusivePtr3.get()) << std::endl;
-    }
-
-    std::cout << "Here." << std::endl;
 
     {
         // Initialize scopes
@@ -114,6 +91,7 @@ void Start() {
             }
             void Set(int a) {
                 std::cout << "SET" << std::endl;
+                v->resize(2);
                 o = a;
             }
             double GetIndexed(int i) {
@@ -123,18 +101,53 @@ void Start() {
             void SetIndexed(int i, double d) {
                 std::cout << "SET INDEXED " << i << " " << d << std::endl;
             }
+            std::shared_ptr<std::vector<int>> v = std::make_shared<std::vector<int>>();
         };
 
         v8b::Class<sw::Vector2> c(isolate);
         c
-            .Constructor<std::tuple<>, std::tuple<double>, std::tuple<double, double>>()
+            .Constructor<std::tuple<>, std::tuple<double>, std::tuple<double, double>, std::tuple<const sw::Vector2 &>>()
             .Var("x", &sw::Vector2::x)
             .Var("y", &sw::Vector2::y)
             .Function("length", &sw::Vector2::Length)
             .Function<
-                    double (sw::Vector2::*)(double, double) const,
-                    double (sw::Vector2::*)(const sw::Vector2 &) const>
-                    ("angle", &sw::Vector2::Angle, &sw::Vector2::Angle)
+                double (sw::Vector2::*)(double, double) const,
+                double (sw::Vector2::*)(const sw::Vector2 &) const>
+                ("dot", &sw::Vector2::Dot, &sw::Vector2::Dot)
+            .Function<
+                double (sw::Vector2::*)(double, double) const,
+                double (sw::Vector2::*)(const sw::Vector2 &) const>
+                ("distance", &sw::Vector2::Distance, &sw::Vector2::Distance)
+            .Function<
+                double (sw::Vector2::*)(double, double) const,
+                double (sw::Vector2::*)(const sw::Vector2 &) const>
+                ("determinant", &sw::Vector2::Determinant, &sw::Vector2::Determinant)
+            .Function<
+                double (sw::Vector2::*)(double, double) const,
+                double (sw::Vector2::*)(const sw::Vector2 &) const>
+                ("angle", &sw::Vector2::Angle, &sw::Vector2::Angle)
+            .Function("normalized", &sw::Vector2::Normalized)
+            .Function("lengthSquared", &sw::Vector2::LengthSquared)
+            .Function<
+                double (sw::Vector2::*)(double, double) const,
+                double (sw::Vector2::*)(const sw::Vector2 &) const>
+                ("distanceSquared", &sw::Vector2::DistanceSquared, &sw::Vector2::DistanceSquared)
+            .Function("perpendicular", &sw::Vector2::Perpendicular)
+            .Function<
+                sw::Vector2 (sw::Vector2::*)(double, double) const,
+                sw::Vector2 (sw::Vector2::*)(const sw::Vector2 &) const>
+                ("min", &sw::Vector2::Min, &sw::Vector2::Min)
+            .Function<
+                sw::Vector2 (sw::Vector2::*)(double, double) const,
+                sw::Vector2 (sw::Vector2::*)(const sw::Vector2 &) const>
+                ("max", &sw::Vector2::Max, &sw::Vector2::Max)
+            .Function("toString", [](sw::Vector2 &v) -> std::string {
+                return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
+            })
+            .StaticFunction("staticFunction", []() {
+                std::cout << "static function call" << std::endl;
+            })
+            .StaticVar("staticVar", &static_var)
             .AutoWrap()
             .PointerAutoWrap()
         ;
@@ -143,11 +156,33 @@ void Start() {
         z
             .Constructor<std::tuple<>>()
             .Var("o", &Z::o)
+            .Var("v", &Z::v)
             .Property("op", &Z::Get, &Z::Set)
             .Indexer(&Z::GetIndexed, &Z::SetIndexed)
             .AutoWrap()
             .PointerAutoWrap()
             .Inherit<sw::Vector2>()
+        ;
+
+        v8b::Class<std::vector<int>> vec(isolate);
+        vec
+            .Property("length", [](std::vector<int> &v) {
+                return v.size();
+            })
+            .Indexer([](std::vector<int> &v, int index) {
+                return v[index];
+            }, [](std::vector<int> &v, int index, int i) {
+                v[index] = i;
+            })
+            .Function("toString", [](std::vector<int> &v) {
+                std::string s;
+                for (int i : v) {
+                    s += std::to_string(i) + ", ";
+                }
+                return "[" + (s.empty() ? s : s.substr(0, s.size() - 2)) + "]";
+            })
+            .AutoWrap()
+            .PointerAutoWrap()
         ;
 
         context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
