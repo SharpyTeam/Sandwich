@@ -4,18 +4,16 @@ project(SandwichCore)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SANDWICH_CORE_HEADERS
-        src/sw/sw_macros.hpp
+        src/sw/core/sw_macros.hpp
         src/sw/core.hpp
-        src/sw/js_module.hpp
         src/sw/modules/math.hpp
         src/sw/scene_node.hpp
         src/sw/scene.hpp
-        src/sw/intrusive_pointer_manager.hpp
+        src/sw/core/intrusive_pointer_manager.hpp
 )
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
-        src/sw/modules/math.cpp
         src/sw/scene_node.cpp
         src/sw/scene.cpp
 )

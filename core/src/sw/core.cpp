@@ -1,3 +1,5 @@
+#include <sw/modules/math.hpp>
+
 #include <v8bind/v8bind.hpp>
 
 #include <libplatform/libplatform.h>
@@ -68,6 +70,9 @@ void Start() {
         // Set context
         Local<Context> context = Context::New(isolate);
         Context::Scope context_scope(context);
+
+        v8b::Class<sw::Vector2> v(isolate);
+        context->Global()->Set(context, v8b::ToV8(isolate, "Vector2"), v.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 
         // Set global properties
         context->Global()->Set(context, v8b::ToV8(isolate, "console"), GetConsole());
