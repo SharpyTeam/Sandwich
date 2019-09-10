@@ -10,7 +10,7 @@ set(SANDWICH_CORE_HEADERS
         src/sw/modules/math.hpp
         src/sw/scene_node.hpp
         src/sw/scene.hpp
-        #src/sw/intrusive_pointer_manager.hpp
+        src/sw/intrusive_pointer_manager.hpp
 )
 
 set(SANDWICH_CORE_SOURCES

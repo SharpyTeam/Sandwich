@@ -8,23 +8,29 @@
 namespace sw {
 
 
-void SceneNode::AttachTo(const std::shared_ptr<SceneNode> &node) {
+void SceneNode::AttachTo(const ip::intrusive_ptr<SceneNode> &node) {
     if (!parent_node)
         return;
 
     if (node != this->parent_node) {
-        std::shared_ptr<SceneNode> this_node(this);
-        if (this_node->parent_node) {
-            this_node->parent_node->OnDetach();
-            this_node->parent_node->children.erase(parent_list_iterator);
+        ip::intrusive_ptr<SceneNode> this_node = this;
+        if (parent_node) {
+            OnDetach();
+            parent_node->children.erase(parent_list_iterator);
         }
-        this_node->parent_node = node;
-        this_node->parent_list_iterator = this_node->parent_node->children.insert(this_node->parent_node->children.end(), this_node);
+        parent_node = node;
+        parent_list_iterator = parent_node->children.insert(parent_node->children.end(), this_node);
+        OnAttach();
     }
 }
 
 void SceneNode::Detach() {
-
+    for (auto &child : children) {
+        child->Destroy();
+    }
+    // TODO: Postpone node destruction
+    parent_node->children.erase(parent_list_iterator);
+    parent_node = nullptr;
 }
 
 void SceneNode::OnAttach() {

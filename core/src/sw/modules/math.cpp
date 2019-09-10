@@ -7,184 +7,126 @@
 #include <sw/math/matrix.hpp>
 #include <iostream>
 #include <sw/modules/math.hpp>
+#include <sw/sw_macros.hpp>
 
 namespace sw {
 
 
 void MathModule::Init(v8::Isolate *isolate) {
-    v8pp::class_<Vector2> vector2(isolate);
-    v8pp::class_<Vector3> vector3(isolate);
-    v8pp::class_<Vector4> vector4(isolate);
+    v8b::Class<sw::Vector2> v(isolate);
 
-    v8pp::class_<Matrix4> matrix4(isolate);
+    // Constructor
+    v
+        .Constructor<std::tuple<>, std::tuple<double>, std::tuple<double, double>, std::tuple<const sw::Vector2 &>>()
+    ;
 
+    // Vars
+    v
+        .Var("x", &sw::Vector2::x)
+        .Var("y", &sw::Vector2::y)
+    ;
 
-    vector2
-            .ctor<double, double>()
-            .function("length", &Vector2::Length)
-            .function("dot", [](v8::FunctionCallbackInfo<v8::Value> const &args) {
-                auto *self = v8pp::class_<Vector2>::unwrap_object(args.GetIsolate(), args.This());
-                switch (args.Length()) {
-                    case 1: {
-                        auto *v = v8pp::from_v8<Vector2 *>(args.GetIsolate(), args[0]);
-                        if (v) {
-                            args.GetReturnValue().Set(self->Dot(*v));
-                        } else {
-                            args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                            std::cerr << "Argument 0 in 'Vector2.dot' cannot be null" << std::endl;
-                        }
-                        break;
-                    }
-                    case 2: {
-                        double x = v8pp::from_v8<double>(args.GetIsolate(), args[0]);
-                        double y = v8pp::from_v8<double>(args.GetIsolate(), args[1]);
-                        args.GetReturnValue().Set(self->Dot(x, y));
-                        break;
-                    }
-                    default: {
-                        args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                        std::cerr << "Arguments mismatch in 'Vector2.dot'" << std::endl;
-                        break;
-                    }
-                }
-            })
-            .function("distance", [](v8::FunctionCallbackInfo<v8::Value> const &args) {
-                auto *self = v8pp::class_<Vector2>::unwrap_object(args.GetIsolate(), args.This());
-                switch (args.Length()) {
-                    case 1: {
-                        auto *v = v8pp::from_v8<Vector2 *>(args.GetIsolate(), args[0]);
-                        if (v) {
-                            args.GetReturnValue().Set(self->Distance(*v));
-                        } else {
-                            args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                            std::cerr << "Argument 0 in 'Vector2.distance' cannot be null" << std::endl;
-                        }
-                        break;
-                    }
-                    case 2: {
-                        double tox = v8pp::from_v8<double>(args.GetIsolate(), args[0]);
-                        double toy = v8pp::from_v8<double>(args.GetIsolate(), args[1]);
-                        args.GetReturnValue().Set(self->Distance(tox, toy));
-                        break;
-                    }
-                    default: {
-                        args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                        std::cerr << "Arguments mismatch in 'Vector2.distance'" << std::endl;
-                        break;
-                    }
-                }
-            })
-            .function("distanceSquared", [](v8::FunctionCallbackInfo<v8::Value> const &args) {
-                auto *self = v8pp::class_<Vector2>::unwrap_object(args.GetIsolate(), args.This());
-                switch (args.Length()) {
-                    case 1: {
-                        auto *v = v8pp::from_v8<Vector2 *>(args.GetIsolate(), args[0]);
-                        if (v) {
-                            args.GetReturnValue().Set(self->DistanceSquared(*v));
-                        } else {
-                            args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                            std::cerr << "Argument 0 in 'Vector2.distanceSquared' cannot be null" << std::endl;
-                        }
-                        break;
-                    }
-                    case 2: {
-                        double tox = v8pp::from_v8<double>(args.GetIsolate(), args[0]);
-                        double toy = v8pp::from_v8<double>(args.GetIsolate(), args[1]);
-                        args.GetReturnValue().Set(self->DistanceSquared(tox, toy));
-                        break;
-                    }
-                    default: {
-                        args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                        std::cerr << "Arguments mismatch in 'Vector2.distanceSquared'" << std::endl;
-                        break;
-                    }
-                }
-            })
-            .function("angle", [](v8::FunctionCallbackInfo<v8::Value> const &args) {
-                auto *self = v8pp::class_<Vector2>::unwrap_object(args.GetIsolate(), args.This());
-                switch (args.Length()) {
-                    case 1: {
-                        auto *v = v8pp::from_v8<Vector2 *>(args.GetIsolate(), args[0]);
-                        if (v) {
-                            args.GetReturnValue().Set(self->Angle(*v));
-                        } else {
-                            args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                            std::cerr << "Argument 0 in 'Vector2.angle' cannot be null" << std::endl;
-                        }
-                        break;
-                    }
-                    case 2: {
-                        double x = v8pp::from_v8<double>(args.GetIsolate(), args[0]);
-                        double y = v8pp::from_v8<double>(args.GetIsolate(), args[1]);
-                        args.GetReturnValue().Set(self->Angle(x, y));
-                        break;
-                    }
-                    default: {
-                        args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                        std::cerr << "Arguments mismatch in 'Vector2.angle'" << std::endl;
-                        break;
-                    }
-                }
-            })
-            .function("set", [](v8::FunctionCallbackInfo<v8::Value> const &args) {
-                auto *self = v8pp::class_<Vector2>::unwrap_object(args.GetIsolate(), args.This());
-                switch (args.Length()) {
-                    case 1: {
-                        if (args[0]->IsNumber()) {
-                            double scalar = v8pp::from_v8<double>(args.GetIsolate(), args[0]);
-                            args.GetReturnValue().Set(v8pp::to_v8<Vector2>(args.GetIsolate(), self->Set(scalar)));
-                        } else {
-                            auto *v = v8pp::from_v8<Vector2 *>(args.GetIsolate(), args[0]);
-                            if (v) {
-                                args.GetReturnValue().Set(v8pp::to_v8<Vector2>(args.GetIsolate(), self->Set(*v)));
-                            } else {
-                                args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                                std::cerr << "Argument 0 in 'Vector2.angle' cannot be null" << std::endl;
-                            }
-                        }
+    // Usual functions
+    v
+        .Function("length", &sw::Vector2::Length)
+        .Function<
+            sw::Vector2 &(sw::Vector2::*)(double, double),
+            sw::Vector2 &(sw::Vector2::*)(double),
+            sw::Vector2 &(sw::Vector2::*)(const sw::Vector2 &)>
+            ("set", &sw::Vector2::Set, &sw::Vector2::Set, &sw::Vector2::Set)
+        .Function<
+            double (sw::Vector2::*)(double, double) const,
+            double (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("dot", &sw::Vector2::Dot, &sw::Vector2::Dot)
+        .Function<
+            double (sw::Vector2::*)(double, double) const,
+            double (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("distance", &sw::Vector2::Distance, &sw::Vector2::Distance)
+        .Function<
+            double (sw::Vector2::*)(double, double) const,
+            double (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("determinant", &sw::Vector2::Determinant, &sw::Vector2::Determinant)
+        .Function<
+            double (sw::Vector2::*)(double, double) const,
+            double (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("angle", &sw::Vector2::Angle, &sw::Vector2::Angle)
+        .Function("normalized", &sw::Vector2::Normalized)
+        .Function("normalize", &sw::Vector2::Normalize)
+        .Function("floor", &sw::Vector2::Floor)
+        .Function("ceil", &sw::Vector2::Ceil)
+        .Function("round", &sw::Vector2::Round)
+        .Function("zero", &sw::Vector2::Zero)
+        .Function("lengthSquared", &sw::Vector2::LengthSquared)
+        .Function<
+            double (sw::Vector2::*)(double, double) const,
+            double (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("distanceSquared", &sw::Vector2::DistanceSquared, &sw::Vector2::DistanceSquared)
+        .Function("perpendicular", &sw::Vector2::Perpendicular)
+        .Function<
+            sw::Vector2 (sw::Vector2::*)(double, double) const,
+            sw::Vector2 (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("min", &sw::Vector2::Min, &sw::Vector2::Min)
+        .Function<
+            sw::Vector2 (sw::Vector2::*)(double, double, double) const,
+            sw::Vector2 (sw::Vector2::*)(const sw::Vector2 &, double) const>
+            ("lerp", &sw::Vector2::Lerp, &sw::Vector2::Lerp)
+        .Function<
+            sw::Vector2 (sw::Vector2::*)(double, double) const,
+            sw::Vector2 (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("max", &sw::Vector2::Max, &sw::Vector2::Max)
+        .Function("toString", [](sw::Vector2 &v) -> std::string {
+            return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
+        })
+    ;
 
-                        break;
-                    }
-                    case 2: {
-                        double x = v8pp::from_v8<double>(args.GetIsolate(), args[0]);
-                        double y = v8pp::from_v8<double>(args.GetIsolate(), args[1]);
-                        args.GetReturnValue().Set(v8pp::to_v8<Vector2>(args.GetIsolate(), self->Set(x, y)));
-                        break;
-                    }
-                    default: {
-                        args.GetReturnValue().Set(v8::Null(args.GetIsolate()));
-                        std::cerr << "Arguments mismatch in 'Vector2.set'" << std::endl;
-                        break;
-                    }
-                }
-            })
+    // Operators (replaced by functions in JS API)
+    v
+        .Function<
+            sw::Vector2 &(sw::Vector2::*)(double),
+            sw::Vector2 &(sw::Vector2::*)(const sw::Vector2 &)>
+            ("add", &sw::Vector2::operator+=, &sw::Vector2::operator+=)
+        .Function<
+            sw::Vector2 &(sw::Vector2::*)(double),
+            sw::Vector2 &(sw::Vector2::*)(const sw::Vector2 &)>
+            ("sub", &sw::Vector2::operator-=, &sw::Vector2::operator-=)
+        .Function<
+            sw::Vector2 &(sw::Vector2::*)(double),
+            sw::Vector2 &(sw::Vector2::*)(const sw::Vector2 &)>
+            ("mul", &sw::Vector2::operator*=, &sw::Vector2::operator*=)
+        .Function<
+            sw::Vector2 &(sw::Vector2::*)(double),
+            sw::Vector2 &(sw::Vector2::*)(const sw::Vector2 &)>
+            ("div", &sw::Vector2::operator/=, &sw::Vector2::operator/=)
+        .Function<
+            bool (sw::Vector2::*)(double) const,
+            bool (sw::Vector2::*)(const sw::Vector2 &) const>
+            ("isEqual", &sw::Vector2::operator==, &sw::Vector2::operator==)
+    ;
 
-//            .function("Determinant", &Vector2::Determinant)
-//            .function("Angle", &Vector2::Angle)
-            .function("normalized", &Vector2::Normalized)
-            .function("normalize", &Vector2::Normalize)
-            .function("lengthSquared", &Vector2::LengthSquared)
-//            .function("DistanceSquared", &Vector2::LengthSquared)
-            .function("perpendicular", &Vector2::Perpendicular)
-            .function("floor", &Vector2::Floor)
-            .function("ceil", &Vector2::Ceil)
-            .function("zero", &Vector2::Zero);
-            // TODO: Implement all functions
+    // Static functions (currently only for +-*/ operators replacement)
+    v
+        .StaticFunction("add", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+            return v1 + v2;
+         })
+        .StaticFunction("sub", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+            return v1 - v2;
+         })
+        .StaticFunction("mul", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+            return v1 * v2;
+         })
+        .StaticFunction("div", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+            return v1 / v2;
+         })
+    ;
 
-//            .function("Min", &Vector2::Min)
-//            .function("Max", &Vector2::Max)
-//            .function("Lerp", &Vector2::Lerp)
-//            .function("Add", &Vector2::operator+)
-//            .function("Subtract", &Vector2::operator-)
-//            .function("Dot", &Vector2::operator*)
-//            .function("Add", &Vector2::operator+);
+    // Wrappers
+    v
+        .AutoWrap()
+        .PointerAutoWrap()
+    ;
 
-
-    vector2.auto_wrap_objects();
-    vector3.auto_wrap_objects();
-    vector4.auto_wrap_objects();
-
-    matrix4.auto_wrap_objects();
+    auto context = isolate->GetCurrentContext();
+    context->Global()->Set(context, v8_str("Vector2"), v.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 }
 
 }

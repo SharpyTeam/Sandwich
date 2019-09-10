@@ -23,7 +23,7 @@ public:
                   rotation(0.0),
                   local_rotation(0.0) {}
 
-    virtual void AttachTo(const std::shared_ptr<SceneNode> &node);
+    virtual void AttachTo(const ip::intrusive_ptr<SceneNode> &node);
     virtual void Detach();
     virtual void Destroy();
 
@@ -41,9 +41,9 @@ public:
     double rotation;
     double local_rotation;
 
-    std::shared_ptr<SceneNode> parent_node;
-    std::list<std::shared_ptr<SceneNode>> children;
-    std::list<std::shared_ptr<SceneNode>>::iterator parent_list_iterator;
+    ip::intrusive_ptr<SceneNode> parent_node;
+    std::list<ip::intrusive_ptr<SceneNode>> children;
+    std::list<ip::intrusive_ptr<SceneNode>>::const_iterator parent_list_iterator;
 };
 
 

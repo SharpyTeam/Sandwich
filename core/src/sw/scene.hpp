@@ -10,7 +10,8 @@
 namespace sw {
 
 class Scene : public SceneNode {
-    void Attach()
+    void AttachTo(const ip::intrusive_ptr<SceneNode> &node) override {}
+    void Detach() override {}
 };
 
 }

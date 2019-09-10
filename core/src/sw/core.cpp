@@ -1,5 +1,4 @@
 #include <utility>
-
 #include <string>
 #include <iostream>
 #include <map>
@@ -16,8 +15,7 @@
 #include <sw/modules/math.hpp>
 #include <v8bind/function.hpp>
 #include <v8bind/type_info.hpp>
-#include <v8bind/class.hpp>
-#include <v8bind/class.ipp>
+#include <v8bind/v8bind.hpp>
 #include "scene_node.hpp"
 
 extern "C" const char js_bundle_contents[];
@@ -84,86 +82,8 @@ void Start() {
         Local<Context> context = Context::New(isolate);
         Context::Scope context_scope(context);
 
-        struct Z : public sw::Vector2 {
-            int o = 10;
-            int Get() {
-                std::cout << "GOT" << std::endl;
-                return o;
-            }
-            void Set(int a) {
-                std::cout << "SET" << std::endl;
-                v->resize(2);
-                o = a;
-            }
-            double GetIndexed(int i) {
-                std::cout << "GET INDEXED " << i << std::endl;
-                return i * 15.0;
-            }
-            void SetIndexed(int i, double d) {
-                std::cout << "SET INDEXED " << i << " " << d << std::endl;
-            }
-            std::shared_ptr<std::vector<int>> v = std::make_shared<std::vector<int>>();
-        };
-
-        v8b::Class<sw::Vector2> c(isolate);
-        c
-            .Constructor<std::tuple<>, std::tuple<double>, std::tuple<double, double>, std::tuple<const sw::Vector2 &>>()
-            .Var("x", &sw::Vector2::x)
-            .Var("y", &sw::Vector2::y)
-            .Function("length", &sw::Vector2::Length)
-            .Function<
-                double (sw::Vector2::*)(double, double) const,
-                double (sw::Vector2::*)(const sw::Vector2 &) const>
-                ("dot", &sw::Vector2::Dot, &sw::Vector2::Dot)
-            .Function<
-                double (sw::Vector2::*)(double, double) const,
-                double (sw::Vector2::*)(const sw::Vector2 &) const>
-                ("distance", &sw::Vector2::Distance, &sw::Vector2::Distance)
-            .Function<
-                double (sw::Vector2::*)(double, double) const,
-                double (sw::Vector2::*)(const sw::Vector2 &) const>
-                ("determinant", &sw::Vector2::Determinant, &sw::Vector2::Determinant)
-            .Function<
-                double (sw::Vector2::*)(double, double) const,
-                double (sw::Vector2::*)(const sw::Vector2 &) const>
-                ("angle", &sw::Vector2::Angle, &sw::Vector2::Angle)
-            .Function("normalized", &sw::Vector2::Normalized)
-            .Function("lengthSquared", &sw::Vector2::LengthSquared)
-            .Function<
-                double (sw::Vector2::*)(double, double) const,
-                double (sw::Vector2::*)(const sw::Vector2 &) const>
-                ("distanceSquared", &sw::Vector2::DistanceSquared, &sw::Vector2::DistanceSquared)
-            .Function("perpendicular", &sw::Vector2::Perpendicular)
-            .Function<
-                sw::Vector2 (sw::Vector2::*)(double, double) const,
-                sw::Vector2 (sw::Vector2::*)(const sw::Vector2 &) const>
-                ("min", &sw::Vector2::Min, &sw::Vector2::Min)
-            .Function<
-                sw::Vector2 (sw::Vector2::*)(double, double) const,
-                sw::Vector2 (sw::Vector2::*)(const sw::Vector2 &) const>
-                ("max", &sw::Vector2::Max, &sw::Vector2::Max)
-            .Function("toString", [](sw::Vector2 &v) -> std::string {
-                return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
-            })
-            .StaticFunction("staticFunction", []() {
-                std::cout << "static function call" << std::endl;
-            })
-            .StaticVar("staticVar", &static_var)
-            .AutoWrap()
-            .PointerAutoWrap()
-        ;
-
-        v8b::Class<Z> z(isolate);
-        z
-            .Constructor<std::tuple<>>()
-            .Var("o", &Z::o)
-            .Var("v", &Z::v)
-            .Property("op", &Z::Get, &Z::Set)
-            .Indexer(&Z::GetIndexed, &Z::SetIndexed)
-            .AutoWrap()
-            .PointerAutoWrap()
-            .Inherit<sw::Vector2>()
-        ;
+        sw::MathModule mathModule{};
+        mathModule.Init(isolate);
 
         v8b::Class<std::vector<int>> vec(isolate);
         vec
@@ -188,8 +108,7 @@ void Start() {
 
         sw::SceneNode::Create();
 
-        context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
-        context->Global()->Set(context, v8_str("Vector2"), c.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+//        context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 
         // Set global properties
         context->Global()->Set(context, v8_str("console"), GetConsole());

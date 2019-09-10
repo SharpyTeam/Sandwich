@@ -5,6 +5,7 @@
 #ifndef SANDWICH_CORE_MODULE_MATH_HPP
 #define SANDWICH_CORE_MODULE_MATH_HPP
 
+#include <v8bind/v8bind.hpp>
 #include <sw/js_module.hpp>
 
 namespace sw {
