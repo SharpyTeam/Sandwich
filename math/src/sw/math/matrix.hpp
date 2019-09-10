@@ -5,7 +5,7 @@
 #ifndef SANDWICH_MATH_MATRIX_HPP
 #define SANDWICH_MATH_MATRIX_HPP
 
-#include <sw/math/vector.hpp>
+#include "vector.hpp"
 
 namespace sw {
 

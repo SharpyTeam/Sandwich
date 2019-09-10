@@ -7,7 +7,7 @@
 #include <sw/math/matrix.hpp>
 #include <iostream>
 #include <sw/modules/math.hpp>
-#include <sw/sw_macros.hpp>
+#include <sw/core/sw_macros.hpp>
 
 namespace sw {
 
@@ -126,7 +126,7 @@ void MathModule::Init(v8::Isolate *isolate) {
     ;
 
     auto context = isolate->GetCurrentContext();
-    context->Global()->Set(context, v8_str("Vector2"), v.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+    context->Global()->Set(context, v8b::ToV8(isolate, "Vector2"), v.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 }
 
 }

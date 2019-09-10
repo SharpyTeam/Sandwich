@@ -8,7 +8,7 @@
 #include <sw/math/vector.hpp>
 #include <list>
 #include <memory>
-#include <sw/sw_macros.hpp>
+#include <sw/core/sw_macros.hpp>
 #include <ip/intrusive_ptr.hpp>
 
 namespace sw {

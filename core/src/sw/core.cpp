@@ -1,22 +1,11 @@
-#include <utility>
-#include <string>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <chrono>
+#include <v8bind/v8bind.hpp>
+
 #include <libplatform/libplatform.h>
 #include <v8.h>
-#include <functional>
-#include <sw/math/vector.hpp>
-#include <sw/math/matrix.hpp>
 #include <v8pp/module.hpp>
-#include <v8pp/class.hpp>
-#include <sw/sw_macros.hpp>
-#include <sw/modules/math.hpp>
-#include <v8bind/function.hpp>
-#include <v8bind/type_info.hpp>
-#include <v8bind/v8bind.hpp>
-#include "scene_node.hpp"
+
+#include <iostream>
+#include <chrono>
 
 extern "C" const char js_bundle_contents[];
 
@@ -65,8 +54,6 @@ void Start() {
     V8::InitializePlatform(platform.get());
     V8::Initialize();
 
-    int static_var = 12345;
-
     // Create a new Isolate and make it the current one.
     Isolate::CreateParams create_params;
 
@@ -82,59 +69,13 @@ void Start() {
         Local<Context> context = Context::New(isolate);
         Context::Scope context_scope(context);
 
-        sw::MathModule mathModule{};
-        mathModule.Init(isolate);
-
-        v8b::Class<std::vector<int>> vec(isolate);
-        vec
-            .Property("length", [](std::vector<int> &v) {
-                return v.size();
-            })
-            .Indexer([](std::vector<int> &v, int index) {
-                return v[index];
-            }, [](std::vector<int> &v, int index, int i) {
-                v[index] = i;
-            })
-            .Function("toString", [](std::vector<int> &v) {
-                std::string s;
-                for (int i : v) {
-                    s += std::to_string(i) + ", ";
-                }
-                return "[" + (s.empty() ? s : s.substr(0, s.size() - 2)) + "]";
-            })
-            .AutoWrap()
-            .PointerAutoWrap()
-        ;
-
-        sw::SceneNode::Create();
-
-//        context->Global()->Set(context, v8_str("Z"), z.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
-
         // Set global properties
-        context->Global()->Set(context, v8_str("console"), GetConsole());
-        context->Global()->Set(context, v8_str("sw"), GetSwObject());
-        //context->Global()->Set(context, v8_str("test"), v8b::wrap_function(isolate, static_cast<void(*)(int, int)>(f), static_cast<void(*)(int)>(f), static_cast<void(*)(std::string &&)>(f))->GetFunction(context).ToLocalChecked());
-
-        //sw::MathModule math_module();
-
-        //const sw::JSModule js_modules[] = {math_module};
-
-        //for (const sw::JSModule &js_module : js_modules)
-            //js_module.Init(isolate);
-
-        /*v8pp::class_<A> a(isolate);
-        a.auto_wrap_objects().indexer(&A::Get, &A::Set).var("x", &A::x).function("toString", &A::ToString).
-        ctor<int>();
-
-        A *aa = new A(12);
-        aa->children.push_back(new A(1));
-        aa->children.push_back(new A(32));*/
-
-        //GetSwObject()->Set(context, v8_str("a"), v8pp::to_v8(isolate, *aa));
+        context->Global()->Set(context, v8b::ToV8(isolate, "console"), GetConsole());
+        context->Global()->Set(context, v8b::ToV8(isolate, "sw"), GetSwObject());
 
         // Compile script
         Local<Script> script = Script::Compile(Isolate::GetCurrent()->GetCurrentContext(),
-                                               v8_str(js_bundle_contents)).ToLocalChecked();
+                                               v8b::ToV8(isolate, js_bundle_contents)).ToLocalChecked();
 
         // Set try-catch and run script
         TryCatch t(Isolate::GetCurrent());
@@ -154,9 +95,9 @@ void Start() {
             current = std::chrono::high_resolution_clock::now();
 
             // Get update function and call it
-            auto f = GetSwObject()->Get(context, v8_str("update")).ToLocalChecked();
+            auto f = GetSwObject()->Get(context, v8b::ToV8(isolate, "update")).ToLocalChecked();
             if (f.IsEmpty() || !f->IsFunction()) break;
-            auto d = v8_num(delta).As<Value>();
+            auto d = v8b::ToV8(isolate, delta).As<Value>();
             f.As<Function>()->Call(context, GetSwObject(), 1, &d);
         }
 

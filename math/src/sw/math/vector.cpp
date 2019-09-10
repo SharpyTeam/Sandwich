@@ -2,9 +2,10 @@
 // Created by Ilya on 30.06.2019.
 //
 
+#include "vector.hpp"
+
 #include <cmath>
 #include <string>
-#include "vector.hpp"
 
 namespace sw {
 // ----------------------------------------------- Vector2 ------------------------------------------------
