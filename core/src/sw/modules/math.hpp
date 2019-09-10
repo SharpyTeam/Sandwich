@@ -12,7 +12,7 @@ namespace v8b {
 
 template<>
 struct DefaultBindings<sw::Vector2> {
-    static bool Initialize(v8::Isolate *isolate) {
+    static void Initialize(v8::Isolate *isolate) {
         v8b::Class<sw::Vector2> v(isolate);
 
         // Constructor
@@ -124,8 +124,6 @@ struct DefaultBindings<sw::Vector2> {
             .AutoWrap()
             .PointerAutoWrap()
         ;
-
-        return true;
     }
 };
 

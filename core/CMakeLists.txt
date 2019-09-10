@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(SANDWICH_CORE_HEADERS
         src/sw/core/sw_macros.hpp
         src/sw/core.hpp
-        src/sw/modules/math.hpp
         src/sw/scene_node.hpp
         src/sw/scene.hpp
+        src/sw/sprite.hpp
         src/sw/core/intrusive_pointer_manager.hpp
 )
 
@@ -16,6 +16,7 @@ set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
         src/sw/scene_node.cpp
         src/sw/scene.cpp
+        src/sw/sprite.cpp
 )
 
 

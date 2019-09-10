@@ -2,47 +2,54 @@
 // Created by Ilya on 03.09.2019.
 //
 
+#include <sw/scene_node.hpp>
+
 #include <vector>
-#include "scene_node.hpp"
 
 namespace sw {
 
+SceneNode::SceneNode()
+    : position(new Vector2),
+    local_position(new Vector2),
+    scale(new Vector2(1)),
+    rotation(0.0),
+    local_rotation(0.0) {}
 
-void SceneNode::AttachTo(const ip::intrusive_ptr<SceneNode> &node) {
-    if (!parent_node)
+SceneNode::~SceneNode() = default;
+
+void SceneNode::OnAttach() {}
+
+void SceneNode::OnDetach() {}
+
+void SceneNode::AttachTo(const ip::intrusive_ptr<SceneNode> &new_parent) {
+    if (!new_parent)
         return;
 
-    if (node != this->parent_node) {
-        ip::intrusive_ptr<SceneNode> this_node = this;
-        if (parent_node) {
-            OnDetach();
-            parent_node->children.erase(parent_list_iterator);
-        }
-        parent_node = node;
-        parent_list_iterator = parent_node->children.insert(parent_node->children.end(), this_node);
-        OnAttach();
+    if (new_parent == parent) {
+        return;
     }
-}
 
-void SceneNode::Detach() {
-    for (auto &child : children) {
-        child->Destroy();
+    ip::intrusive_ptr<SceneNode> this_node = this;
+    if (parent) {
+        OnDetach();
+        parent->children.erase(parent_list_iterator);
     }
-    // TODO: Postpone node destruction
-    parent_node->children.erase(parent_list_iterator);
-    parent_node = nullptr;
-}
-
-void SceneNode::OnAttach() {
-
-}
-
-void SceneNode::OnDetach() {
-
+    parent = new_parent;
+    parent_list_iterator = parent->children.insert(parent->children.end(), this_node);
+    OnAttach();
 }
 
 void SceneNode::Destroy() {
-    
+    for (auto &c : children) {
+        c->Destroy();
+    }
+    if (!parent) return;
+    parent->children.erase(parent_list_iterator);
+    parent = nullptr;
+}
+
+ip::intrusive_ptr<SceneNode> SceneNode::Create() {
+    return new SceneNode;
 }
 
 }

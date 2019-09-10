@@ -5,9 +5,11 @@
 #ifndef SANDWICH_CORE_SPRITE_HPP
 #define SANDWICH_CORE_SPRITE_HPP
 
+#include <sw/scene_node.hpp>
+
 namespace sw {
 
-class Sprite {
+class Sprite : public SceneNode {
 
 };
 
