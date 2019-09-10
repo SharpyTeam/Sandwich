@@ -17,14 +17,13 @@ sw.update = function (delta: number) {
     // console.log(z.v);
     // @ts-ignore
     // console.log(Vector2.staticFunction(), Vector2.staticVar);
-    // @ts-ignore
-    let a = new Vector2(-3, -4);
+    console.log("Greetings from TypeScript!");
+    let a = new sw.Vector2(-3, -4);
     console.log(a.length());
     a.add(1);
     console.log(a.x, a.y);
     console.log(a.length());
-    // @ts-ignore
-    let b = Vector2.add(a, a);
+    let b = sw.Vector2.add(a, a);
     console.log(b.x, b.y);
     // console.log(z, z.length(), z.op, z[12], z[54], z.angle(new Vector2(-3, -4)), z.angle(-6, -8));
     //console.log('FPS: ' + 1 / delta);

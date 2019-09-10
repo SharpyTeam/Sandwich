@@ -39,6 +39,8 @@ public:
     virtual void OnAttach();
     virtual void OnDetach();
 
+    virtual void Update(double delta);
+
     static ip::intrusive_ptr<SceneNode> Create();
 };
 

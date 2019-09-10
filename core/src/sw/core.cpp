@@ -72,11 +72,12 @@ void Start() {
         Context::Scope context_scope(context);
 
         v8b::Class<sw::Vector2> v(isolate);
-        context->Global()->Set(context, v8b::ToV8(isolate, "Vector2"), v.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 
         // Set global properties
         context->Global()->Set(context, v8b::ToV8(isolate, "console"), GetConsole());
         context->Global()->Set(context, v8b::ToV8(isolate, "sw"), GetSwObject());
+
+        GetSwObject()->Set(context, v8b::ToV8(isolate, "Vector2"), v.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
 
         // Compile script
         Local<Script> script = Script::Compile(Isolate::GetCurrent()->GetCurrentContext(),

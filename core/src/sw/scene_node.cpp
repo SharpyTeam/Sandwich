@@ -52,4 +52,8 @@ ip::intrusive_ptr<SceneNode> SceneNode::Create() {
     return new SceneNode;
 }
 
+void SceneNode::Update(double delta) {
+    // TODO: Default node update code
+}
+
 }

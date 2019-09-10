@@ -34,6 +34,22 @@ declare namespace sw {
 
         lerp(to: Vector2, t: number): Vector2;
         lerp(tox: number, toy: number, t: number): Vector2;
+
+        // Operators
+
+        add(other: Vector2): Vector2;
+        add(scalar: number): Vector2;
+        sub(other: Vector2): Vector2;
+        sub(scalar: number): Vector2;
+        mul(other: Vector2): Vector2;
+        mul(scalar: number): Vector2;
+        div(other: Vector2): Vector2;
+        div(scalar: number): Vector2;
+
+        static add(v1: Vector2, v2: Vector2): Vector2;
+        static sub(v1: Vector2, v2: Vector2): Vector2;
+        static mul(v1: Vector2, v2: Vector2): Vector2;
+        static div(v1: Vector2, v2: Vector2): Vector2;
     }
 
     class Vector3 {
