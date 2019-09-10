@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <sw/test/std_calculator.hpp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -61,6 +62,13 @@ void Start() {
 
     create_params.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
     Isolate *isolate = Isolate::New(create_params);
+
+    std::cout << ">>> Calculator test" << std::endl;
+
+    sw::StdCalculator calc({"1", "2", "+", "4", "*", "3", "+"});
+    std::cout << "Expression '1, 2, +, 4, *, 3, +' evaluated, result: " << calc.GetResult() << std::endl;
+
+    std::cout << ">>> Calculator test finished" << std::endl;
 
     {
         // Initialize scopes

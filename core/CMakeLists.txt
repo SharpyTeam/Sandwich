@@ -10,14 +10,16 @@ set(SANDWICH_CORE_HEADERS
         src/sw/scene.hpp
         src/sw/sprite.hpp
         src/sw/core/intrusive_pointer_manager.hpp
-)
+        src/sw/test/operator.hpp
+        src/sw/test/std_calculator.hpp src/sw/test/sci_calculator.hpp)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
         src/sw/scene_node.cpp
         src/sw/scene.cpp
         src/sw/sprite.cpp
-)
+        src/sw/test/operator.cpp
+        src/sw/test/std_calculator.cpp src/sw/test/sci_calculator.cpp)
 
 
 if (Debug STREQUAL ${CMAKE_BUILD_TYPE})

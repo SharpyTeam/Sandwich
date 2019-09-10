@@ -8,6 +8,8 @@
 #include <v8bind/v8bind.hpp>
 #include <sw/math/vector.hpp>
 
+#include <iostream>
+
 namespace v8b {
 
 template<>
@@ -106,15 +108,19 @@ struct DefaultBindings<sw::Vector2> {
         // Static functions (currently only for +-*/ operators replacement)
         v
             .StaticFunction("add", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+                std::cout << "Static method of Vector2 object called: add" << std::endl;
                 return v1 + v2;
              })
             .StaticFunction("sub", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+                std::cout << "Static method of Vector2 object called: sub" << std::endl;
                 return v1 - v2;
              })
             .StaticFunction("mul", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+                std::cout << "Static method of Vector2 object called: mul" << std::endl;
                 return v1 * v2;
              })
             .StaticFunction("div", [](const sw::Vector2 &v1, const sw::Vector2 &v2) -> sw::Vector2 {
+                std::cout << "Static method of Vector2 object called: div" << std::endl;
                 return v1 / v2;
              })
         ;
