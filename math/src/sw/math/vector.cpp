@@ -6,22 +6,20 @@
 
 #include <cmath>
 #include <string>
-#include <iostream>
 
 namespace sw {
 // ----------------------------------------------- Vector2 ------------------------------------------------
 
-Vector2::Vector2() : x(0.0), y(0.0) {                std::cout << "C++: Vector2 created (empty)" << std::endl; }
+Vector2::Vector2() : x(0.0), y(0.0) {}
 
-Vector2::Vector2(double x, double y) : x(x), y(y) {std::cout << "C++: Vector2 created (double, double)" << std::endl;}
+Vector2::Vector2(double x, double y) : x(x), y(y) {}
 
-Vector2::Vector2(double scalar) : x(scalar), y(scalar) {std::cout << "C++: Vector2 created (double)" << std::endl;}
+Vector2::Vector2(double scalar) : x(scalar), y(scalar) {}
 
-Vector2::Vector2(const Vector2 &other) : x(other.x), y(other.y) {std::cout << "C++: Vector2 created (const Vector2 &)" << std::endl;}
+Vector2::Vector2(const Vector2 &other) : x(other.x), y(other.y) {}
 
 
 double Vector2::Length() const {
-    std::cout << "C++: Vector2.Length() called, length: " << std::sqrt(x * x + y * y) << std::endl;
     return std::sqrt(x * x + y * y);
 }
 
@@ -82,14 +80,14 @@ double Vector2::Determinant(const Vector2 &other) const {
 double Vector2::Angle(double tox, double toy) const {
     double dot = this->x * tox + this->y * toy;
     double det = this->x * toy - this->y * tox;
-    return std::atan2(det, dot);
+    return std::abs(std::atan2(det, dot));
 }
 
 
 double Vector2::Angle(const Vector2 &other) const {
     double dot = x * other.x + y * other.y;
     double det = x * other.y - y * other.x;
-    return std::atan2(det, dot);
+    return std::abs(std::atan2(det, dot));
 }
 
 
@@ -249,7 +247,6 @@ Vector2 &Vector2::operator=(const Vector2 &other) {
 }
 
 Vector2 &Vector2::operator+=(const Vector2 &other) {
-    std::cout << "C++: Vector2::operator+= called"<< std::endl;
     x += other.x;
     y += other.y;
     return *this;
@@ -280,7 +277,6 @@ Vector2 &Vector2::operator=(double scalar) {
 }
 
 Vector2 &Vector2::operator+=(double scalar) {
-    std::cout << "C++: Vector2::operator+= called"<< std::endl;
     x += scalar;
     y += scalar;
     return *this;

@@ -82,8 +82,6 @@ add_subdirectory(../renderer SandwichRenderer)
 set(V8_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/deps/v8/include")
 add_subdirectory(deps/v8bind)
 add_subdirectory(deps/intrusive_ptr)
-add_subdirectory(deps/v8pp)
-target_include_directories(v8pp PUBLIC deps/v8/include)
 
 # TODO Rewrite on for js
 #[[add_custom_target(V8Build COMMAND ${Python3_EXECUTABLE} v8_build.py ${V8_BUILD_TYPE} WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tools")
@@ -101,7 +99,6 @@ target_link_libraries(sandwich_core
         sandwich_usr_bundle
         sandwich_math
         sandwich_renderer
-        v8pp
         v8bind)
 if (WIN32)
     target_link_libraries(sandwich_core DbgHelp Winmm)

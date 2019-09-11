@@ -4,7 +4,6 @@
 
 #include <libplatform/libplatform.h>
 #include <v8.h>
-#include <v8pp/module.hpp>
 
 #include <iostream>
 #include <chrono>
@@ -13,41 +12,6 @@
 extern "C" const char js_bundle_contents[];
 
 using namespace v8;
-
-Local<Object> GetSwObject() {
-    static Local<Object> sw_object;
-
-    if (!sw_object.IsEmpty())
-        return sw_object;
-
-    v8pp::module sw_def(Isolate::GetCurrent());
-    sw_object = sw_def.new_instance();
-
-    return sw_object;
-}
-
-Local<Object> GetConsole() {
-    static Local<Object> console_object;
-
-    if (!console_object.IsEmpty())
-        return console_object;
-
-    v8pp::module console_def(Isolate::GetCurrent());
-
-    console_def.function("log", [](const FunctionCallbackInfo<Value> &info) {
-        std::string s;
-        for (int i = 0; i < info.Length(); ++i) {
-            s += *v8::String::Utf8Value(Isolate::GetCurrent(),
-                                        info[i]->ToString(Isolate::GetCurrent()->GetCurrentContext()).ToLocalChecked());
-            s += " ";
-        }
-        std::cout << s << std::endl;
-    });
-
-    console_object = console_def.new_instance();
-
-    return console_object;
-}
 
 void Start() {
     // Initialize V8.
@@ -63,29 +27,34 @@ void Start() {
     create_params.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
     Isolate *isolate = Isolate::New(create_params);
 
-    std::cout << ">>> Calculator test" << std::endl;
-
-    sw::StdCalculator calc({"1", "2", "+", "4", "*", "3", "+"});
-    std::cout << "Expression '1, 2, +, 4, *, 3, +' evaluated, result: " << calc.GetResult() << std::endl;
-
-    std::cout << ">>> Calculator test finished" << std::endl;
-
     {
         // Initialize scopes
         Isolate::Scope isolate_scope(isolate);
         HandleScope handle_scope(isolate);
 
-        // Set context
-        Local<Context> context = Context::New(isolate);
+        v8b::Module global(isolate);
+        v8b::Module sw(isolate);
+        v8b::Module console(isolate);
+
+        console.Function("log", [](const FunctionCallbackInfo<Value> &info) {
+            std::string s;
+            for (int i = 0; i < info.Length(); ++i) {
+                s += *v8::String::Utf8Value(Isolate::GetCurrent(),
+                                            info[i]->ToString(Isolate::GetCurrent()->GetCurrentContext()).ToLocalChecked());
+                s += " ";
+            }
+            std::cout << s << std::endl;
+        });
+
+        global.Submodule("sw", sw);
+
+        sw.Class("Vector2", v8b::Class<sw::Vector2>(isolate));
+
+        Local<Context> context = Context::New(isolate, nullptr, global.GetObjectTemplate());
         Context::Scope context_scope(context);
 
-        v8b::Class<sw::Vector2> v(isolate);
-
-        // Set global properties
-        context->Global()->Set(context, v8b::ToV8(isolate, "console"), GetConsole());
-        context->Global()->Set(context, v8b::ToV8(isolate, "sw"), GetSwObject());
-
-        GetSwObject()->Set(context, v8b::ToV8(isolate, "Vector2"), v.GetFunctionTemplate()->GetFunction(context).ToLocalChecked());
+        // Override default dummy console
+        context->Global()->Set(context, v8b::ToV8(isolate, "console"), console.NewInstance());
 
         // Compile script
         Local<Script> script = Script::Compile(Isolate::GetCurrent()->GetCurrentContext(),
@@ -109,10 +78,11 @@ void Start() {
             current = std::chrono::high_resolution_clock::now();
 
             // Get update function and call it
-            auto f = GetSwObject()->Get(context, v8b::ToV8(isolate, "update")).ToLocalChecked();
+            auto sw_object = context->Global()->Get(context, v8b::ToV8(isolate, "sw")).ToLocalChecked().As<v8::Object>();
+            auto f = sw_object->Get(context, v8b::ToV8(isolate, "update")).ToLocalChecked();
             if (f.IsEmpty() || !f->IsFunction()) break;
             auto d = v8b::ToV8(isolate, delta).As<Value>();
-            f.As<Function>()->Call(context, GetSwObject(), 1, &d);
+            f.As<Function>()->Call(context, sw_object, 1, &d);
         }
 
         v8b::ClassManagerPool::RemoveAll(isolate);
