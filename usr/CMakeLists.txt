@@ -18,3 +18,8 @@ add_custom_command(
 
 add_library(sandwich_usr_bundle STATIC "${CMAKE_CURRENT_SOURCE_DIR}/dist/js_bundle.c")
 add_dependencies(sandwich_usr_bundle sandwich_build_js)
+
+# node test case
+add_subdirectory(../tools/node Node)
+add_custom_target(lel COMMAND ${NODE_COMMAND} -p \"'running s' + 0 + 'me shitty js'\")
+add_dependencies(sandwich_build_js lel)
