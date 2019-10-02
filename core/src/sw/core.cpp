@@ -9,11 +9,77 @@
 #include <chrono>
 #include <sw/test/std_calculator.hpp>
 
+#include <sw/gl.hpp>
+#include <sw/sprite_batch.hpp>
+
+#include <sw/scene_node.hpp>
+#include <sw/scene.hpp>
+
 extern "C" const char js_bundle_contents[];
 
 using namespace v8;
 
 void Start() {
+    //putenv("DISPLAY=:0");
+
+    glfwSetErrorCallback([](int id, const char *description) {
+        std::cerr << description << std::endl;
+    });
+
+    if (!glfwInit()) {
+        return;
+    }
+
+    int width = 640;
+    int height = 480;
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+    auto window = glfwCreateWindow(width, height, "sw", nullptr, nullptr);
+    if (!window) {
+        glfwTerminate();
+        return;
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+
+    glewExperimental = GL_TRUE;
+    GLenum glew_init_status = glewInit();
+
+    if (glew_init_status != GLEW_OK) {
+        return;
+    }
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+
+    {
+        sw::SpriteBatch sb;
+        sw::Matrix4 proj;
+        proj.SetOrtho2D(-width / 2, width / 2, -height / 2, height / 2);
+        sb.SetProjectionMatrix(proj);
+        auto data = sw::TextureData(100, 100);
+        data.Fill(1, 0, 0, 1);
+        auto texture = sw::Texture::Create(data);
+        while (!glfwWindowShouldClose(window)) {
+            glClearColor(0.5, 0.5, 0.5, 1);
+            glClear(GL_COLOR_BUFFER_BIT);
+            sb.Begin();
+            sb.Draw(texture, 0, 0);
+            sb.End();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
+    }
+
+
     // Initialize V8.
     //V8::InitializeICUDefaultLocation(argv[0]);
     //V8::InitializeExternalStartupData(argv[0]);
@@ -63,6 +129,8 @@ void Start() {
         // Set try-catch and run script
         TryCatch t(Isolate::GetCurrent());
         script->Run(Isolate::GetCurrent()->GetCurrentContext());
+
+        auto scene =
 
         double delta;
         auto current = std::chrono::high_resolution_clock::now();

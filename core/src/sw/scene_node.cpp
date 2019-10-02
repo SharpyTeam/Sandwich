@@ -53,7 +53,16 @@ ip::intrusive_ptr<SceneNode> SceneNode::Create() {
 }
 
 void SceneNode::Update(double delta) {
+    for (auto &c : children) {
+        c->Update(delta);
+    }
     // TODO: Default node update code
+}
+
+void SceneNode::Draw(SpriteBatch &batch) {
+    for (auto &c : children) {
+        c->Draw(batch);
+    }
 }
 
 }

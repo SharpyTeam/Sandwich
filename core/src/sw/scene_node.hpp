@@ -10,6 +10,7 @@
 #include <memory>
 #include <sw/core/sw_macros.hpp>
 #include <ip/intrusive_ptr.hpp>
+#include <sw/sprite_batch.hpp>
 
 namespace sw {
 
@@ -21,16 +22,15 @@ public:
     double rotation;
     double local_rotation;
 
-private:
+protected:
     //TODO add getters and setters for this fields
     ip::intrusive_ptr<SceneNode> parent;
     std::list<ip::intrusive_ptr<SceneNode>> children;
     std::list<ip::intrusive_ptr<SceneNode>>::const_iterator parent_list_iterator;
+    SceneNode();
 
 public:
     REMOVE_DEFAULTS(SceneNode)
-
-    SceneNode();
     ~SceneNode() override;
 
     virtual void AttachTo(const ip::intrusive_ptr<SceneNode> &new_parent);
@@ -40,6 +40,7 @@ public:
     virtual void OnDetach();
 
     virtual void Update(double delta);
+    virtual void Draw(SpriteBatch &batch);
 
     static ip::intrusive_ptr<SceneNode> Create();
 };
