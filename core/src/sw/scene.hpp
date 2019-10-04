@@ -12,6 +12,8 @@ namespace sw {
 class Scene : public SceneNode {
 public:
     static ip::intrusive_ptr<Scene> Create();
+
+    static inline ip::intrusive_ptr<Scene> scene = Scene::Create();
 private:
     void AttachTo(const ip::intrusive_ptr<SceneNode> &node) override;
 };

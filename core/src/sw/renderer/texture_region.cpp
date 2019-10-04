@@ -2,7 +2,7 @@
 // Created by selya on 27.09.2019.
 //
 
-#include <sw/texture_region.hpp>
+#include "texture_region.hpp"
 
 namespace sw {
 
@@ -90,12 +90,12 @@ double TextureRegion::GetHeight() const {
     return size.y;
 }
 
-Vector2 TextureRegion::GetUVUpper() const {
-    return (offset + size) / Vector2(texture->GetWidth(), texture->GetHeight());
+math::Vector2 TextureRegion::GetUVUpper() const {
+    return (offset + size) / math::Vector2(texture->GetWidth(), texture->GetHeight());
 }
 
-Vector2 TextureRegion::GetUVLower() const {
-    return offset / Vector2(texture->GetWidth(), texture->GetHeight());
+math::Vector2 TextureRegion::GetUVLower() const {
+    return offset / math::Vector2(texture->GetWidth(), texture->GetHeight());
 }
 
 bool TextureRegion::GetFlipX() const {

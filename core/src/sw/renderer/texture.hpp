@@ -5,7 +5,7 @@
 #ifndef SANDWICH_RENDERER_TEXTURE_HPP
 #define SANDWICH_RENDERER_TEXTURE_HPP
 
-#include <sw/texture_data.hpp>
+#include "texture_data.hpp"
 
 #include <memory>
 

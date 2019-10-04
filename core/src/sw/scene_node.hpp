@@ -10,15 +10,15 @@
 #include <memory>
 #include <sw/core/sw_macros.hpp>
 #include <ip/intrusive_ptr.hpp>
-#include <sw/sprite_batch.hpp>
+#include <sw/renderer/sprite_batch.hpp>
 
 namespace sw {
 
 class SceneNode : public ip::ref_counter {
 public:
-    std::shared_ptr<Vector2> position;
-    std::shared_ptr<Vector2> local_position;
-    std::shared_ptr<Vector2> scale;
+    std::shared_ptr<math::Vector2> position;
+    std::shared_ptr<math::Vector2> local_position;
+    std::shared_ptr<math::Vector2> scale;
     double rotation;
     double local_rotation;
 

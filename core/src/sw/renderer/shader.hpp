@@ -56,10 +56,10 @@ public:
         void Set(double v);
         void Set(int v);
         void Set(unsigned int v);
-        void Set(const Vector2 &vec);
-        void Set(const Vector3 &vec);
-        void Set(const Vector4 &vec);
-        void Set(const Matrix4 &mat);
+        void Set(const math::Vector2 &vec);
+        void Set(const math::Vector3 &vec);
+        void Set(const math::Vector4 &vec);
+        void Set(const math::Matrix4 &mat);
     };
 
     Uniform *GetUniform(const std::string &name) const;

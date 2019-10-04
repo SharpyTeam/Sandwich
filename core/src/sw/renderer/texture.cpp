@@ -2,9 +2,9 @@
 // Created by selya on 26.09.2019.
 //
 
-#include <sw/texture.hpp>
+#include "texture.hpp"
 
-#include <sw/gl.hpp>
+#include "gl.hpp"
 
 #include <stdexcept>
 
@@ -80,6 +80,9 @@ void Texture::Load() {
             GetWidth(), GetHeight(), 0,
             data.GetFormat() == TextureData::Format::RGB888 ? GL_RGB : GL_RGBA,
             GL_UNSIGNED_BYTE, data.GetData().data());
+
+    width = GetWidth();
+    height = GetHeight();
 
     loaded = true;
 }

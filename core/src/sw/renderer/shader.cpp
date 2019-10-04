@@ -2,9 +2,9 @@
 // Created by selya on 31.08.2019.
 //
 
-#include <sw/shader.hpp>
+#include "shader.hpp"
 
-#include <sw/gl.hpp>
+#include "gl.hpp"
 
 #include <stdexcept>
 #include <vector>
@@ -107,7 +107,7 @@ void Shader::Uniform::Set(unsigned int v) {
     }
 }
 
-void Shader::Uniform::Set(const Vector2 &vec) {
+void Shader::Uniform::Set(const math::Vector2 &vec) {
     switch (type) {
         case ValueType::VECTOR_2_FLOAT:
             glUniform2f(location, (float)vec.x, (float)vec.y);
@@ -130,7 +130,7 @@ void Shader::Uniform::Set(const Vector2 &vec) {
     }
 }
 
-void Shader::Uniform::Set(const Vector3 &vec) {
+void Shader::Uniform::Set(const math::Vector3 &vec) {
     switch (type) {
         case ValueType::VECTOR_3_FLOAT:
             glUniform3f(location, (float)vec.x, (float)vec.y, (float)vec.z);
@@ -153,7 +153,7 @@ void Shader::Uniform::Set(const Vector3 &vec) {
     }
 }
 
-void Shader::Uniform::Set(const Vector4 &vec) {
+void Shader::Uniform::Set(const math::Vector4 &vec) {
     switch (type) {
         case ValueType::VECTOR_4_FLOAT:
             glUniform4f(location, (float)vec.x, (float)vec.y, (float)vec.z, (float)vec.w);
@@ -176,7 +176,7 @@ void Shader::Uniform::Set(const Vector4 &vec) {
     }
 }
 
-void Shader::Uniform::Set(const Matrix4 &mat) {
+void Shader::Uniform::Set(const math::Matrix4 &mat) {
     switch (type) {
         case ValueType::MATRIX_4_FLOAT: {
             auto p = mat[0];

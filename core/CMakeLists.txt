@@ -10,23 +10,25 @@ set(SANDWICH_CORE_HEADERS
         src/sw/scene.hpp
         src/sw/sprite.hpp
         src/sw/core/intrusive_pointer_manager.hpp
-        src/sw/test/operator.hpp
-        src/sw/test/std_calculator.hpp src/sw/test/sci_calculator.hpp)
+        src/sw/renderer/shader.hpp
+        src/sw/renderer/gl.hpp
+        src/sw/renderer/texture_data.hpp
+        src/sw/renderer/texture.hpp
+        src/sw/renderer/texture_region.hpp
+        src/sw/renderer/renderer.hpp
+        src/sw/renderer/sprite_batch.hpp)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
         src/sw/scene_node.cpp
         src/sw/scene.cpp
         src/sw/sprite.cpp
-        src/sw/test/operator.cpp
-        src/sw/test/std_calculator.cpp src/sw/test/sci_calculator.cpp)
-
-
-if (Debug STREQUAL ${CMAKE_BUILD_TYPE})
-    set(V8_BUILD_TYPE debug)
-else ()
-    set(V8_BUILD_TYPE release)
-endif ()
+        src/sw/renderer/renderer.cpp
+        src/sw/renderer/shader.cpp
+        src/sw/renderer/texture_data.cpp
+        src/sw/renderer/texture.cpp
+        src/sw/renderer/sprite_batch.cpp
+        src/sw/renderer/texture_region.cpp)
 
 if (ANDROID OR IOS)
     if (ANDROID)
@@ -72,36 +74,59 @@ endif ()
 
 # core target
 add_library(sandwich_core STATIC ${SANDWICH_CORE_HEADERS} ${SANDWICH_CORE_SOURCES})
-target_include_directories(sandwich_core PUBLIC deps/v8/include src)
+target_include_directories(sandwich_core PUBLIC src)
 
-# TODO Maybe allow relocating usr project?
-add_subdirectory(../usr SandwichUsr)
-#set(NO_GLSLCROSS_GLSL_TO_SPIRV_COMPILER TRUE)
-add_subdirectory(../math SandwichMath)
-add_subdirectory(../renderer SandwichRenderer)
-set(V8_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/deps/v8/include")
+set(TOOLS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../tools")
+add_subdirectory(../tools/node Node)
+
+add_subdirectory(deps/math)
+add_subdirectory(deps/v8)
+get_target_property(V8_INCLUDE_DIR v8::v8 INTERFACE_INCLUDE_DIRECTORIES)
 add_subdirectory(deps/v8bind)
 add_subdirectory(deps/intrusive_ptr)
+add_subdirectory(deps/glslcross)
 
-# TODO Rewrite on for js
-#[[add_custom_target(V8Build COMMAND ${Python3_EXECUTABLE} v8_build.py ${V8_BUILD_TYPE} WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tools")
+if (TARGET_DESKTOP)
+    add_subdirectory(deps/glew)
+    add_subdirectory(deps/glfw)
+    target_link_libraries(sandwich_core libglew_static glfw)
+endif ()
 
-if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib/v8_monolith_${V8_BUILD_TYPE}.lib" AND NOT
-        EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib/v8_monolith_${V8_BUILD_TYPE}.a")
-    message(STATUS "V8 will be downloaded and built in ${V8_BUILD_TYPE} configuration")
-    add_dependencies(Sandwich V8Build)
-endif ()]]
-
-target_link_directories(sandwich_core PUBLIC lib)
 target_link_libraries(sandwich_core
-        "v8_monolith_${V8_BUILD_TYPE}"
+        v8::v8
         intrusive_ptr
-        sandwich_usr_bundle
-        sandwich_math
-        sandwich_renderer
-        v8bind)
+        sw::math
+        v8bind
+        glslcross)
+
 if (WIN32)
     target_link_libraries(sandwich_core DbgHelp Winmm)
 elseif (UNIX)
     target_link_libraries(sandwich_core pthread dl)
 endif ()
+
+# ==================== build user project ====================
+set(SANDWICH_USER_PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../usr")
+
+add_custom_target(sandwich_user_init
+        COMMAND ${NPM_COMMAND} i
+        WORKING_DIRECTORY "${SANDWICH_USER_PROJECT_DIR}")
+
+add_custom_target(sandwich_user_bundle
+        COMMAND ${NPX_COMMAND} webpack
+        WORKING_DIRECTORY "${SANDWICH_USER_PROJECT_DIR}")
+
+set(USER_INPUT_BUNDLE_FILE "${SANDWICH_USER_PROJECT_DIR}/dist/bundle.js")
+set(USER_OUTPUT_BUNDLE_FILE "${CMAKE_CURRENT_BINARY_DIR}/user_bundle.c")
+
+add_custom_command(
+        OUTPUT ${USER_OUTPUT_BUNDLE_FILE}
+        DEPENDS ${USER_INPUT_BUNDLE_FILE}
+        COMMAND ${NODE_COMMAND} "${TOOLS_DIR}/pack_file.js"
+        ${USER_INPUT_BUNDLE_FILE} ${USER_OUTPUT_BUNDLE_FILE} "js_bundle_contents")
+
+add_library(sandwich_user STATIC "${CMAKE_CURRENT_BINARY_DIR}/user_bundle.c")
+add_dependencies(sandwich_user_bundle sandwich_user_init)
+add_dependencies(sandwich_user sandwich_user_bundle)
+
+target_link_libraries(sandwich_core sandwich_user)

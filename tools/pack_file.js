@@ -37,7 +37,3 @@ fs.writeSync(outputFile, "'\\0'};\n");
 
 console.log();
 console.log("Done!");
-
-
-
-

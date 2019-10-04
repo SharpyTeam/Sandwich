@@ -130,6 +130,32 @@ declare namespace sw {
         lerp(tox: number, toy: number, toz: number, tow: number, t: number): Vector4;
     }
 
+    class Matrix4 {
+        constructor();
+
+        setOrtho2D(left: number, right: number, bottom: number, top: number): void;
+    }
+
+    class TextureData {
+        constructor(width: number, height: number);
+
+        setPixel(x: number, y: number, r: number, g: number, b: number, a: number): void;
+    }
+
+    class Texture {
+        static create(data: TextureData): Texture;
+    }
+
+    class SpriteBatch {
+        constructor();
+        setProjectionMatrix(matrix: Matrix4): void;
+        begin(): void;
+        end(): void;
+        draw(texture: Texture, x: number, y: number, rotation: number,
+             origin_x: number, origin_y: number, scale_x: number, scale_y: number,
+             flip_x: boolean, flip_y: boolean): void;
+    }
+
     class Sprite {
         position: Vector2;
         scale: Vector2;
@@ -137,7 +163,8 @@ declare namespace sw {
     }
 
 
-    var update: (delta: number) => void;
+    let init: () => void;
+    let update: (delta: number) => void;
 }
 
 export default sw;

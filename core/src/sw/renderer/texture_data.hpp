@@ -37,16 +37,16 @@ public:
     void SetWidth(int width);
     void SetHeight(int height);
 
-    Vector4 GetPixel(int x, int y) const;
+    math::Vector4 GetPixel(int x, int y) const;
 
     void SetPixel(int x, int y, float r, float g, float b, float a = 1.0);
-    void SetPixel(int x, int y, const Vector4 &color);
+    void SetPixel(int x, int y, const math::Vector4 &color);
 
     void SetRect(int x, int y, const TextureData &r);
     void SetRect(int x, int y, const TextureData &r, int src_x, int src_y, int src_width, int src_height);
 
     void Fill(float r, float g, float b, float a);
-    void Fill(const Vector4 &color);
+    void Fill(const math::Vector4 &color);
 
     void FlipHorizontally();
     void FlipVertically();

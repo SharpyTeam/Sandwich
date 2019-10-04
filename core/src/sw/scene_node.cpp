@@ -3,15 +3,16 @@
 //
 
 #include <sw/scene_node.hpp>
+#include <sw/scene.hpp>
 
 #include <vector>
 
 namespace sw {
 
 SceneNode::SceneNode()
-    : position(new Vector2),
-    local_position(new Vector2),
-    scale(new Vector2(1)),
+    : position(new math::Vector2),
+    local_position(new math::Vector2),
+    scale(new math::Vector2(1)),
     rotation(0.0),
     local_rotation(0.0) {}
 
@@ -49,7 +50,10 @@ void SceneNode::Destroy() {
 }
 
 ip::intrusive_ptr<SceneNode> SceneNode::Create() {
-    return new SceneNode;
+    ip::intrusive_ptr<SceneNode> s = new SceneNode;
+    // TODO attach to default scene
+    //s->AttachTo();
+    return s;
 }
 
 void SceneNode::Update(double delta) {

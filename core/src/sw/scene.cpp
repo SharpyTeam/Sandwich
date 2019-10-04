@@ -8,12 +8,10 @@
 
 namespace sw {
 
-void Scene::AttachTo(const ip::intrusive_ptr<SceneNode> &node) {
-    throw std::runtime_error("Should not be called");
-}
+void Scene::AttachTo(const ip::intrusive_ptr<SceneNode> &node) {}
 
 ip::intrusive_ptr<Scene> Scene::Create() {
-    return new Scene();
+    return new Scene;
 }
 
 }

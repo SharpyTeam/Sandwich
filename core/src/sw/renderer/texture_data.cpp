@@ -2,7 +2,7 @@
 // Created by selya on 26.09.2019.
 //
 
-#include <sw/texture_data.hpp>
+#include "texture_data.hpp"
 
 #include <stdexcept>
 #include <cstring>
@@ -53,10 +53,10 @@ static inline void FormatSetPixel(TextureData::Format format, unsigned char *mem
     throw std::runtime_error("not implemented");
 }
 
-static inline Vector4 FormatGetPixel(TextureData::Format format, unsigned char *mem) {
+static inline math::Vector4 FormatGetPixel(TextureData::Format format, unsigned char *mem) {
     switch (format) {
         case TextureData::Format::RGBA8888:
-            return Vector4(
+            return math::Vector4(
                     mem[0] / 255.0,
                     mem[1] / 255.0,
                     mem[2] / 255.0,
@@ -65,7 +65,7 @@ static inline Vector4 FormatGetPixel(TextureData::Format format, unsigned char *
 
         case TextureData::Format::RGB565: {
             unsigned int s = *reinterpret_cast<unsigned short *>(mem);
-            return Vector4(
+            return math::Vector4(
                     ((s >> 11u) & 31u) / 31.0,
                     ((s >> 5u) & 63u) / 63.0,
                     (s & 31u) / 31.0,
@@ -74,7 +74,7 @@ static inline Vector4 FormatGetPixel(TextureData::Format format, unsigned char *
         }
 
         case TextureData::Format::RGB888:
-            return Vector4(
+            return math::Vector4(
                     mem[0] / 255.0,
                     mem[1] / 255.0,
                     mem[2] / 255.0,
@@ -83,7 +83,7 @@ static inline Vector4 FormatGetPixel(TextureData::Format format, unsigned char *
 
         case TextureData::Format::RGBA4444: {
             unsigned int s = *reinterpret_cast<unsigned short *>(mem);
-            return Vector4(
+            return math::Vector4(
                     ((s >> 12u) & 15u) / 15.0,
                     ((s >> 8u) & 15u) / 15.0,
                     ((s >> 4u) & 15u) / 15.0,
@@ -145,15 +145,15 @@ void TextureData::SetHeight(int height) {
     SetFormat(format);
 }
 
-Vector4 TextureData::GetPixel(int x, int y) const {
-    return Vector4();
+math::Vector4 TextureData::GetPixel(int x, int y) const {
+    return math::Vector4();
 }
 
 void TextureData::SetPixel(int x, int y, float r, float g, float b, float a) {
     FormatSetPixel(format, &data[FormatSize(format) * (y * width + x)], r, g, b, a);
 }
 
-void TextureData::SetPixel(int x, int y, const Vector4 &color) {
+void TextureData::SetPixel(int x, int y, const math::Vector4 &color) {
     SetPixel(x, y, color.x, color.y, color.z, color.w);
 }
 
@@ -177,7 +177,7 @@ void TextureData::Fill(float r, float g, float b, float a) {
     }
 }
 
-void TextureData::Fill(const Vector4 &color) {
+void TextureData::Fill(const math::Vector4 &color) {
     Fill(color.x, color.y, color.z, color.w);
 }
 

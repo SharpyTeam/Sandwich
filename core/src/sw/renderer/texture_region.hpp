@@ -5,7 +5,7 @@
 #ifndef SANDWICH_RENDERER_TEXTURE_REGION_HPP
 #define SANDWICH_RENDERER_TEXTURE_REGION_HPP
 
-#include <sw/texture.hpp>
+#include "texture.hpp"
 
 namespace sw {
 
@@ -33,15 +33,15 @@ public:
     double GetY() const;
     double GetWidth() const;
     double GetHeight() const;
-    Vector2 GetUVUpper() const;
-    Vector2 GetUVLower() const;
+    math::Vector2 GetUVUpper() const;
+    math::Vector2 GetUVLower() const;
     bool GetFlipX() const;
     bool GetFlipY() const;
 
 private:
     std::shared_ptr<Texture> texture;
-    Vector2 offset;
-    Vector2 size;
+    math::Vector2 offset;
+    math::Vector2 size;
 
     // 7
     // 6

@@ -7,79 +7,22 @@
 
 #include <iostream>
 #include <chrono>
-#include <sw/test/std_calculator.hpp>
 
-#include <sw/gl.hpp>
-#include <sw/sprite_batch.hpp>
+#include <sw/renderer/gl.hpp>
+#include <sw/renderer/sprite_batch.hpp>
 
 #include <sw/scene_node.hpp>
 #include <sw/scene.hpp>
+#include <sw/sprite.hpp>
+
+#include <sw/renderer/renderer.hpp>
 
 extern "C" const char js_bundle_contents[];
 
 using namespace v8;
 
 void Start() {
-    //putenv("DISPLAY=:0");
-
-    glfwSetErrorCallback([](int id, const char *description) {
-        std::cerr << description << std::endl;
-    });
-
-    if (!glfwInit()) {
-        return;
-    }
-
-    int width = 640;
-    int height = 480;
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    auto window = glfwCreateWindow(width, height, "sw", nullptr, nullptr);
-    if (!window) {
-        glfwTerminate();
-        return;
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
-
-    glewExperimental = GL_TRUE;
-    GLenum glew_init_status = glewInit();
-
-    if (glew_init_status != GLEW_OK) {
-        return;
-    }
-
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_DEPTH_TEST);
-
-    {
-        sw::SpriteBatch sb;
-        sw::Matrix4 proj;
-        proj.SetOrtho2D(-width / 2, width / 2, -height / 2, height / 2);
-        sb.SetProjectionMatrix(proj);
-        auto data = sw::TextureData(100, 100);
-        data.Fill(1, 0, 0, 1);
-        auto texture = sw::Texture::Create(data);
-        while (!glfwWindowShouldClose(window)) {
-            glClearColor(0.5, 0.5, 0.5, 1);
-            glClear(GL_COLOR_BUFFER_BIT);
-            sb.Begin();
-            sb.Draw(texture, 0, 0);
-            sb.End();
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-        }
-    }
-
-
+    putenv("DISPLAY=:0");
     // Initialize V8.
     //V8::InitializeICUDefaultLocation(argv[0]);
     //V8::InitializeExternalStartupData(argv[0]);
@@ -114,7 +57,35 @@ void Start() {
 
         global.Submodule("sw", sw);
 
-        sw.Class("Vector2", v8b::Class<sw::Vector2>(isolate));
+        sw.Class("Vector2", v8b::Class<sw::math::Vector2>(isolate));
+        sw.Class("Matrix4", v8b::Class<sw::math::Matrix4>(isolate));
+
+        {
+            v8b::Class<sw::TextureData> m(isolate);
+            m.Constructor<std::tuple<int, int>>();
+            m.Function<void(sw::TextureData::*)(int, int, float, float, float, float)>("setPixel", &sw::TextureData::SetPixel);
+            m.AutoWrap().PointerAutoWrap();
+        }
+
+        {
+            v8b::Class<sw::Texture> m(isolate);
+            m.StaticFunction<std::shared_ptr<sw::Texture>(*)(const sw::TextureData &)>("create", &sw::Texture::Create);
+            m.AutoWrap().PointerAutoWrap();
+        }
+
+        {
+            v8b::Class<sw::SpriteBatch> m(isolate);
+            m.Constructor<std::tuple<>>();
+            m.Function("setProjectionMatrix", &sw::SpriteBatch::SetProjectionMatrix);
+            m.Function<void(sw::SpriteBatch::*)(const std::shared_ptr<sw::Texture> &, double, double, double, double, double, double, double, bool, bool)>("draw", &sw::SpriteBatch::Draw);
+            m.Function("begin", &sw::SpriteBatch::Begin);
+            m.Function("end", &sw::SpriteBatch::End);
+            m.AutoWrap().PointerAutoWrap();
+        }
+
+        sw.Class("TextureData", v8b::Class<sw::TextureData>(isolate));
+        sw.Class("Texture", v8b::Class<sw::Texture>(isolate));
+        sw.Class("SpriteBatch", v8b::Class<sw::SpriteBatch>(isolate));
 
         Local<Context> context = Context::New(isolate, nullptr, global.GetObjectTemplate());
         Context::Scope context_scope(context);
@@ -130,15 +101,23 @@ void Start() {
         TryCatch t(Isolate::GetCurrent());
         script->Run(Isolate::GetCurrent()->GetCurrentContext());
 
-        auto scene =
+        sw::Renderer::Init();
+
+        auto sw_object = context->Global()->Get(context, v8b::ToV8(isolate, "sw")).ToLocalChecked().As<v8::Object>();
+        auto f = sw_object->Get(context, v8b::ToV8(isolate, "init")).ToLocalChecked();
+        if (!f.IsEmpty() && f->IsFunction()) {
+            f.As<Function>()->Call(context, sw_object, 0, nullptr);
+        }
+
 
         double delta;
         auto current = std::chrono::high_resolution_clock::now();
-        while (true) {
+
+        sw::Renderer::Loop([&]() {
             // Check errors
             if (t.HasCaught()) {
                 std::cerr << *String::Utf8Value(Isolate::GetCurrent(), t.Exception()) << std::endl;
-                break;
+                return false;
             }
 
             delta = std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -148,10 +127,14 @@ void Start() {
             // Get update function and call it
             auto sw_object = context->Global()->Get(context, v8b::ToV8(isolate, "sw")).ToLocalChecked().As<v8::Object>();
             auto f = sw_object->Get(context, v8b::ToV8(isolate, "update")).ToLocalChecked();
-            if (f.IsEmpty() || !f->IsFunction()) break;
+            if (f.IsEmpty() || !f->IsFunction()) return false;
             auto d = v8b::ToV8(isolate, delta).As<Value>();
             f.As<Function>()->Call(context, sw_object, 1, &d);
-        }
+
+            return true;
+        });
+
+        sw::Renderer::Uninit();
 
         v8b::ClassManagerPool::RemoveAll(isolate);
     }

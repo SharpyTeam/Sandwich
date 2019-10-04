@@ -3,7 +3,7 @@ project(SandwichDesktop)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include(deps/ucm/ucm.cmake)
+include(cmake/ucm.cmake)
 ucm_set_runtime(STATIC)
 
 add_subdirectory(../../core SandwichCore)

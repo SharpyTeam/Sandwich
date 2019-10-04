@@ -2,11 +2,12 @@
 // Created by selya on 27.09.2019.
 //
 
-#include <sw/sprite_batch.hpp>
+#include "sprite_batch.hpp"
 
-#include <sw/gl.hpp>
+#include "gl.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 namespace sw {
 
@@ -45,7 +46,7 @@ void SpriteBatch::Begin() {
 }
 
 void SpriteBatch::Flush() {
-    if (!batch_pos || !shader) return;
+    if (!batch_pos || !shader || !texture) return;
 
     shader->Bind();
     texture->Bind();
@@ -103,14 +104,14 @@ void SpriteBatch::Draw(const TextureRegion &region, double x, double y, double r
 
     SetTexture(region.GetTexture());
 
-    Vector2 origin(region.GetWidth() * origin_x, region.GetHeight() * origin_y);
+    math::Vector2 origin(region.GetWidth() * origin_x, region.GetHeight() * origin_y);
     auto uv_lower = region.GetUVLower();
     auto uv_upper = region.GetUVUpper();
 
     transform_matrix.Identity().Translate(x, y, 0.0).Rotate(rotation, 0, 0, -1).Scale(scale_x, scale_y, 1.0);
     transform_matrix = view_projection_matrix * transform_matrix;
 
-    Vector4 p = transform_matrix * Vector4(-origin.x, -origin.y, 0.0, 1.0);
+    math::Vector4 p = transform_matrix * math::Vector4(-origin.x, -origin.y, 0.0, 1.0);
     batch[batch_pos++] = p.x;
     batch[batch_pos++] = p.y;
     batch[batch_pos++] = p.z;
@@ -122,7 +123,7 @@ void SpriteBatch::Draw(const TextureRegion &region, double x, double y, double r
     batch[batch_pos++] = color.z;
     batch[batch_pos++] = color.w;
 
-    p = transform_matrix * Vector4(region.GetWidth() - origin.x, -origin.y, 0.0, 1.0);
+    p = transform_matrix * math::Vector4(region.GetWidth() - origin.x, -origin.y, 0.0, 1.0);
     batch[batch_pos++] = p.x;
     batch[batch_pos++] = p.y;
     batch[batch_pos++] = p.z;
@@ -134,7 +135,7 @@ void SpriteBatch::Draw(const TextureRegion &region, double x, double y, double r
     batch[batch_pos++] = color.z;
     batch[batch_pos++] = color.w;
 
-    p = transform_matrix * Vector4(region.GetWidth() - origin.x, region.GetHeight() - origin.y, 0.0, 1.0);
+    p = transform_matrix * math::Vector4(region.GetWidth() - origin.x, region.GetHeight() - origin.y, 0.0, 1.0);
     batch[batch_pos++] = p.x;
     batch[batch_pos++] = p.y;
     batch[batch_pos++] = p.z;
@@ -146,7 +147,7 @@ void SpriteBatch::Draw(const TextureRegion &region, double x, double y, double r
     batch[batch_pos++] = color.z;
     batch[batch_pos++] = color.w;
 
-    p = transform_matrix * Vector4(-origin.x, region.GetHeight() - origin.y, 0.0, 1.0);
+    p = transform_matrix * math::Vector4(-origin.x, region.GetHeight() - origin.y, 0.0, 1.0);
     batch[batch_pos++] = p.x;
     batch[batch_pos++] = p.y;
     batch[batch_pos++] = p.z;
@@ -159,7 +160,7 @@ void SpriteBatch::Draw(const TextureRegion &region, double x, double y, double r
     batch[batch_pos++] = color.w;
 }
 
-void SpriteBatch::SetColor(const Vector4 &color) {
+void SpriteBatch::SetColor(const math::Vector4 &color) {
     this->color = color;
 }
 
@@ -169,17 +170,17 @@ void SpriteBatch::SetShader(const std::shared_ptr<Shader> &shader) {
     this->shader = shader;
 }
 
-void SpriteBatch::SetViewMatrix(const Matrix4 &view_matrix) {
+void SpriteBatch::SetViewMatrix(const math::Matrix4 &view_matrix) {
     this->view_matrix = view_matrix;
     this->view_projection_matrix = projection_matrix * view_matrix;
 }
 
-void SpriteBatch::SetProjectionMatrix(const Matrix4 &projection_matrix) {
+void SpriteBatch::SetProjectionMatrix(const math::Matrix4 &projection_matrix) {
     this->projection_matrix = projection_matrix;
     this->view_projection_matrix = projection_matrix * view_matrix;
 }
 
-Vector4 SpriteBatch::GetColor() const {
+math::Vector4 SpriteBatch::GetColor() const {
     return color;
 }
 
@@ -187,11 +188,11 @@ std::shared_ptr<Shader> SpriteBatch::GetShader() const {
     return shader;
 }
 
-const Matrix4 &SpriteBatch::GetViewMatrix() const {
+const math::Matrix4 &SpriteBatch::GetViewMatrix() const {
     return view_matrix;
 }
 
-const Matrix4 &SpriteBatch::GetProjectionMatrix() const {
+const math::Matrix4 &SpriteBatch::GetProjectionMatrix() const {
     return projection_matrix;
 }
 
