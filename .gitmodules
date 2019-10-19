@@ -1,7 +1,3 @@
-[submodule "renderer/deps/glfw"]
-	path = renderer/deps/glfw
-	url = https://github.com/glfw/glfw
-	branch = 3.3-stable
 [submodule "core/deps/v8bind"]
 	path = core/deps/v8bind
 	url = https://github.com/ayles/v8bind
