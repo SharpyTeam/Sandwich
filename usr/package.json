@@ -1,8 +1,7 @@
 {
   "name": "js",
   "version": "1.0.0",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "ts-loader": "^6.0.4",
     "tslint": "^5.18.0",

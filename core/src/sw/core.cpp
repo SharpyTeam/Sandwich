@@ -22,7 +22,6 @@ extern "C" const char js_bundle_contents[];
 using namespace v8;
 
 void Start() {
-    putenv("DISPLAY=:0");
     // Initialize V8.
     //V8::InitializeICUDefaultLocation(argv[0]);
     //V8::InitializeExternalStartupData(argv[0]);

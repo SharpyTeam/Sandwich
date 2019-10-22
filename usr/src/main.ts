@@ -11,7 +11,7 @@ sw.init = function () {
     let data = new sw.TextureData(100, 100);
     for (let x = 0; x < 100; ++x) {
         for (let y = 0; y < 100; ++y) {
-            data.setPixel(x, y, Math.sin(x / 10), Math.cos(y / 10), 0, 1);
+            data.setPixel(x, y, Math.sin(x / 50), Math.cos(y / 10), 0, 1);
         }
     }
     t = sw.Texture.create(data);
