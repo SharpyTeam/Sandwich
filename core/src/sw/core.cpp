@@ -11,10 +11,6 @@
 #include <sw/renderer/gl.hpp>
 #include <sw/renderer/sprite_batch.hpp>
 
-#include <sw/scene_node.hpp>
-#include <sw/scene.hpp>
-#include <sw/sprite.hpp>
-
 #include <sw/renderer/renderer.hpp>
 
 extern "C" const char js_bundle_contents[];
@@ -42,6 +38,7 @@ void Start() {
 
         v8b::Module global(isolate);
         v8b::Module sw(isolate);
+        v8b::Module math(isolate);
         v8b::Module console(isolate);
 
         console.Function("log", [](const FunctionCallbackInfo<Value> &info) {
@@ -55,9 +52,10 @@ void Start() {
         });
 
         global.Submodule("sw", sw);
+        sw.Submodule("math", math);
 
-        sw.Class("Vector2", v8b::Class<sw::math::Vector2>(isolate));
-        sw.Class("Matrix4", v8b::Class<sw::math::Matrix4>(isolate));
+        math.Class("Vector2", v8b::Class<sw::math::Vector2>(isolate));
+        math.Class("Matrix4", v8b::Class<sw::math::Matrix4>(isolate));
 
         {
             v8b::Class<sw::TextureData> m(isolate);

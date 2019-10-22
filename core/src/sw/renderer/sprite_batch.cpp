@@ -49,9 +49,9 @@ void SpriteBatch::Flush() {
     if (!batch_pos || !shader || !texture) return;
 
     shader->Bind();
-    texture->Bind();
     auto texture_uniform = shader->GetUniform("main_texture");
-    if (texture_uniform) texture_uniform->Set(0);
+    std::cout << texture->Bind() << std::endl;
+    if (texture_uniform) texture_uniform->Set(texture->Bind());
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buffer_handle);
     glBindBuffer(GL_ARRAY_BUFFER, buffer_handle);
@@ -87,6 +87,16 @@ void SpriteBatch::Flush() {
 
 void SpriteBatch::End() {
     Flush();
+}
+
+void SpriteBatch::Draw(const std::shared_ptr<Texture> &texture, const math::Vector2 &position, double rotation,
+                       const math::Vector2 &origin, const math::Vector2 &scale, bool flip_x, bool flip_y) {
+    Draw(texture, position.x, position.y, rotation, origin.x, origin.y, scale.x, scale.y, flip_x, flip_y);
+}
+
+void SpriteBatch::Draw(const TextureRegion &region, const math::Vector2 &position, double rotation,
+                       const math::Vector2 &origin, const math::Vector2 &scale, bool flip_x, bool flip_y) {
+    Draw(region, position.x, position.y, rotation, origin.x, origin.y, scale.x, scale.y, flip_x, flip_y);
 }
 
 void SpriteBatch::Draw(const std::shared_ptr<Texture> &texture, double x, double y, double rotation,

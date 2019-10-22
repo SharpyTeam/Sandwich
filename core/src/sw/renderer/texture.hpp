@@ -12,6 +12,8 @@
 namespace sw {
 
 class Texture final {
+    friend class TextureUnitManager;
+
 public:
     enum class Filtering {
         NEAREST,
@@ -46,7 +48,7 @@ public:
     void Unload();
     void Reload();
 
-    void Bind();
+    int Bind();
 
     static std::shared_ptr<Texture> Create(const TextureData &data);
     static std::shared_ptr<Texture> Create(TextureData &&data);
@@ -56,6 +58,8 @@ public:
 private:
     Texture(const TextureData &data);
     Texture(TextureData &&data);
+
+    void BindToGL();
 
     int width;
     int height;

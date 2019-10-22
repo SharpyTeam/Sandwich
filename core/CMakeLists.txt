@@ -6,9 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(SANDWICH_CORE_HEADERS
         src/sw/core/sw_macros.hpp
         src/sw/core.hpp
-        src/sw/scene_node.hpp
-        src/sw/scene.hpp
-        src/sw/sprite.hpp
         src/sw/core/intrusive_pointer_manager.hpp
         src/sw/renderer/shader.hpp
         src/sw/renderer/gl.hpp
@@ -16,19 +13,18 @@ set(SANDWICH_CORE_HEADERS
         src/sw/renderer/texture.hpp
         src/sw/renderer/texture_region.hpp
         src/sw/renderer/renderer.hpp
-        src/sw/renderer/sprite_batch.hpp)
+        src/sw/renderer/sprite_batch.hpp
+        src/sw/renderer/texture_unit_manager.h)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
-        src/sw/scene_node.cpp
-        src/sw/scene.cpp
-        src/sw/sprite.cpp
         src/sw/renderer/renderer.cpp
         src/sw/renderer/shader.cpp
         src/sw/renderer/texture_data.cpp
         src/sw/renderer/texture.cpp
         src/sw/renderer/sprite_batch.cpp
-        src/sw/renderer/texture_region.cpp)
+        src/sw/renderer/texture_region.cpp
+        src/sw/renderer/texture_unit_manager.cpp)
 
 if (ANDROID OR IOS)
     if (ANDROID)

@@ -5,6 +5,7 @@
 #include "texture.hpp"
 
 #include "gl.hpp"
+#include "texture_unit_manager.h"
 
 #include <stdexcept>
 
@@ -69,6 +70,7 @@ void Texture::Load() {
     if (IsLoaded()) return;
 
     glGenTextures(1, &handle);
+    TextureUnitManager::PickAndActiveUnit(this);
     glBindTexture(GL_TEXTURE_2D, handle);
 
     if (data.GetFormat() != TextureData::Format::RGBA8888 && data.GetFormat() != TextureData::Format::RGB888) {
@@ -117,9 +119,17 @@ Texture::~Texture() {
     if (IsLoaded()) Unload();
 }
 
-void Texture::Bind() {
-    Load();
-    glBindTexture(GL_TEXTURE_2D, handle);
+int Texture::Bind() {
+    if (!loaded) Load();
+    else {
+        TextureUnitManager::PickAndActiveUnit(this);
+        glBindTexture(GL_TEXTURE_2D, handle);
+    }
+    BindToGL();
+    return TextureUnitManager::GetActiveUnit();
+}
+
+void Texture::BindToGL() {
     if (filtering_updated) {
         GLint f;
         switch (filtering) {
