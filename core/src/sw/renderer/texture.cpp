@@ -67,11 +67,10 @@ bool Texture::IsLoaded() const {
 }
 
 void Texture::Load() {
-    if (IsLoaded()) return;
+    if (loaded) return;
 
     glGenTextures(1, &handle);
-    TextureUnitManager::PickAndActiveUnit(this);
-    glBindTexture(GL_TEXTURE_2D, handle);
+    TextureUnitManager::Bind(this);
 
     if (data.GetFormat() != TextureData::Format::RGBA8888 && data.GetFormat() != TextureData::Format::RGB888) {
         throw std::runtime_error("Non-compatible TextureData format for loading");
@@ -90,7 +89,8 @@ void Texture::Load() {
 }
 
 void Texture::Unload() {
-    if (!IsLoaded()) return;
+    if (!loaded) return;
+    TextureUnitManager::Unbind(this);
     glDeleteTextures(1, &handle);
     loaded = false;
 }
@@ -116,20 +116,17 @@ Texture::Texture(TextureData &&data)
     data(data), mipmap(false), loaded(false) {}
 
 Texture::~Texture() {
-    if (IsLoaded()) Unload();
+    Unload();
 }
 
 int Texture::Bind() {
-    if (!loaded) Load();
-    else {
-        TextureUnitManager::PickAndActiveUnit(this);
-        glBindTexture(GL_TEXTURE_2D, handle);
-    }
-    BindToGL();
-    return TextureUnitManager::GetActiveUnit();
+    Load();
+    auto unit = TextureUnitManager::Bind(this);
+    UpdateParams();
+    return unit->index;
 }
 
-void Texture::BindToGL() {
+void Texture::UpdateParams() {
     if (filtering_updated) {
         GLint f;
         switch (filtering) {
@@ -152,6 +149,10 @@ void Texture::BindToGL() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, w);
         wrapping_updated = false;
     }
+}
+
+void Texture::BindToGL() {
+    glBindTexture(GL_TEXTURE_2D, handle);
 }
 
 } // namespace sw

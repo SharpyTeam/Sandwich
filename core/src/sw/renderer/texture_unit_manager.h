@@ -7,36 +7,52 @@
 
 #include "texture.hpp"
 
-#include <queue>
+#include <list>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 namespace sw {
 
 class TextureUnitManager final {
     friend class Texture;
-
-    struct TextureUnit {
-        const int index;
-        int bound_texture_handle;
-
-        TextureUnit(int index);
-    };
+    friend class TextureUnit;
 
 public:
+    class TextureUnit {
+        friend class TextureUnitManager;
+
+    public:
+        const int index;
+
+    private:
+        unsigned int texture_handle;
+        bool in_use;
+        std::list<TextureUnit *>::const_iterator iter_in_queue;
+
+    public:
+        explicit TextureUnit(int index);
+
+        bool InUse() const;
+
+        void Free();
+        bool Claim(unsigned int texture_handle, bool force_free = false);
+    };
+
     TextureUnitManager() = delete;
 
-    static void SetActiveUnit(int index);
-    static int GetActiveUnit();
+    static TextureUnit *GetUnit(int index);
+    static TextureUnit *SetActiveUnit(int index);
+    static TextureUnit *GetActiveUnit();
 
 private:
     static bool Initialize();
-    static int PickAndActiveUnit(Texture *texture);
+    static TextureUnit *Bind(Texture *texture);
+    static void Unbind(Texture *texture);
 
     static std::vector<TextureUnit> units;
-    static std::queue<TextureUnit *> units_queue;
-    static std::map<int, TextureUnit *> handle_to_unit;
-    static int active_unit;
+    static std::list<TextureUnit *> units_queue;
+    static std::unordered_map<unsigned int, TextureUnit *> handle_to_unit;
+    static TextureUnit *active_unit;
 };
 
 } //namespace sw

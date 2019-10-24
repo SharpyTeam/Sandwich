@@ -59,6 +59,7 @@ private:
     Texture(const TextureData &data);
     Texture(TextureData &&data);
 
+    void UpdateParams();
     void BindToGL();
 
     int width;
