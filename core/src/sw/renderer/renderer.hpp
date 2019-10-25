@@ -7,40 +7,16 @@
 
 #include "gl.hpp"
 #include "sprite_batch.hpp"
+#include "screen.hpp"
 
 #include <iostream>
 
 namespace sw {
 
 class Renderer {
-    static inline int width;
-    static inline int height;
-    static inline GLFWwindow *window;
-
 public:
     static inline void Init() {
-        glfwSetErrorCallback([](int id, const char *description) {
-            std::cerr << description << std::endl;
-        });
-
-        if (!glfwInit()) {
-            return;
-        }
-
-        width = 640;
-        height = 480;
-
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-        window = glfwCreateWindow(width, height, "sw", nullptr, nullptr);
-        if (!window) {
-            glfwTerminate();
-            return;
-        }
-
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
+        Screen::Init();
 
         glewExperimental = GL_TRUE;
         GLenum glew_init_status = glewInit();
@@ -60,20 +36,22 @@ public:
 
     template<typename F>
     static inline void Loop(F&& update_function) {
-        while (!glfwWindowShouldClose(window)) {
+        while (!glfwWindowShouldClose((GLFWwindow *)Screen::window)) {
+            glViewport(0, 0, Screen::GetWidth(), Screen::GetHeight());
+
             glClearColor(0.5, 0.5, 0.5, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (!update_function()) break;
 
-            glfwSwapBuffers(window);
+            glfwSwapBuffers((GLFWwindow *)Screen::window);
             glfwPollEvents();
         }
 
     }
 
     static inline void Uninit() {
-        glfwTerminate();
+        Screen::Uninit();
     }
 };
 

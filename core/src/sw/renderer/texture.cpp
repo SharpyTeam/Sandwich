@@ -5,7 +5,7 @@
 #include "texture.hpp"
 
 #include "gl.hpp"
-#include "texture_unit_manager.h"
+#include "texture_unit_manager.hpp"
 
 #include <stdexcept>
 

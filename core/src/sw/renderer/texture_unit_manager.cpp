@@ -2,7 +2,7 @@
 // Created by selya on 22.10.2019.
 //
 
-#include "texture_unit_manager.h"
+#include "texture_unit_manager.hpp"
 
 #include "gl.hpp"
 

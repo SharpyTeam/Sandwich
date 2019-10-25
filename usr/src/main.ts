@@ -2,16 +2,18 @@ import sw from './sandwich';
 
 let sb: sw.SpriteBatch;
 let t: sw.Texture;
+let m: sw.math.Matrix4;
 
 sw.init = function () {
     sb = new sw.SpriteBatch();
-    let m = new sw.math.Matrix4();
-    m.setOrtho2D(-320, 320, -240, 240);
-    sb.setProjectionMatrix(m);
+    m = new sw.math.Matrix4();
 }
 
 let elapsed = 0;
 sw.update = function (delta: number) {
+    m.setOrtho2D(-sw.Screen.width / 2, sw.Screen.width / 2, -sw.Screen.height / 2, sw.Screen.height / 2);
+    sb.setProjectionMatrix(m);
+
     //console.log("Greetings from TypeScript!");
     //let v1 = new sw.Vector2(1, 3);
     //let v2 = new sw.Vector2(-3, 1);
@@ -31,4 +33,8 @@ sw.update = function (delta: number) {
     sb.draw(t, 0, 100 * Math.sin(elapsed), 0, 0.5, 0.5, 1, 1, false, false);
     sb.end();
     elapsed += delta;
+    if (elapsed > 3 && elapsed < 6) {
+        elapsed = 6;
+        sw.Screen.setResolution(1920, 1080, sw.Screen.ScreenMode.FULLSCREEN, 0);
+    }
 }

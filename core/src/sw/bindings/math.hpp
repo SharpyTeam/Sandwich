@@ -2,8 +2,8 @@
 // Created by Ilya on 29.08.2019.
 //
 
-#ifndef SANDWICH_CORE_MODULE_MATH_HPP
-#define SANDWICH_CORE_MODULE_MATH_HPP
+#ifndef SANDWICH_BINDINGS_MATH_HPP
+#define SANDWICH_BINDINGS_MATH_HPP
 
 #include <v8bind/v8bind.hpp>
 #include <sw/math/vector.hpp>
@@ -149,4 +149,4 @@ struct DefaultBindings<sw::math::Vector2> {
 
 };
 
-#endif //SANDWICH_CORE_MODULE_MATH_HPP
+#endif //SANDWICH_BINDINGS_MATH_HPP

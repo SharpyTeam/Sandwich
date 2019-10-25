@@ -1,5 +1,3 @@
-#include <sw/modules/math.hpp>
-
 #include <v8bind/v8bind.hpp>
 
 #include <libplatform/libplatform.h>
@@ -12,6 +10,9 @@
 #include <sw/renderer/sprite_batch.hpp>
 
 #include <sw/renderer/renderer.hpp>
+
+#include <sw/bindings/math.hpp>
+#include <sw/bindings/renderer.hpp>
 
 extern "C" const char js_bundle_contents[];
 
@@ -53,6 +54,8 @@ void Start() {
 
         global.Submodule("sw", sw);
         sw.Submodule("math", math);
+
+        sw.Class("Screen", v8b::Class<sw::Screen>(isolate));
 
         math.Class("Vector2", v8b::Class<sw::math::Vector2>(isolate));
         math.Class("Matrix4", v8b::Class<sw::math::Matrix4>(isolate));

@@ -14,7 +14,8 @@ set(SANDWICH_CORE_HEADERS
         src/sw/renderer/texture_region.hpp
         src/sw/renderer/renderer.hpp
         src/sw/renderer/sprite_batch.hpp
-        src/sw/renderer/texture_unit_manager.h)
+        src/sw/renderer/texture_unit_manager.hpp
+        src/sw/renderer/screen.hpp)
 
 set(SANDWICH_CORE_SOURCES
         src/sw/core.cpp
@@ -24,7 +25,8 @@ set(SANDWICH_CORE_SOURCES
         src/sw/renderer/texture.cpp
         src/sw/renderer/sprite_batch.cpp
         src/sw/renderer/texture_region.cpp
-        src/sw/renderer/texture_unit_manager.cpp)
+        src/sw/renderer/texture_unit_manager.cpp
+        src/sw/renderer/screen.cpp)
 
 if (ANDROID OR IOS)
     if (ANDROID)

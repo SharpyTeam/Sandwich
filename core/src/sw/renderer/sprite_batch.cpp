@@ -50,7 +50,6 @@ void SpriteBatch::Flush() {
 
     shader->Bind();
     auto texture_uniform = shader->GetUniform("main_texture");
-    std::cout << texture->Bind() << std::endl;
     if (texture_uniform) texture_uniform->Set(texture->Bind());
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buffer_handle);

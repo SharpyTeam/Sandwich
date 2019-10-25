@@ -269,6 +269,32 @@ declare namespace sw {
         rotation: number;
     }
 
+    class Screen {
+        static readonly width: number;
+        static readonly height: number;
+
+        static mode: Screen.ScreenMode;
+
+        static setMode(mode: Screen.ScreenMode, refreshRate: number): void;
+        static setResolution(width: number, height: number,
+                             screenMode: Screen.ScreenMode, refreshRate: number): void;
+
+        //static getSupportedFullscreenResolutions(): Screen.Resolution[];
+    }
+
+    namespace Screen {
+        class Resolution {
+            readonly width: number;
+            readonly height: number;
+            readonly refreshRate: number;
+        }
+
+        enum ScreenMode {
+            WINDOWED,
+            FULLSCREEN,
+            BORDERLESS_WINDOW
+        }
+    }
 
     let init: () => void;
     let update: (delta: number) => void;
