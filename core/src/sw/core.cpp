@@ -52,8 +52,8 @@ void Start() {
             std::cout << s << std::endl;
         });
 
-        global.Submodule("sw", sw);
-        sw.Submodule("math", math);
+        global.SubModule("sw", sw);
+        sw.SubModule("math", math);
 
         sw.Class("Screen", v8b::Class<sw::Screen>(isolate));
 
@@ -127,9 +127,7 @@ void Start() {
             // Get update function and call it
             auto sw_object = context->Global()->Get(context, v8b::ToV8(isolate, "sw")).ToLocalChecked().As<v8::Object>();
             auto f = sw_object->Get(context, v8b::ToV8(isolate, "update")).ToLocalChecked();
-            if (f.IsEmpty() || !f->IsFunction()) return false;
-            auto d = v8b::ToV8(isolate, delta).As<Value>();
-            f.As<Function>()->Call(context, sw_object, 1, &d);
+            v8b::CallV8FromNative(isolate, f, sw_object, delta);
 
             return true;
         });

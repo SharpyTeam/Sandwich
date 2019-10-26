@@ -18,9 +18,9 @@ class Screen {
 
 public:
     struct Resolution {
-        const int width;
-        const int height;
-        const int refresh_rate;
+        int width;
+        int height;
+        int refresh_rate;
     };
 
     enum class ScreenMode {

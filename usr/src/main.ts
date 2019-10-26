@@ -37,4 +37,5 @@ sw.update = function (delta: number) {
         elapsed = 6;
         sw.Screen.setResolution(1920, 1080, sw.Screen.ScreenMode.FULLSCREEN, 0);
     }
+    console.log(sw.Screen.getSupportedFullscreenResolutions().length);
 }

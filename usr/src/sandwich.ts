@@ -279,7 +279,7 @@ declare namespace sw {
         static setResolution(width: number, height: number,
                              screenMode: Screen.ScreenMode, refreshRate: number): void;
 
-        //static getSupportedFullscreenResolutions(): Screen.Resolution[];
+        static getSupportedFullscreenResolutions(): Screen.Resolution[];
     }
 
     namespace Screen {

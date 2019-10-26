@@ -25,14 +25,14 @@ struct DefaultBindings<sw::Screen> {
         r.PointerAutoWrap();
 
         v8b::Class<sw::Screen::ScreenMode> sm(isolate);
-        sm.StaticProperty("WINDOWED", []() { return int(sw::Screen::ScreenMode::WINDOWED); });
-        sm.StaticProperty("FULLSCREEN", []() { return int(sw::Screen::ScreenMode::FULLSCREEN); });
-        sm.StaticProperty("BORDERLESS_WINDOW", []() { return int(sw::Screen::ScreenMode::BORDERLESS_WINDOW); });
+        sm.StaticConst("WINDOWED", sw::Screen::ScreenMode::WINDOWED);
+        sm.StaticConst("FULLSCREEN", sw::Screen::ScreenMode::FULLSCREEN);
+        sm.StaticConst("BORDERLESS_WINDOW", sw::Screen::ScreenMode::BORDERLESS_WINDOW);
 
         v8b::Class<sw::Screen> s(isolate);
 
-        s.Subclass("ScreenMode", sm);
-        s.Subclass("Resolution", r);
+        s.InnerClass("ScreenMode", sm);
+        s.InnerClass("Resolution", r);
 
         s.StaticProperty("width", &sw::Screen::GetWidth);
         s.StaticProperty("height", &sw::Screen::GetHeight);
@@ -41,7 +41,7 @@ struct DefaultBindings<sw::Screen> {
         });
         s.StaticFunction("setMode", &sw::Screen::SetMode);
         s.StaticFunction<void (*)(int, int, sw::Screen::ScreenMode, int)>("setResolution", &sw::Screen::SetResolution);
-        //s.StaticFunction("getSupportedFullscreenResolutions", &sw::Screen::GetSupportedFullscreenResolutions);
+        s.StaticFunction("getSupportedFullscreenResolutions", &sw::Screen::GetSupportedFullscreenResolutions);
     }
 };
 
