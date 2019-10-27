@@ -227,8 +227,12 @@ declare namespace sw {
 
 
             setOrtho(left: number, right: number, bottom: number, top: number,
+                     zNear: number, zFar: number): Matrix4;
+            setOrtho(left: number, right: number, bottom: number, top: number,
                      zNear: number, zFar: number, zZeroToOne: boolean): Matrix4;
             setOrtho2D(left: number, right: number, bottom: number, top: number): Matrix4;
+            setPerspective(fovY: number, aspect: number,
+                           zNear: number, zFar: number): Matrix4;
             setPerspective(fovY: number, aspect: number,
                            zNear: number, zFar: number, zZeroToOne: boolean): Matrix4;
 

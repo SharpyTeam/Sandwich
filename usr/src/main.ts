@@ -35,7 +35,8 @@ sw.update = function (delta: number) {
     elapsed += delta;
     if (elapsed > 3 && elapsed < 6) {
         elapsed = 6;
-        sw.Screen.setResolution(1920, 1080, sw.Screen.ScreenMode.FULLSCREEN, 0);
+        let resolutions = sw.Screen.getSupportedFullscreenResolutions();
+        let resolution = resolutions[resolutions.length - 1];
+        sw.Screen.setResolution(resolution.width, resolution.height, sw.Screen.ScreenMode.FULLSCREEN, resolution.refreshRate);
     }
-    console.log(sw.Screen.getSupportedFullscreenResolutions().length);
 }
