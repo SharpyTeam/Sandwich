@@ -39,6 +39,8 @@ struct DefaultBindings<sw::Screen> {
         s.StaticProperty("mode", &sw::Screen::GetMode, [](sw::Screen::ScreenMode mode) {
             sw::Screen::SetMode(mode);
         });
+        s.StaticFunction("getTitle", &sw::Screen::GetTitle);
+        s.StaticFunction("setTitle", &sw::Screen::SetTitle);
         s.StaticFunction("setMode", &sw::Screen::SetMode);
         s.StaticFunction<void (*)(int, int, sw::Screen::ScreenMode, int)>("setResolution", &sw::Screen::SetResolution);
         s.StaticFunction("getSupportedFullscreenResolutions", &sw::Screen::GetSupportedFullscreenResolutions);

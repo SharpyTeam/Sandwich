@@ -279,6 +279,9 @@ declare namespace sw {
 
         static mode: Screen.ScreenMode;
 
+        static getTitle(): string;
+        static setTitle(title: string): void;
+
         static setMode(mode: Screen.ScreenMode, refreshRate: number): void;
         static setResolution(width: number, height: number,
                              screenMode: Screen.ScreenMode, refreshRate: number): void;

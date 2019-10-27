@@ -6,6 +6,7 @@
 #define SANDWICH_RENDERER_SCREEN_HPP
 
 #include <vector>
+#include <string>
 
 namespace sw {
 
@@ -15,6 +16,7 @@ class Screen {
     static void *window;
     static int width;
     static int height;
+    static std::string title;
 
 public:
     struct Resolution {
@@ -28,6 +30,9 @@ public:
         FULLSCREEN,
         BORDERLESS_WINDOW
     };
+
+    static std::string GetTitle();
+    static void SetTitle(const std::string &title);
 
     static ScreenMode GetMode();
     static void SetMode(ScreenMode screen_mode, int refresh_rate = 0);

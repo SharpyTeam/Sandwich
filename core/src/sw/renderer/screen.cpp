@@ -13,6 +13,16 @@ namespace sw {
 void *Screen::window = nullptr;
 int Screen::width = 0;
 int Screen::height = 0;
+std::string Screen::title;
+
+std::string Screen::GetTitle() {
+    return title;
+}
+
+void Screen::SetTitle(const std::string &title_) {
+    title = title_;
+    glfwSetWindowTitle((GLFWwindow *)window, title.c_str());
+}
 
 Screen::ScreenMode Screen::GetMode() {
     return ScreenMode::BORDERLESS_WINDOW;
