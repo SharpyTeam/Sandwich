@@ -45,7 +45,7 @@ public:
     void SetRect(int x, int y, const TextureData &r);
     void SetRect(int x, int y, const TextureData &r, int src_x, int src_y, int src_width, int src_height);
 
-    void Fill(float r, float g, float b, float a);
+    void Fill(float r, float g, float b, float a = 1.0);
     void Fill(const math::Vector4 &color);
 
     void FlipHorizontally();

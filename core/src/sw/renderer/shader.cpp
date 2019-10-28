@@ -19,6 +19,7 @@ void Shader::Uniform::Set(float v) {
             glUniform1f(location, (float)v);
             break;
 
+        case ValueType::TEXTURE_UNIT:
         case ValueType::INT:
             glUniform1i(location, (int)v);
             break;
@@ -42,6 +43,7 @@ void Shader::Uniform::Set(double v) {
             glUniform1f(location, (float)v);
             break;
 
+        case ValueType::TEXTURE_UNIT:
         case ValueType::INT:
             glUniform1i(location, (int)v);
             break;

@@ -247,42 +247,15 @@ declare namespace sw {
         }
     }
 
-    class TextureData {
-        constructor(width: number, height: number);
-
-        setPixel(x: number, y: number, r: number, g: number, b: number, a: number): void;
-    }
-
-    class Texture {
-        static create(data: TextureData): Texture;
-    }
-
-    class SpriteBatch {
-        constructor();
-        setProjectionMatrix(matrix: math.Matrix4): void;
-        begin(): void;
-        end(): void;
-        draw(texture: Texture, x: number, y: number, rotation: number,
-             origin_x: number, origin_y: number, scale_x: number, scale_y: number,
-             flip_x: boolean, flip_y: boolean): void;
-    }
-
-    class Sprite {
-        position: math.Vector2;
-        scale: math.Vector2;
-        rotation: number;
-    }
-
     class Screen {
         static readonly width: number;
         static readonly height: number;
 
+        static title: string;
         static mode: Screen.ScreenMode;
 
-        static getTitle(): string;
-        static setTitle(title: string): void;
-
         static setMode(mode: Screen.ScreenMode, refreshRate: number): void;
+        static setResolution(width: number, height: number): void;
         static setResolution(width: number, height: number,
                              screenMode: Screen.ScreenMode, refreshRate: number): void;
 
@@ -297,10 +270,180 @@ declare namespace sw {
         }
 
         enum ScreenMode {
-            WINDOWED,
-            FULLSCREEN,
-            BORDERLESS_WINDOW
+            Windowed,
+            Fullscreen,
+            BorderlessWindow
         }
+    }
+
+    class Shader {
+        readonly uniforms: { [name: string]: Shader.Uniform; }
+        getUniform(name: string): Shader.Uniform;
+
+        readonly attributes: { [name: string]: Shader.Attribute; }
+        getAttribute(name: string): Shader.Attribute;
+
+        bind(): void;
+
+        static fromSource(sources: { [S in Shader.Stage]: string; }): Shader;
+    }
+
+    namespace Shader {
+        enum Stage {
+            Vertex,
+            Fragment,
+            Geometry
+        }
+
+        enum ValueType {
+            Float,
+            Int,
+            UnsignedInt,
+            Matrix3Float,
+            Matrix4Float,
+            Vector2Float,
+            Vector3Float,
+            Vector4Float,
+            Vector2Int,
+            Vector3Int,
+            Vector4Int,
+            Vector2UnsignedInt,
+            Vector3UnsignedInt,
+            Vector4UnsignedInt,
+            TextureUnit,
+            Unsupported
+        }
+
+        class Attribute {
+            readonly name: string;
+            readonly type: ValueType;
+            readonly location: number;
+        }
+
+        class Uniform {
+            readonly name: string;
+            readonly type: ValueType;
+            readonly location: number;
+
+            set(v: number): void;
+            set(vec: math.Vector2): void;
+            set(vec: math.Vector3): void;
+            set(vec: math.Vector4): void;
+            set(vec: math.Matrix4): void;
+        }
+    }
+
+    class SpriteBatch {
+        color: math.Vector4;
+        shader: Shader;
+        viewMatrix: math.Matrix4;
+        projectionMatrix: math.Matrix4;
+
+        constructor();
+
+        begin(): void;
+        flush(): void;
+        end(): void;
+
+        draw(texture: Texture | TextureRegion, x: number, y: number, rotation: number,
+             originX: number, originY: number, scaleX: number, scaleY: number,
+             flipX: boolean, flipY: boolean): void;
+
+        draw(texture: Texture | TextureRegion, position: math.Vector2, rotation: number,
+             origin: math.Vector2, scale: math.Vector2,
+             flipX: boolean, flipY: boolean): void;
+    }
+
+    class TextureData {
+        format: TextureData.Format;
+        width: number;
+        height: number;
+
+        constructor(width: number, height: number);
+        constructor(width: number, height: number, format: TextureData.Format);
+        constructor(textureData: TextureData);
+
+        set(textureData: TextureData): void;
+
+        getPixel(x: number, y: number): math.Vector4;
+
+        setPixel(x: number, y: number, r: number, g: number, b: number): void;
+        setPixel(x: number, y: number, r: number, g: number, b: number, a: number): void;
+        setPixel(x: number, y: number, color: math.Vector4): void;
+
+        setRect(x: number, y: number, rect: TextureData): void;
+        setRect(x: number, y: number, rect: TextureData,
+                srcX: number, srcY: number, srcWidth: number, srcHeight: number): void;
+
+        fill(r: number, g: number, b: number): void;
+        fill(r: number, g: number, b: number, a: number): void;
+        fill(color: math.Vector4): void;
+
+        flipHorizontally(): void;
+        flipVertically(): void;
+    }
+
+    namespace TextureData {
+        enum Format {
+            RGBA8888,
+            RGB888,
+            RGB565,
+            RGBA4444
+        }
+    }
+
+    class Texture {
+        readonly width: number;
+        readonly height: number;
+
+        readonly haveMipmap: boolean;
+        readonly loaded: boolean;
+
+        filtering: Texture.Filtering;
+        wrapping: Texture.Wrapping;
+
+        data: TextureData;
+
+        genMipmap(): void;
+        load(): void;
+        unload(): void;
+        reload(): void;
+        bind(): void;
+
+        static create(data: TextureData): Texture;
+    }
+
+    namespace Texture {
+        enum Filtering {
+            Nearest,
+            Linear,
+            Trilinear
+        }
+
+        enum Wrapping {
+            Edge,
+            Repeat,
+            Mirror
+        }
+    }
+
+    class TextureRegion {
+        texture: Texture;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        flipX: boolean;
+        flipY: boolean;
+        readonly uvUpper: math.Vector2;
+        readonly uvLower: math.Vector2;
+
+        constructor();
+        constructor(texture: Texture);
+        constructor(texture: Texture, x: number, y: number, width: number, height: number);
+        constructor(textureRegion: TextureRegion);
+
+        set(textureRegion: TextureRegion): void;
     }
 
     let init: () => void;

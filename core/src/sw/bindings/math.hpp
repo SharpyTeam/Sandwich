@@ -128,10 +128,7 @@ struct DefaultBindings<sw::math::Vector2> {
         ;
 
         // Wrappers
-        v2
-            .AutoWrap()
-            .PointerAutoWrap()
-        ;
+        v2.AutoWrap();
     }
 };
 
@@ -256,10 +253,7 @@ struct DefaultBindings<sw::math::Vector3> {
         ;
 
         // Wrappers
-        v3
-            .AutoWrap()
-            .PointerAutoWrap()
-        ;
+        v3.AutoWrap();
     }
 };
 
@@ -385,10 +379,7 @@ struct DefaultBindings<sw::math::Vector4> {
         ;
 
         // Wrappers
-        v4
-            .AutoWrap()
-            .PointerAutoWrap()
-        ;
+        v4.AutoWrap();
     }
 };
 
@@ -424,10 +415,7 @@ struct DefaultBindings<sw::math::AxisAngle> {
         ;
 
         // Wrappers
-        aa
-            .AutoWrap()
-            .PointerAutoWrap()
-        ;
+        aa.AutoWrap();
     }
 };
 
@@ -501,10 +489,7 @@ struct DefaultBindings<sw::math::Matrix4> {
         ;
 
         // Wrappers
-        m4
-            .AutoWrap()
-            .PointerAutoWrap()
-        ;
+        m4.AutoWrap();
     }
 };
 

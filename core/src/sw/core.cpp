@@ -56,6 +56,11 @@ void Start() {
         sw.SubModule("math", math);
 
         sw.Class("Screen", v8b::Class<sw::Screen>(isolate));
+        sw.Class("Shader", v8b::Class<sw::Shader>(isolate));
+        sw.Class("SpriteBatch", v8b::Class<sw::SpriteBatch>(isolate));
+        sw.Class("TextureData", v8b::Class<sw::TextureData>(isolate));
+        sw.Class("Texture", v8b::Class<sw::Texture>(isolate));
+        sw.Class("TextureRegion", v8b::Class<sw::TextureRegion>(isolate));
 
         math.Class("Vector2", v8b::Class<sw::math::Vector2>(isolate));
         math.Class("Matrix4", v8b::Class<sw::math::Matrix4>(isolate));
@@ -64,13 +69,13 @@ void Start() {
             v8b::Class<sw::TextureData> m(isolate);
             m.Constructor<std::tuple<int, int>>();
             m.Function<void(sw::TextureData::*)(int, int, float, float, float, float)>("setPixel", &sw::TextureData::SetPixel);
-            m.AutoWrap().PointerAutoWrap();
+            m.AutoWrap();
         }
 
         {
             v8b::Class<sw::Texture> m(isolate);
             m.StaticFunction<std::shared_ptr<sw::Texture>(*)(const sw::TextureData &)>("create", &sw::Texture::Create);
-            m.AutoWrap().PointerAutoWrap();
+            m.AutoWrap();
         }
 
         {
@@ -80,12 +85,8 @@ void Start() {
             m.Function<void(sw::SpriteBatch::*)(const std::shared_ptr<sw::Texture> &, double, double, double, double, double, double, double, bool, bool)>("draw", &sw::SpriteBatch::Draw);
             m.Function("begin", &sw::SpriteBatch::Begin);
             m.Function("end", &sw::SpriteBatch::End);
-            m.AutoWrap().PointerAutoWrap();
+            m.AutoWrap();
         }
-
-        sw.Class("TextureData", v8b::Class<sw::TextureData>(isolate));
-        sw.Class("Texture", v8b::Class<sw::Texture>(isolate));
-        sw.Class("SpriteBatch", v8b::Class<sw::SpriteBatch>(isolate));
 
         Local<Context> context = Context::New(isolate, nullptr, global.GetObjectTemplate());
         Context::Scope context_scope(context);
