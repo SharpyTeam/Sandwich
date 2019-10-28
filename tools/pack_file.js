@@ -2,9 +2,6 @@ const fs = require('fs'),
     path = require('path');
 
 if (process.argv.length < 5) {
-    if (process.argv.length === 2) {
-        console.info('Usage: node pack_file.js <input_file> <output_file>');
-    }
     console.error("Not enough arguments!");
     console.info('Usage: node pack_file.js <input_file> <output_file>');
     process.exit(-1);
